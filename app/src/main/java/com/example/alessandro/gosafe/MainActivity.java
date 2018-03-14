@@ -45,16 +45,19 @@ public class MainActivity extends AppCompatActivity
                         switch (item.getItemId()) {
                             case R.id.menu_vai:
                                 i = new Intent(getApplicationContext(), VaiActivity.class);
+                                i.putExtra("selezione", "vai");
                                 startActivity(i);
                                 break;
 
                             case R.id.menu_mappe:
                                 i = new Intent(getApplicationContext(), MappeActivity.class);
+                                i.putExtra("selezione", "mappe");
                                 startActivity(i);
                                 break;
 
                             case R.id.menu_profilo:
                                 i = new Intent(getApplicationContext(), ProfiloActivity.class);
+                                i.putExtra("selezione", "profilo");
                                 startActivity(i);
                                 break;
                         }
