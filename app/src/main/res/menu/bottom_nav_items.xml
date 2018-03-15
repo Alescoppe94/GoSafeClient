@@ -2,16 +2,16 @@
     <item
         android:id="@+id/menu_vai"
         android:title="@string/menu_vai"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_navigation_black_24px"
         />
     <item
         android:id="@+id/menu_mappe"
         android:title="@string/menu_mappe"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_map_black_24px"
         />
 
     <item
         android:id="@+id/menu_profilo"
         android:title="@string/menu_profilo"
-        android:icon="@drawable/ic_notifications_black_24dp" />
+        android:icon="@drawable/ic_face_black_24px" />
 </menu>
