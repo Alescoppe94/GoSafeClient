@@ -9,6 +9,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -27,14 +28,14 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
         recent_token = FirebaseInstanceId.getInstance().getToken();
         Log.d(REG_TOKEN, recent_token);
-        //tokenSender(recent_token);
+        tokenSender(recent_token);
 
     }
 
-    /*public void tokenSender(String recent_token) {
+    public void tokenSender(String recent_token) {
         try {
-            URL url = new URL("https://10.0.2.2:8080/gestionemappe/db/tokentest");
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+            URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/tokentest");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("GET");
@@ -57,5 +58,5 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
         }catch(Exception e){
             e.printStackTrace();
         }
-    }*/
+    }
 }
