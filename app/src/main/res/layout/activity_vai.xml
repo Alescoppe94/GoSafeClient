@@ -6,4 +6,19 @@
     android:layout_height="match_parent"
     tools:context="com.example.alessandro.gosafe.VaiActivity">
 
+    <RelativeLayout
+        android:layout_width="368dp"
+        android:layout_height="551dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="36dp"
+            android:text="Bottone Brutto" />
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
