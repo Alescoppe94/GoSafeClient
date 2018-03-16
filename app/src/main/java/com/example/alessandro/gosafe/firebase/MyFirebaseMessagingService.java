@@ -1,4 +1,4 @@
-package com.example.alessandro.gosafe;
+package com.example.alessandro.gosafe.firebase;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import com.example.alessandro.gosafe.MainActivity;
+import com.example.alessandro.gosafe.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
