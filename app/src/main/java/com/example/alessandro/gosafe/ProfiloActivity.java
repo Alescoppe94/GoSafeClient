@@ -29,8 +29,8 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profilo);
 
-        ImageView mIcon = findViewById(R.id.ivProfile);
-        Button mFollow = findViewById(R.id.btnFollow);
+        ImageView mIcon = findViewById(R.id.Profile);
+        Button mFollow = findViewById(R.id.modificaButton);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.homer);
         RoundedBitmapDrawable mDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
         mDrawable.setCircular(true);
