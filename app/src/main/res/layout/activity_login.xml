@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="35dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="35dp"
                     android:text="GoSafe Inc."
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="15dp"
                     android:text="Entra Nel Tuo Account"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp" />
