@@ -14,22 +14,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 public class ProfiloActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
-
-
-
+    public static final int SELECTED_PICTURE = 1;
+    //ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profilo);
 
         ImageView mIcon = findViewById(R.id.Profile);
+        //imageView=(ImageView)findViewById(R.id.Profile);
         Button mFollow = findViewById(R.id.modificaButton);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.homer);
         RoundedBitmapDrawable mDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
@@ -137,5 +139,16 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public void goToModificaProfilo(View view){
+        Log.d("VIVZ","Prova Button");
+        setContentView(R.layout.modifica_profilo);
+
+    }
+
+    public void chooseImmagineProfilo(View view){
+
     }
 }
