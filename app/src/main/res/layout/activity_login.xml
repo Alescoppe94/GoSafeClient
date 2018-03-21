@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#218E88">
+    android:background="#006699">
 
 
     <LinearLayout
@@ -69,6 +69,7 @@
                         android:inputType="textCapWords"
                         android:maxLines="1"
                         android:singleLine="true" />
+
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -160,5 +161,15 @@
         android:text="Forgot Password?"
         android:textColor="#7CC6BE"
         android:textSize="15dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Entra lo stesso"
+            android:id="@+id/entraButton"
+            android:onClick="entra"/>
+    </LinearLayout>
 
 </RelativeLayout>

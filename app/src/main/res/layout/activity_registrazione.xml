@@ -171,6 +171,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="21dp"
             android:background="@drawable/button_shape2"
+            android:onClick="registrazione"
             android:text="Registrati"
             android:textColor="#FFFFFF" />
 

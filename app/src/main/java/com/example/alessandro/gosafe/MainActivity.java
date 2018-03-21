@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity
                                 i.putExtra("selezione", "profilo");
                                 startActivity(i);
                                 break;
+
                         }
                         return true;
                     }

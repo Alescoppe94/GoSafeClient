@@ -1,8 +1,12 @@
 package com.example.alessandro.gosafe;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -20,6 +24,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 public class ProfiloActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
@@ -148,7 +155,15 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
 
     }
 
+    public void indietro(View view){
+        setContentView(R.layout.content_profilo);
+    }
+
     public void chooseImmagineProfilo(View view){
 
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setType("file/*");
+            startActivity(intent);
     }
 }

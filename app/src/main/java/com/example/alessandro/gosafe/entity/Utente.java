@@ -1,5 +1,9 @@
 package com.example.alessandro.gosafe.entity;
 
+import android.content.Context;
+
+import com.example.alessandro.gosafe.database.DAOUtente;
+
 /**
  * Created by Alessandro on 16/03/2018.
  */
@@ -18,6 +22,59 @@ public class Utente {
 
         this.username=username;
         this.password=password;
+
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCognome() {
+        return cognome;
+    }
+
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
+    }
+
+    public boolean isIs_autenticato() {
+        return is_autenticato;
+    }
+
+    public void setIs_autenticato(boolean is_autenticato) {
+        this.is_autenticato = is_autenticato;
+    }
+
+    public long getId_utente() {
+        return id_utente;
 
     }
 
@@ -40,4 +97,10 @@ public class Utente {
     }
 
 
+    public void registrazioneLocale(Context ctx) {
+        DAOUtente u = new DAOUtente(ctx);
+        u.open();
+        u.save(this);
+        u.close();
+    }
 }

@@ -82,6 +82,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        Button entra = (Button) findViewById(R.id.entraButton);
+        entra.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     /**
@@ -131,6 +140,14 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 2;
+    }
+
+    private void entra(View view){
+        Intent i;
+        i = new Intent(getApplicationContext(), MainActivity.class);
+        i.putExtra("selezione", "main");
+        startActivity(i);
+
     }
 
 

@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -150,7 +151,7 @@ public class Autenticazione {
 
             JsonObject jsonResponse = new Gson().fromJson(result, JsonObject.class);
 
-            if (result == null) {
+            /*if (result == null) {
                 AlertDialog registrazione_impossibile = new AlertDialog.Builder(ctx).create();
                 registrazione_impossibile.setTitle("Impossibile effettuare la registrazione");
                 registrazione_impossibile.setMessage(ctx.getString(R.string.server_not_respond_registrazione));
@@ -179,14 +180,16 @@ public class Autenticazione {
             else {
                 JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
                 long id_utente = jobj.get("id_utente").getAsLong();
-                //new registrazioneTokenTask(token, id_utente).execute();
-                utente.setId_utente(id_utente);
-                utente.setIs_autenticato(true);
-                //utente.registrazioneLocale(ctx);
+                //new registrazioneTokenTask(token, id_utente).execute();*/
+                //utente.setId_utente(id_utente);
+                //utente.setIs_autenticato(true);
+                utente.setId_utente(1);
+                Log.d("VIVZ",utente.getCognome().toString());
+                utente.registrazioneLocale(ctx);
 
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");
-                accesso_dopo_registrazione.setMessage(ctx.getString(R.string.registrazione_effettuata));
+                /*accesso_dopo_registrazione.setMessage(ctx.getString(R.string.registrazione_effettuata));
                 accesso_dopo_registrazione.setCanceledOnTouchOutside(false);
                 accesso_dopo_registrazione.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
@@ -196,8 +199,8 @@ public class Autenticazione {
                                 ctx.startActivity(i);
                             }
                         });
-                accesso_dopo_registrazione.show();
-            }
+                accesso_dopo_registrazione.show();*/
+            //}
 
         }
     }
