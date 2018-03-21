@@ -186,6 +186,7 @@ public class Autenticazione {
                 utente.setId_utente(1);
                 Log.d("VIVZ",utente.getCognome().toString());
                 utente.registrazioneLocale(ctx);
+                Log.d("azz", utente.getNome().toString());
 
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");

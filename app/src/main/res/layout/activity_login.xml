@@ -105,7 +105,8 @@
                     android:background="#A1E0AB"
                     android:text="@string/action_sign_in"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:onClick="attemptLogin"/>
 
             </LinearLayout>
         </ScrollView>

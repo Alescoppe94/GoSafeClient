@@ -14,6 +14,7 @@ class DBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "gosafe.db";
     private static final int DB_VERSION = 14;
     private Context context;
+    private SQLiteDatabase db;
     private static final String TABLE_UTENTE = "CREATE TABLE " + DAOUtente.TBL_NAME + " (" +
             DAOUtente.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
             DAOUtente.FIELD_NOME + " TEXT NOT NULL, " +
