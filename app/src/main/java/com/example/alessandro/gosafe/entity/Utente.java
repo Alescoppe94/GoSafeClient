@@ -13,16 +13,42 @@ public class Utente {
     private long id_utente;
     private String username;
     private String password;
-    private String email;
     private String nome;
     private String cognome;
+    private int beaconid;
+    private int percorsoid;
     private boolean is_autenticato;//true solo quando l'utente è autenticato sul server
+    private String token;
 
     public Utente(String username, String password){
 
         this.username=username;
         this.password=password;
 
+    }
+
+    public int getBeaconid() {
+        return beaconid;
+    }
+
+    public void setBeaconid(int beaconid) {
+        this.beaconid = beaconid;
+    }
+
+    public int getPercorsoid() {
+        return percorsoid;
+    }
+
+    public void setPercorsoid(int percorsoid) {
+        this.percorsoid = percorsoid;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getUsername() {
@@ -41,14 +67,6 @@ public class Utente {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -65,7 +83,7 @@ public class Utente {
         this.cognome = cognome;
     }
 
-    public boolean isIs_autenticato() {
+    public boolean getIs_autenticato() {
         return is_autenticato;
     }
 
@@ -79,13 +97,15 @@ public class Utente {
     }
 
 
-    public Utente(String username, String password, String email, String nome, String cognome, boolean is_autenticato) {
+    public Utente(String username, String password, String nome, String cognome, int beaconid, int percorsoid, boolean is_autenticato, String token) {
         this.username = username;
         this.password = password;
-        this.email = email;
         this.nome = nome;
         this.cognome = cognome;
+        this.beaconid = beaconid;
+        this.percorsoid = percorsoid;
         this.is_autenticato = is_autenticato;
+        this.token = token;
     }
 
     public void setId_utente(long id){

@@ -21,7 +21,10 @@ class DBHelper extends SQLiteOpenHelper {
             DAOUtente.FIELD_COGNOME + " TEXT NOT NULL, " +
             DAOUtente.FIELD_USER + " TEXT NOT NULL, " +
             DAOUtente.FIELD_PASS + " TEXT NOT NULL, " +
-            DAOUtente.FIELD_EMAIL + " TEXT NOT NULL )";
+            DAOUtente.FIELD_BEACONID + " TEXT NULL, " +
+            DAOUtente.FIELD_PERCORSOID + " TEXT NULL, " +
+            DAOUtente.FIELD_ISAUTENTICATO + " TEXT NOT NULL, " +
+            DAOUtente.FIELD_TOKEN + " TEXT NULL)";
 
 
     public DBHelper(Context context) {

@@ -105,7 +105,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            Utente utente = new Utente(username, password, email, nome, cognome, false);
+            Utente utente = new Utente(username, password, nome, cognome, 0, 0, false, "ciao");
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.registrazioneUtente(this);
         }

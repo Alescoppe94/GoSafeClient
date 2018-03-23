@@ -151,7 +151,7 @@ public class Autenticazione {
 
             JsonObject jsonResponse = new Gson().fromJson(result, JsonObject.class);
 
-            /*if (result == null) {
+            if (result == null) {
                 AlertDialog registrazione_impossibile = new AlertDialog.Builder(ctx).create();
                 registrazione_impossibile.setTitle("Impossibile effettuare la registrazione");
                 registrazione_impossibile.setMessage(ctx.getString(R.string.server_not_respond_registrazione));
@@ -182,7 +182,7 @@ public class Autenticazione {
                 long id_utente = jobj.get("id_utente").getAsLong();
                 //new registrazioneTokenTask(token, id_utente).execute();*/
                 //utente.setId_utente(id_utente);
-                //utente.setIs_autenticato(true);
+                utente.setIs_autenticato(true);
                 utente.setId_utente(1);
                 Log.d("VIVZ",utente.getCognome().toString());
                 utente.registrazioneLocale(ctx);
@@ -201,7 +201,7 @@ public class Autenticazione {
                             }
                         });
                 accesso_dopo_registrazione.show();*/
-            //}
+            }
 
         }
     }
@@ -379,4 +379,5 @@ public class Autenticazione {
         }
     }
 }
+
 

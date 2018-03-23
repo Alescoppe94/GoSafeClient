@@ -19,17 +19,23 @@ public class DAOUtente {
     public static final String FIELD_ID="ID_utente";
     public static final String FIELD_USER="username";
     public static final String FIELD_PASS="password";
-    public static final String FIELD_EMAIL="email";
     public static final String FIELD_NOME="nome";
     public static final String FIELD_COGNOME="cognome";
+    public static final String FIELD_BEACONID="beaconid";
+    public static final String FIELD_PERCORSOID="percorsoid";
+    public static final String FIELD_ISAUTENTICATO="isautenticato";
+    public static final String FIELD_TOKEN="token";
     private static final String[] FIELD_ALL = new String[]
             {
                     FIELD_ID,
                     FIELD_USER,
                     FIELD_PASS,
-                    FIELD_EMAIL,
                     FIELD_NOME,
-                    FIELD_COGNOME
+                    FIELD_COGNOME,
+                    FIELD_BEACONID,
+                    FIELD_PERCORSOID,
+                    FIELD_ISAUTENTICATO,
+                    FIELD_TOKEN
             };
 
     public DAOUtente(Context ctx)
@@ -59,9 +65,12 @@ public class DAOUtente {
         cv.put(FIELD_ID, utente.getId_utente());
         cv.put(FIELD_USER, utente.getUsername());
         cv.put(FIELD_PASS, utente.getPassword());
-        cv.put(FIELD_EMAIL, utente.getEmail());
         cv.put(FIELD_NOME, utente.getNome());
         cv.put(FIELD_COGNOME, utente.getCognome());
+        cv.put(FIELD_BEACONID, utente.getBeaconid());
+        cv.put(FIELD_PERCORSOID, utente.getPercorsoid());
+        cv.put(FIELD_ISAUTENTICATO, utente.getIs_autenticato());
+        cv.put(FIELD_TOKEN, utente.getToken());
         return cv;
     }
 
@@ -146,10 +155,12 @@ public class DAOUtente {
                 utente = new Utente(
                         crs.getString(crs.getColumnIndex(FIELD_USER)),
                         crs.getString(crs.getColumnIndex(FIELD_PASS)),
-                        crs.getString(crs.getColumnIndex(FIELD_EMAIL)),
                         crs.getString(crs.getColumnIndex(FIELD_NOME)),
                         crs.getString(crs.getColumnIndex(FIELD_COGNOME)),
-                        false);
+                        crs.getInt(crs.getColumnIndex(FIELD_BEACONID)),
+                        crs.getInt(crs.getColumnIndex(FIELD_PERCORSOID)),
+                        false,
+                        crs.getString(crs.getColumnIndex(FIELD_TOKEN)));
             }
             crs.close();
         }
@@ -173,10 +184,12 @@ public class DAOUtente {
                 utente = new Utente(
                         crs.getString(crs.getColumnIndex(FIELD_USER)),
                         crs.getString(crs.getColumnIndex(FIELD_PASS)),
-                        crs.getString(crs.getColumnIndex(FIELD_EMAIL)),
                         crs.getString(crs.getColumnIndex(FIELD_NOME)),
                         crs.getString(crs.getColumnIndex(FIELD_COGNOME)),
-                        false);
+                        crs.getInt(crs.getColumnIndex(FIELD_BEACONID)),
+                        crs.getInt(crs.getColumnIndex(FIELD_PERCORSOID)),
+                        false,
+                        crs.getString(crs.getColumnIndex(FIELD_TOKEN)));
             }
             crs.close();
         }
