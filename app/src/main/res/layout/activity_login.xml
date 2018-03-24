@@ -61,14 +61,14 @@
                     android:background="@drawable/textinput_format">
 
                     <AutoCompleteTextView
-                        android:id="@+id/username"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/prompt_username"
-                        android:inputType="textCapWords"
-                        android:maxLines="1"
-                        android:singleLine="true" />
+                            android:id="@+id/username"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/prompt_username"
+                            android:inputType="textCapWords"
+                            android:maxLines="1"
+                            android:singleLine="true"/>
 
                 </android.support.design.widget.TextInputLayout>
 
