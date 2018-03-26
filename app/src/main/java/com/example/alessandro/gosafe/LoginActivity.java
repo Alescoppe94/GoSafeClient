@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.firebase.MyFirebaseInstanceIdService;
 import com.example.alessandro.gosafe.server.Autenticazione;
 
 import java.util.ArrayList;
@@ -122,7 +123,11 @@ public class LoginActivity extends AppCompatActivity {
 
         } else {
 
-            Utente utente = new Utente(username, password);
+            Utente utente;
+            if(MyFirebaseInstanceIdService.get_token()==null)
+                utente = new Utente(username, password);
+            else
+                utente = new Utente(username, password, MyFirebaseInstanceIdService.get_token());
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.autenticazioneUtente(this);
         }

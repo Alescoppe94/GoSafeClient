@@ -13,11 +13,20 @@ public class Utente {
     private String nome;
     private String cognome;
     private boolean is_autenticato;//true solo quando l'utente è autenticato sul server
+    private String token;
 
     public Utente(String username, String password){
 
         this.username=username;
         this.password=password;
+
+    }
+
+    public Utente(String username, String password, String token){
+
+        this.username=username;
+        this.password=password;
+        this.token=token;
 
     }
 

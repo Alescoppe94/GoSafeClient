@@ -210,14 +210,14 @@ public class Autenticazione {
     private class autenticazioneUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
         private Context ctx;
-        private String token;
+        /*private String token;*/
         private ProgressDialog login_in_corso;
         private AsyncTask<Void, Void, Boolean> execute;
 
         public autenticazioneUtenteTask(Utente utente, Context ctx/*, String token*/) {
             this.utente = utente;
             this.ctx = ctx;
-            //this.token = token;
+            /*this.token = token;*/
         }
 
         @Override
