@@ -39,7 +39,8 @@ public class Autenticazione {
 
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://10.0.2.2:8080";
+    //private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.198:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -77,6 +78,7 @@ public class Autenticazione {
         @Override
         protected String doInBackground(Void... arg0) {
             boolean connesso = true;
+            Log.d("Porcod","Else");
 
             /*try {
                 connesso = execute.get();
@@ -89,6 +91,7 @@ public class Autenticazione {
             if (!connesso) {
                 return null;
             } else {
+                Log.d("DentroELse","Else");
                 try {
                     Thread.sleep(1500);
                 } catch (Exception e) {
@@ -99,6 +102,7 @@ public class Autenticazione {
                 String dati_reg = gson.toJson(utente);
 
                 try {
+                    Log.d("DentroTry","Try");
                     URL url = new URL(PATH + "/gestionemappe/utente/registrazione");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoOutput(true);
@@ -107,7 +111,6 @@ public class Autenticazione {
                     connection.setRequestProperty("Content-Type", "application/json");
                     connection.setRequestProperty("Accept", "application/json");
                     connection.connect();
-
                     OutputStream os = connection.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
                     osw.write(dati_reg);
@@ -120,8 +123,9 @@ public class Autenticazione {
 
                     while ((inputLine = br.readLine()) != null) {
                         sb.append(inputLine + "\n");
-                    }
 
+                    }
+                    Log.d("Sb:", sb.toString());
                     br.close();
                     return sb.toString();
                 } catch (IOException e) {
@@ -129,6 +133,7 @@ public class Autenticazione {
                 } finally {
                     if (connection != null) {
                         try {
+                            Log.d("Sono qui", "Sono qui");
                             connection.disconnect();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -187,12 +192,11 @@ public class Autenticazione {
                 Log.d("VIVZ",utente.getCognome().toString());
                 utente.registrazioneLocale(ctx);
                 Log.d("azz", utente.getNome().toString());
-
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");
-                /*accesso_dopo_registrazione.setMessage(ctx.getString(R.string.registrazione_effettuata));
+                accesso_dopo_registrazione.setMessage(ctx.getString(R.string.registrazione_effettuata));
                 accesso_dopo_registrazione.setCanceledOnTouchOutside(false);
-                accesso_dopo_registrazione.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                /*accesso_dopo_registrazione.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 //utente.loginLocale(ctx, true);
@@ -284,7 +288,6 @@ public class Autenticazione {
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                     String inputLine;
-
                     while ((inputLine = br.readLine()) != null) {
                         sb.append(inputLine + "\n");
                     }
@@ -379,5 +382,3 @@ public class Autenticazione {
         }
     }
 }
-
-
