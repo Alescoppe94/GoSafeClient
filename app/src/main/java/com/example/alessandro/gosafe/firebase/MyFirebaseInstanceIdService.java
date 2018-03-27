@@ -40,8 +40,8 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
             @Override
             public void run() {
                 try {
-                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/tokentest");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    URL url = new URL("https://10.0.2.2:8443/gestionemappe/db/tokentest");
+                    HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                     conn.setRequestProperty("Accept","application/json");
