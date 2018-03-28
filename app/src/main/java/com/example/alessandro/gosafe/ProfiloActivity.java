@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 
 import java.io.File;
@@ -169,4 +170,19 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
             intent.setType("file/*");
             startActivity(intent);
     }
+
+   public void logout (View view){
+       DAOUtente daoutente = new DAOUtente(this);
+       System.out.println(daoutente.toString());
+           Intent i;
+           i = new Intent(getApplicationContext(), LoginActivity.class);
+           //i.putExtra("selezione", "login");
+           System.out.println("Sono qui!!!");
+           startActivity(i);
+           /*daoutente = new DAOUtente(this);
+       System.out.println(daoutente.toString());*/
+           daoutente.open();
+           daoutente.deleteAll();
+           daoutente.close();
+   }
 }

@@ -129,17 +129,23 @@ public class DAOUtente {
 
     }
 
-    public boolean deleteAll()
+    public void deleteAll()
     {
         try
         {
-            boolean del = db.delete(TBL_NAME, null, null)>0;
-            return del;
+            System.out.println("Sono quo!");
+            boolean del = db.delete(TBL_NAME,null,null)==0;
+            //System.out.println(del);
+            System.out.println(TBL_NAME);
+            //db.execSQL("DROP TABLE "+ TBL_NAME);
+
+            /*String clearDBQuery = "DELETE FROM "+TBL_NAME;
+            db.execSQL(clearDBQuery);*/
         }
         catch (SQLiteException sqle)
         {
             // Gestione delle eccezioni
-            return false;
+
         }
     }
 

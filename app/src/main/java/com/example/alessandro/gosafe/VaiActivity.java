@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.example.alessandro.gosafe.database.DAOUtente;
 
 public class VaiActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -122,5 +125,6 @@ public class VaiActivity extends AppCompatActivity implements NavigationView.OnN
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
 }

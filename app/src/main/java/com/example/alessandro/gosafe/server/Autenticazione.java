@@ -39,8 +39,8 @@ public class Autenticazione {
 
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    //private final String PATH = "http://10.0.2.2:8080";
-    private final String PATH = "http://192.168.1.198:8080";
+    private final String PATH = "http://10.0.2.2:8080";
+    //private final String PATH = "http://192.168.1.197:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -186,12 +186,7 @@ public class Autenticazione {
                 JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
                 long id_utente = jobj.get("id_utente").getAsLong();
                 //new registrazioneTokenTask(token, id_utente).execute();*/
-                //utente.setId_utente(id_utente);
-                utente.setIs_autenticato(true);
-                utente.setId_utente(1);
-                Log.d("VIVZ",utente.getCognome().toString());
-                utente.registrazioneLocale(ctx);
-                Log.d("azz", utente.getNome().toString());
+
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");
                 accesso_dopo_registrazione.setMessage(ctx.getString(R.string.registrazione_effettuata));
@@ -352,13 +347,12 @@ public class Autenticazione {
                     utente_non_trovato.show();
                 }
             } else {
-                /*JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
-                long id_utente = jobj.get("id_utente").getAsLong();
+                JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
+                long id_utente = jobj.get("id").getAsLong();
                 String username = jobj.get("username").getAsString();
                 String password = jobj.get("password").getAsString();
-                String email = jobj.get("email").getAsString();
                 String nome = jobj.get("nome").getAsString();
-                String cognome = jobj.get("cognome").getAsString(); */
+                String cognome = jobj.get("cognome").getAsString();
 
                 Intent i = new Intent(ctx, MainActivity.class);
                 ctx.startActivity(i);
@@ -367,17 +361,17 @@ public class Autenticazione {
                     new registrazioneTokenTask(token, id_utente).execute();
                 }*/
 
-                /*
+
                 utente.setId_utente(id_utente);
                 utente.setUsername(username);
                 utente.setPassword(password);
-                utente.setEmail(email);
                 utente.setNome(nome);
                 utente.setCognome(cognome);
                 utente.setIs_autenticato(true);
+                Log.d("IdUtente ",  String.valueOf(utente.getId_utente()));
                 utente.registrazioneLocale(ctx);
-                utente.loginLocale(ctx, true);
-                */
+                //utente.loginLocale(ctx, true);
+
             }
         }
     }
