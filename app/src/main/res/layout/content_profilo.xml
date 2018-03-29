@@ -33,7 +33,7 @@
             android:id="@+id/Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/Profile"
+            android:layout_below="@+id/Profile"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="Homer J. Simpson"
@@ -47,7 +47,6 @@
             android:layout_below="@+id/Name"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="homersimpson@gmail.com"
             android:textSize="18sp"
             android:textStyle="italic" />
 
@@ -104,33 +103,6 @@
                 android:layout_height="match_parent"
                 android:background="#A9A9A9" />
 
-
-            <LinearLayout
-                android:id="@+id/secondlinearLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="11dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Password"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="°°°°°°°°°"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

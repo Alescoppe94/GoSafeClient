@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -19,9 +20,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +35,10 @@ import com.example.alessandro.gosafe.entity.Utente;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import static java.security.AccessController.getContext;
+
 public class ProfiloActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
+
 
     public static final int SELECTED_PICTURE = 1;
     //ImageView imageView;
@@ -42,7 +48,11 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         setContentView(R.layout.activity_profilo);
 
         ImageView mIcon = findViewById(R.id.Profile);
+        TextView name = (TextView)findViewById(R.id.Name);
+        TextView username = (TextView) findViewById(R.id.usernameTextView);
         //imageView=(ImageView)findViewById(R.id.Profile);
+
+
         Button mFollow = findViewById(R.id.modificaButton);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.homer);
         RoundedBitmapDrawable mDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
@@ -51,6 +61,7 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -62,6 +73,15 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         navigationView.setNavigationItemSelectedListener(this);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+
+        DAOUtente daoUtente = new DAOUtente(this);
+        daoUtente.open();
+        Utente utente;
+        utente = daoUtente.findUtente();
+        daoUtente.close();
+
+        name.setText(utente.getNome().toUpperCase()+" "+utente.getCognome().toUpperCase()/*.toString()*/);
+        username.setText(utente.getUsername().toUpperCase());
 
         Intent i = getIntent();
         switch(i.getStringExtra("selezione")){
@@ -104,6 +124,7 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
                     }
                 });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,9 +175,9 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
 
 
     public void goToModificaProfilo(View view){
-        Log.d("VIVZ","Prova Button");
-        setContentView(R.layout.modifica_profilo);
-
+        Intent i;
+        i = new Intent(getApplicationContext(), ModificaActivity.class);
+        startActivity(i);
     }
 
     public void indietro(View view){
@@ -173,16 +194,12 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
 
    public void logout (View view){
        DAOUtente daoutente = new DAOUtente(this);
-       System.out.println(daoutente.toString());
+       daoutente.open();
+       daoutente.deleteAll();
+       daoutente.close();
            Intent i;
            i = new Intent(getApplicationContext(), LoginActivity.class);
-           //i.putExtra("selezione", "login");
-           System.out.println("Sono qui!!!");
            startActivity(i);
-           /*daoutente = new DAOUtente(this);
-       System.out.println(daoutente.toString());*/
-           daoutente.open();
-           daoutente.deleteAll();
-           daoutente.close();
+
    }
 }

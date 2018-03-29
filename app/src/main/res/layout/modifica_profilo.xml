@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.alessandro.gosafe.ModificaActivity">
 
     <RelativeLayout
         android:id="@+id/relativeLayout3"
@@ -203,17 +204,17 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:textSize="20dp"
-                    android:text="ciambella" />
+                    android:text="ciambella"
+                    android:textSize="20dp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Quinto LinearLayout: Vecchia Password -->
+        <!-- Quinto LinearLayout: Password -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_below="@+id/linearLayoutUsername"
-            android:id="@+id/linearLayoutVecchiaPassword"
+            android:id="@+id/linearLayoutPassword"
             android:layout_marginTop="10dp"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
@@ -225,7 +226,7 @@
                 >
 
                 <TextView
-                    android:id="@+id/vecchiaPasswordLabel"
+                    android:id="@+id/passwordLabel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -240,7 +241,7 @@
 
 
                 <EditText
-                    android:id="@+id/vecchiaPasswordText"
+                    android:id="@+id/passwordText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -253,8 +254,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@+id/linearLayoutVecchiaPassword"
-            android:id="@+id/linearLayoutNuovaPassword"
+            android:layout_below="@+id/linearLayoutPassword"
+            android:id="@+id/linearLayoutConfermaPassword"
             android:layout_marginTop="10dp"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
@@ -266,7 +267,7 @@
                 >
 
                 <TextView
-                    android:id="@+id/nuovaPasswordLabel"
+                    android:id="@+id/confermaPasswordLabel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -281,7 +282,7 @@
 
 
                 <EditText
-                    android:id="@+id/nuovaPasswordText"
+                    android:id="@+id/confermaPasswordText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -294,7 +295,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@+id/linearLayoutNuovaPassword"
+            android:layout_below="@+id/linearLayoutConfermaPassword"
             android:id="@+id/linearLayoutInserisciImmagine"
             android:layout_marginTop="10dp"
             android:layout_alignParentStart="true"
@@ -328,7 +329,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/file_button"
-                    android:onClick="chooseImmagineProfilo"
+
                     android:text="File..." />
 
             </LinearLayout>
@@ -359,7 +360,7 @@
                     android:text="Indietro"
                     android:textSize="10dp"
                     android:textColor="#000"
-                    android:onClick="indietro"
+
                     android:gravity="center"
                     />
 
@@ -394,6 +395,7 @@
                     android:text="Conferma Modifica"
                     android:textColor="#ffff"
                     android:gravity="center"
+                    android:onClick="confermaModifica"
                     />
             </LinearLayout>
 

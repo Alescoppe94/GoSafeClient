@@ -40,6 +40,9 @@
             android:name=".VaiActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ModificaActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MappeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

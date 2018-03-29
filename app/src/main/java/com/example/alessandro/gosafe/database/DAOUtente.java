@@ -98,20 +98,6 @@ public class DAOUtente {
         }
     }
 
-    public boolean update(Utente utente)
-    {
-        ContentValues updateValues = createContentValues(utente);
-        try
-        {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + utente.getId_utente(), null)>0;
-            return upd;
-        }
-        catch (SQLiteException sqle)
-        {
-            // Gestione delle eccezioni
-            return false;
-        }
-    }
 
     //controllare bene
     public boolean delete(Utente utente)
@@ -129,22 +115,18 @@ public class DAOUtente {
 
     }
 
-    public void deleteAll()
+    public boolean deleteAll()
     {
         try
         {
-            System.out.println("Sono quo!");
-            boolean del = db.delete(TBL_NAME,null,null)==0;
-            //System.out.println(del);
+            boolean del = db.delete(TBL_NAME,null,null)>0;
             System.out.println(TBL_NAME);
-            //db.execSQL("DROP TABLE "+ TBL_NAME);
-
-            /*String clearDBQuery = "DELETE FROM "+TBL_NAME;
-            db.execSQL(clearDBQuery);*/
+            return del;
         }
         catch (SQLiteException sqle)
         {
             // Gestione delle eccezioni
+            return false;
 
         }
     }
@@ -178,7 +160,43 @@ public class DAOUtente {
         return utente;
     }
 
-    public Utente findByUsername(String username)
+    public Utente findUtente(){
+        Utente utente = null;
+        Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
+        if (cursor.moveToFirst()) {
+
+            utente = new Utente(
+                    cursor.getString(cursor.getColumnIndex(FIELD_USER)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_PASS)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_NOME)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_COGNOME)),
+                    cursor.getInt(cursor.getColumnIndex(FIELD_BEACONID)),
+                    cursor.getInt(cursor.getColumnIndex(FIELD_PERCORSOID)),
+                    true,
+                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)));
+        }
+        cursor.close();
+        return utente;
+    }
+
+    public boolean update(Utente utente)
+    {
+        /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
+        String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
+        ContentValues updateValues = createContentValues(utente);
+        try
+        {
+            boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;
+            return upd;
+        }
+        catch (SQLiteException sqle)
+        {
+            // Gestione delle eccezioni
+            return false;
+        }
+    }
+
+   /* public Utente findByUsername(String username)
     {
         Cursor crs;
         Utente utente=null;
@@ -206,8 +224,9 @@ public class DAOUtente {
 
         return utente;
     }
+    */
 
-    public Cursor findAll()
+    /*public Cursor findAll()
     {
         Cursor crs;
         try
@@ -220,4 +239,6 @@ public class DAOUtente {
         }
         return crs;
     }
+*/
+
 }
