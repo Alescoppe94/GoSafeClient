@@ -1,10 +1,12 @@
 package com.example.alessandro.gosafe.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Alessandro on 16/03/2018.
  */
 
-public class Utente {
+public class Utente implements Serializable { //aggiunto serializable per mandare l'intent da autenticazionetask a Mainactivity
 
     private long id_utente;
     private String username;
@@ -14,6 +16,7 @@ public class Utente {
     private String cognome;
     private boolean is_autenticato;//true solo quando l'utente è autenticato sul server
     private String token;
+    private String position = "";
 
     public Utente(String username, String password){
 
@@ -47,6 +50,19 @@ public class Utente {
     public void setIs_autenticato(Boolean autenticato){
         this.is_autenticato= autenticato;
     }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public void setPosition(String pos){
+        position = pos;
+    }
+
+    public String getPosition(){
+        return position;
+    }
+
 
 
 }
