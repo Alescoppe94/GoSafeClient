@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +39,7 @@ public class Autenticazione {
 
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://172.23.130.219:8080";
+    private final String PATH = "http://192.168.1.60:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -354,6 +355,11 @@ public class Autenticazione {
                 String cognome = jobj.get("cognome").getAsString(); */
 
                 Intent i = new Intent(ctx, MainActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", utente);   //moddato ma si può cambiare
+
+                i.putExtras(bundle);
                 ctx.startActivity(i);
 
                 /*if (token != null) {

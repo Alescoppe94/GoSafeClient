@@ -16,6 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.entity.Utente;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -23,6 +26,15 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Utente user = (Utente) getIntent().getExtras().getSerializable("user");
+        Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("user", user);
+        bundle.putLong("periodo", 20000);
+        s.putExtras(bundle);
+        startService(s);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
