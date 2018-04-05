@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.firebase.MyFirebaseInstanceIdService;
 import com.example.alessandro.gosafe.server.Autenticazione;
 
 public class RegistrazioneActivity extends AppCompatActivity {
@@ -105,7 +106,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            Utente utente = new Utente(username, password, email, nome, cognome, false);
+            Utente utente = new Utente(username, password, email, nome, cognome, false, MyFirebaseInstanceIdService.get_token());
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.registrazioneUtente(this);
         }

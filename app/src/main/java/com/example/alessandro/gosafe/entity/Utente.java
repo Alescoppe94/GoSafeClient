@@ -31,13 +31,14 @@ public class Utente {
     }
 
 
-    public Utente(String username, String password, String email, String nome, String cognome, boolean is_autenticato) {
+    public Utente(String username, String password, String email, String nome, String cognome, boolean is_autenticato, String token) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.nome = nome;
         this.cognome = cognome;
         this.is_autenticato = is_autenticato;
+        this.token = token;
     }
 
     public void setId_utente(long id){

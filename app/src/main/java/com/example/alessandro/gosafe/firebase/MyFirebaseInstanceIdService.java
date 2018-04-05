@@ -77,6 +77,9 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     //public static void set_token(String token){ MyFirebaseInstanceIdService.token=token; }
 
-    public static String get_token(){   return MyFirebaseInstanceIdService.token;    }
+    public static String get_token(){
+        MyFirebaseInstanceIdService.token = FirebaseInstanceId.getInstance().getToken();
+        return MyFirebaseInstanceIdService.token;
+    }
 
 }
