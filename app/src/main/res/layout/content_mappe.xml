@@ -3,58 +3,56 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.alessandro.gosafe.MappeActivity"
+    tools:showIn="@layout/app_bar_mappe">
 
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginTop="60dp">
 
         <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:id="@+id/linearspinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:gravity="top"
             android:orientation="horizontal">
 
-            <TextView android:text="@string/seleziona_piano"
+            <TextView
+                android:id="@+id/pianoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:textStyle="bold"
+                android:text="@string/seleziona_piano"
                 android:textColor="#AAA"
-                android:id="@+id/pianoTextView"
-                />
+                android:textStyle="bold" />
+
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_weight="1"
-                android:background="@drawable/customborder"
-                android:layout_marginLeft="30dp"
                 android:layout_alignParentRight="true"
+                android:layout_marginLeft="30dp"
                 android:layout_toRightOf="@+id/pianoTextView"
-                />
+                android:layout_weight="1"
+                android:background="@drawable/customborder" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearspinner"
             android:layout_marginTop="20dp"
-            android:layout_height="370dp"
-            android:orientation="horizontal"
-            android:layout_below="@+id/linearLayout3"
             android:background="@drawable/customborder"
-            >
+            android:orientation="vertical">
 
             <!-- TextView di prova
             <TextView
@@ -65,12 +63,11 @@
                 android:text="TextView" />
                         -->
             <ImageView
+                android:id="@+id/imageViewPiano"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:scaleType="fitXY"
                 android:adjustViewBounds="true"
-                android:id="@+id/imageViewPiano"
-                />
+                android:scaleType="fitXY" />
         </LinearLayout>
 
 
