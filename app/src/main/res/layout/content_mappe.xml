@@ -19,13 +19,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="119dp"
-            android:text="Button" />
+            android:gravity="top"
+            android:orientation="horizontal">
+
+            <TextView android:text="@string/seleziona_piano"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:textStyle="bold"
+                android:textColor="#AAA"
+                android:id="@+id/pianoTextView"
+                />
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/customborder"
+                android:layout_marginLeft="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/pianoTextView"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:layout_height="370dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/linearLayout3"
+            android:background="@drawable/customborder"
+            >
+
+            <!-- TextView di prova
+            <TextView
+                android:id="@+id/mostraPianoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView" />
+                        -->
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:id="@+id/imageViewPiano"
+                />
+        </LinearLayout>
+
+
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
