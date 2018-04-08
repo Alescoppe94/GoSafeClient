@@ -1,5 +1,6 @@
 package com.example.alessandro.gosafe;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 
 public class MainActivity extends AppCompatActivity
@@ -27,13 +29,22 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Utente user = (Utente) getIntent().getExtras().getSerializable("user");
-        Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user", user);
-        bundle.putLong("periodo", 20000);
-        s.putExtras(bundle);
-        startService(s);
+
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+
+            DAOUtente daoUtente = new DAOUtente(this);
+            daoUtente.open();
+            Utente user = daoUtente.findUtente();
+            daoUtente.close();
+            Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+            bundle.putLong("periodo", 20000);
+            s.putExtras(bundle);
+            startService(s);
+
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

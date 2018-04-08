@@ -49,13 +49,13 @@ public class ModificaActivity extends AppCompatActivity implements NavigationVie
         daoUtente.close();
 
 
-         id_utente = utente.getId_utente();
-         System.out.println("Id "+id_utente);
-         modificaNomeText = (EditText) findViewById(R.id.modificaNomeText);
-         modificaCognomeText = (EditText) findViewById(R.id.modificaCognomeText);
-         modificaUsernameText = (EditText) findViewById(R.id.modificaUsernameText);
-         passwordText = (EditText) findViewById(R.id.passwordText);
-         confermaPasswordText = (EditText) findViewById(R.id.confermaPasswordText);
+        id_utente = utente.getId_utente();
+        System.out.println("Id "+id_utente);
+        modificaNomeText = (EditText) findViewById(R.id.modificaNomeText);
+        modificaCognomeText = (EditText) findViewById(R.id.modificaCognomeText);
+        modificaUsernameText = (EditText) findViewById(R.id.modificaUsernameText);
+        passwordText = (EditText) findViewById(R.id.passwordText);
+        confermaPasswordText = (EditText) findViewById(R.id.confermaPasswordText);
 
         passwordText.setText(utente.getPassword());
         confermaPasswordText.setText(utente.getPassword());

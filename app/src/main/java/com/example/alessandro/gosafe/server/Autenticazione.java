@@ -43,7 +43,7 @@ public class Autenticazione {
 
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://192.168.1.60:8080";
+    private final String PATH = "http://10.0.2.2:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -377,10 +377,6 @@ public class Autenticazione {
 
                 Intent i = new Intent(ctx, MainActivity.class);
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("user", utente);   //moddato ma si può cambiare
-
-                i.putExtras(bundle);
                 ctx.startActivity(i);
             }
         }
