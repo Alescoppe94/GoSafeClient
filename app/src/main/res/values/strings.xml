@@ -36,4 +36,19 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings related to update -->
+    <string name="update_in_corso">Modifica in corso, attendere...</string>
+    <string name="update_effettuata">Modifica effettuata con successo.</string>
+
+    <!-- Strings related to Mappe-->
+    <string name="seleziona_piano">Seleziona un piano</string>
+    <string-array name="piani">
+        <item>Piano 140</item>
+        <item>Piano 145</item>
+        <item>Piano 150</item>
+        <item>Piano 155</item>
+        <item>Piano 160</item>
+    </string-array>
+
 </resources>

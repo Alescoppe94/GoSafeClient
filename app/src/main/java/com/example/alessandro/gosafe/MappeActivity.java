@@ -1,6 +1,9 @@
 package com.example.alessandro.gosafe;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -12,14 +15,81 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MappeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ScaleGestureDetector SGD;
+    private Matrix matrix = new Matrix();
+    private ImageView imageView;
+    private Float scale =1f;
+    Spinner spinner;
+    ArrayAdapter<CharSequence> adapter;
+    private TextView textView;
+    private ImageView imageViewPiano;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
+
+        spinner=(Spinner)findViewById(R.id.spinner);
+        adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        //textView=(TextView) findViewById(R.id.mostraPianoTextView);
+
+        final Bitmap bMap145 = BitmapFactory.decodeResource(getResources(),R.drawable.quota145);
+        final Bitmap bMap150 = BitmapFactory.decodeResource(getResources(),R.drawable.quota150);
+        final Bitmap bMap155 = BitmapFactory.decodeResource(getResources(),R.drawable.quota155);
+        final Bitmap bMapScaled145 = Bitmap.createScaledBitmap(bMap145,100,100, true);
+        final Bitmap bMapScaled150 = Bitmap.createScaledBitmap(bMap150,100,100, true);
+        final Bitmap bMapScaled155 = Bitmap.createScaledBitmap(bMap155,100,100, true);
+
+        imageViewPiano = (ImageView) findViewById(R.id.imageViewPiano);
+        //imageViewPiano.setImageResource(R.drawable.spillo);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                int position = spinner.getSelectedItemPosition();
+                Toast.makeText(getBaseContext(),adapterView.getItemAtPosition(i)+" selected",Toast.LENGTH_LONG).show();
+                switch(position){
+                    case 0:
+                        imageViewPiano.setImageBitmap(bMapScaled145);
+                        break;
+                    case 1:
+                        imageViewPiano.setImageBitmap(bMapScaled145);
+                        break;
+                    case 2:
+                        imageViewPiano.setImageBitmap(bMapScaled150);
+                        break;
+                    case 3:
+                        imageViewPiano.setImageBitmap(bMapScaled155);
+                        break;
+                }
+                //imageViewPiano.setImageResource(R.drawable.quota145);
+
+                //textView.setText(adapterView.getItemAtPosition(i).toString());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //imageView = (ImageView) findViewById(R.id.q140);
+        SGD = new ScaleGestureDetector(this, new ScaleListener());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -121,6 +191,17 @@ public class MappeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            scale = scale * detector.getScaleFactor();
+            scale = Math.max(0.1f, Math.min(scale, 5f));
+            matrix.setScale(scale, scale);
+            //imageView.setImageMatrix(matrix);
+            return true;
+        }
     }
 
 }
