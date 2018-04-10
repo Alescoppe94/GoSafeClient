@@ -14,4 +14,26 @@
     <string name="menu_vai">Vai</string>
     <string name="menu_mappe">Mappe</string>
     <string name="menu_profilo">Profilo</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_username">This username is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_password2">The password can\'t be equal to username</string>
+    <string name="error_invalid_password3">The password needs to be the same in both fields</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="login_in_corso">Login in corso, attendere...</string>
+    <string name="registrazione_in_corso">Registrazione in corso, attendere...</string>
+    <string name="registrazione_username_in_uso">Impossibile effettuare la registrazione in quanto lo username scelto è già in uso. Registrati scegliendo un altro username.</string>
+    <string name="registrazione_effettuata">Registrazione effettuata con successo. Stai per eseguire il tuo primo accesso all\'app.</string>
+    <string name="server_not_respond_registrazione">Non è stato possibile effettuare la registrazione in quanto il server non è al momento disponibile. Riprova più tardi.</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
