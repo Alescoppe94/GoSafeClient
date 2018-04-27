@@ -161,4 +161,17 @@
         android:textColor="#7CC6BE"
         android:textSize="15dp" />
 
+    <!-- bottone che bypassa il login -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Entra lo stesso"
+            android:id="@+id/entraButton"
+            android:onClick="entra"/>
+    </LinearLayout>
+
 </RelativeLayout>

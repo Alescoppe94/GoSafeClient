@@ -1,9 +1,13 @@
 package com.example.alessandro.gosafe;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,13 +16,35 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.entity.Utente;
 
 public class ProfiloActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
+
+    public static final int SELECTED_PICTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profilo);
+
+        ImageView mIcon = findViewById(R.id.Profile);
+        TextView name = (TextView)findViewById(R.id.Name);
+        TextView username = (TextView) findViewById(R.id.usernameTextView);
+        final Button logoutButton = (Button) findViewById(R.id.logout);
+
+        //imageView=(ImageView)findViewById(R.id.Profile);
+
+        Button mFollow = findViewById(R.id.modificaButton);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.homer);
+        RoundedBitmapDrawable mDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+        mDrawable.setCircular(true);
+        mIcon.setImageDrawable(mDrawable);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -33,6 +59,15 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         navigationView.setNavigationItemSelectedListener(this);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+
+        DAOUtente daoUtente = new DAOUtente(this);
+        daoUtente.open();
+        Utente utente;
+        utente = daoUtente.findUtente();
+        daoUtente.close();
+
+        name.setText(utente.getNome()+" "+utente.getCognome()/*.toString()*/);
+        username.setText(utente.getUsername());
 
         Intent i = getIntent();
         switch(i.getStringExtra("selezione")){
@@ -122,4 +157,37 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void goToModificaProfilo(View view){
+        Intent i;
+        i = new Intent(getApplicationContext(), ModificaActivity.class);
+        startActivity(i);
+    }
+
+    public void indietro(View view){
+        setContentView(R.layout.content_profilo);
+    }
+
+    public void chooseImmagineProfilo(View view){
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        startActivity(intent);
+    }
+
+    public void logout (View view){
+        DAOUtente daoutente = new DAOUtente(this);
+        daoutente.open();
+        daoutente.deleteAll();
+        daoutente.close();
+
+        Intent i;
+        i = new Intent(getApplicationContext(), LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        //finish();
+
+    }
+
 }
