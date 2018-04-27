@@ -22,6 +22,28 @@ import java.net.URL;
 
 public class AggiornamentoInfoServer {
 
+    public void aggiornamentoDbClient(String dati_aggiornati){
+        new AggiornamentoDbClientTask(dati_aggiornati).execute();
+    }
+
+    private class AggiornamentoDbClientTask extends AsyncTask<Void, Void, String>{
+
+        String dati_aggiornati;
+
+        public AggiornamentoDbClientTask(String dati_aggiornati){
+
+            this.dati_aggiornati = dati_aggiornati;
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            return null;
+        }
+
+    }
+
     public void aggiornamentoPosizione(Utente utente) {
         new AggiornamentoPosizioneTask(utente).execute();
     }
