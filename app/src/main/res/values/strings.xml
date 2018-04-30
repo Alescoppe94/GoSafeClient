@@ -1,19 +1,8 @@
 <resources>
     <string name="app_name">GoSafe</string>
-    <string name="title_activity_main">MainActivity</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-
-    <string name="menu_vai">Vai</string>
-    <string name="menu_mappe">Mappe</string>
-    <string name="menu_profilo">Profilo</string>
+    <string name="title_vai">Vai</string>
+    <string name="title_mappe">Mappe</string>
+    <string name="title_profilo">Profilo</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -50,5 +39,4 @@
         <item>Piano 155</item>
         <item>Piano 160</item>
     </string-array>
-
 </resources>

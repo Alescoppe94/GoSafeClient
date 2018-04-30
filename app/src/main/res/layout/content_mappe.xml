@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.alessandro.gosafe.MappeActivity"
-    tools:showIn="@layout/app_bar_mappe">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <RelativeLayout
@@ -48,26 +45,27 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/linearspinner"
             android:layout_marginTop="20dp"
             android:background="@drawable/customborder"
             android:orientation="vertical">
 
-            <!-- TextView di prova
-            <TextView
-                android:id="@+id/mostraPianoTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
-                        -->
-            <ImageView
+            <!--<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
                 android:id="@+id/imageViewPiano"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY" />
+                android:scaleType="matrix" />-->
+
+            <com.example.alessandro.gosafe.helpers.PinView
+                android:id="@+id/imageViewPiano"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="matrix" />
+
+
         </LinearLayout>
 
 

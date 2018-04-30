@@ -14,7 +14,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
 
     private EditText mUsername;
     private EditText mPassword;
-    private EditText mEmail;
+    //private EditText mEmail;
     private EditText mNome;
     private EditText mCognome;
     private EditText mConfPassword;
@@ -27,7 +27,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         mUsername = (EditText) findViewById(R.id.username_reg);
         mPassword = (EditText) findViewById(R.id.password_reg);
         mConfPassword = (EditText) findViewById(R.id.confirmpassword_reg);
-        mEmail = (EditText) findViewById(R.id.email);
+        //mEmail = (EditText) findViewById(R.id.email);
         mNome = (EditText) findViewById(R.id.nome);
         mCognome = (EditText) findViewById(R.id.cognome);
     }
@@ -36,14 +36,14 @@ public class RegistrazioneActivity extends AppCompatActivity {
         final String username = mUsername.getText().toString();
         final String password = mPassword.getText().toString();
         final String confermaPassword = mConfPassword.getText().toString();
-        final String email = mEmail.getText().toString();
+        //final String email = mEmail.getText().toString();
         final String nome = mNome.getText().toString();
         final String cognome = mCognome.getText().toString();
 
         mUsername.setError(null);
         mPassword.setError(null);
         mConfPassword.setError(null);
-        mEmail.setError(null);
+        //mEmail.setError(null);
         mNome.setError(null);
         mCognome.setError(null);
 
@@ -80,7 +80,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        if (TextUtils.isEmpty(email)) {
+        /*if (TextUtils.isEmpty(email)) {
             mEmail.setError(getString(R.string.error_field_required));
             focusView = mEmail;
             cancel = true;
@@ -88,7 +88,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
             mEmail.setError(getString(R.string.error_invalid_email));
             focusView = mEmail;
             cancel = true;
-        }
+        }*/
 
         if (TextUtils.isEmpty(nome)) {
             mNome.setError(getString(R.string.error_field_required));
@@ -105,7 +105,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            Utente utente = new Utente(username, password, email, nome, cognome, false);
+            Utente utente = new Utente(username, password, /*email,*/ nome, cognome, false);
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.registrazioneUtente(this);
         }
@@ -121,7 +121,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         mConfPassword.setText("");
         mNome.setText("");
         mCognome.setText("");
-        mEmail.setText("");
+        //mEmail.setText("");
     }
 
 }

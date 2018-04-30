@@ -24,19 +24,84 @@ import android.widget.TextView;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 
-public class ProfiloActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
+public class ProfiloActivity extends DefaultActivity  {
 
-    public static final int SELECTED_PICTURE = 1;
+    private TextView mTextMessage;
+    private TextView username;
+    private TextView nomeCognome;
+
+    public static final int PICK_IMAGE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profilo);
 
+        mTextMessage = (TextView) findViewById(R.id.message);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        username= (TextView)findViewById(R.id.textViewUsername);
+        nomeCognome = (TextView) findViewById(R.id.textViewNomeCognome);
+
+        //ImageView mIcon = findViewById(R.id.Profile);
+
+        DAOUtente daoUtente = new DAOUtente(this);
+        daoUtente.open();
+        Utente utente;
+        utente = daoUtente.findUtente();
+        daoUtente.close();
+
+        nomeCognome.setText(utente.getNome()+" "+utente.getCognome()/*.toString()*/);
+        username.setText(utente.getUsername());
+
+        /*Roba per settare icona nel bottomNavigationView*/
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(2);
+        menuItem.setChecked(true);
+
+    }
+
+
+    public void pickanimage(View v){
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PICK_IMAGE) {
+            //TODO: action
+        }
+    }
+
+    /*@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profilo);
+
+        //Setta la Bottom Nav
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //Evidenzia pagina selezionata in bottom Nav
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(2);
+        menuItem.setChecked(true);
+
+
         ImageView mIcon = findViewById(R.id.Profile);
         TextView name = (TextView)findViewById(R.id.Name);
         TextView username = (TextView) findViewById(R.id.usernameTextView);
-        final Button logoutButton = (Button) findViewById(R.id.logout);
 
         //imageView=(ImageView)findViewById(R.id.Profile);
 
@@ -46,134 +111,20 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         mDrawable.setCircular(true);
         mIcon.setImageDrawable(mDrawable);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         Utente utente;
         utente = daoUtente.findUtente();
         daoUtente.close();
 
-        name.setText(utente.getNome()+" "+utente.getCognome()/*.toString()*/);
+        name.setText(utente.getNome()+" "+utente.getCognome().toString());
         username.setText(utente.getUsername());
-
-        Intent i = getIntent();
-        switch(i.getStringExtra("selezione")){
-            case "vai":
-                bottomNavigationView.setSelectedItemId(R.id.menu_vai);
-                break;
-            case "mappe":
-                bottomNavigationView.setSelectedItemId(R.id.menu_mappe);
-                break;
-            case "profilo":
-                bottomNavigationView.setSelectedItemId(R.id.menu_profilo);
-                break;
-        }
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Intent i;
-                        switch (item.getItemId()) {
-                            case R.id.menu_vai:
-                                i = new Intent(getApplicationContext(), VaiActivity.class);
-                                i.putExtra("selezione", "vai");
-                                startActivity(i);
-                                break;
-
-                            case R.id.menu_mappe:
-                                i = new Intent(getApplicationContext(), MappeActivity.class);
-                                i.putExtra("selezione", "mappe");
-                                startActivity(i);
-                                break;
-
-                            case R.id.menu_profilo:
-                                i = new Intent(getApplicationContext(), ProfiloActivity.class);
-                                i.putExtra("selezione", "profilo");
-                                startActivity(i);
-                                break;
-                        }
-                        return true;
-                    }
-                });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+    }*/
 
     public void goToModificaProfilo(View view){
         Intent i;
         i = new Intent(getApplicationContext(), ModificaActivity.class);
         startActivity(i);
-    }
-
-    public void indietro(View view){
-        setContentView(R.layout.content_profilo);
-    }
-
-    public void chooseImmagineProfilo(View view){
-
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
-        startActivity(intent);
     }
 
     public void logout (View view){
@@ -189,5 +140,18 @@ public class ProfiloActivity extends AppCompatActivity implements NavigationView
         //finish();
 
     }
+
+    /*public void indietro(View view){
+        setContentView(R.layout.content_profilo);
+    }
+
+    public void chooseImmagineProfilo(View view){
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        startActivity(intent);
+    }
+   */
 
 }
