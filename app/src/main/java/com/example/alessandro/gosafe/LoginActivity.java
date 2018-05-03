@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         entra.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                Intent i = new Intent(getApplicationContext(), VaiActivity.class);
                 startActivity(i);
             }
         });

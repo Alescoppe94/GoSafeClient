@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_vai"
+        android:icon="@drawable/ic_navigation_black_24px"
+        android:title="@string/title_vai" />
+
+    <item
+        android:id="@+id/menu_mappe"
+        android:icon="@drawable/ic_map_black_24px"
+        android:title="@string/title_mappe" />
+
+    <item
+        android:id="@+id/menu_profilo"
+        android:icon="@drawable/ic_face_black_24px"
+        android:title="@string/title_profilo" />
+
+</menu>

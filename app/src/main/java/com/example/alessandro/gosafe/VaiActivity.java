@@ -1,5 +1,6 @@
 package com.example.alessandro.gosafe;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -13,132 +14,79 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import com.example.alessandro.gosafe.entity.Percorso;
-import com.example.alessandro.gosafe.server.RichiestaPercorso;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-public class VaiActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.entity.Utente;
+
+public class VaiActivity extends DefaultActivity {
+
+    Spinner spinnerVai;
+    ArrayAdapter<CharSequence> adapter;
+    ImageView imageViewVai;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vai);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-
-        Intent i = getIntent();
-        switch(i.getStringExtra("selezione")){
-            case "vai":
-                bottomNavigationView.setSelectedItemId(R.id.menu_vai);
-                break;
-            case "mappe":
-                bottomNavigationView.setSelectedItemId(R.id.menu_mappe);
-                break;
-            case "profilo":
-                bottomNavigationView.setSelectedItemId(R.id.menu_profilo);
-                break;
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+            DAOUtente daoUtente = new DAOUtente(this);
+            daoUtente.open();
+            Utente user = daoUtente.findUtente();
+            daoUtente.close();
+            Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+            bundle.putLong("periodo", 20000);
+            s.putExtras(bundle);
+            startService(s);
         }
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Intent i;
-                        switch (item.getItemId()) {
-                            case R.id.menu_vai:
-                                i = new Intent(getApplicationContext(), VaiActivity.class);
-                                i.putExtra("selezione", "vai");
-                                startActivity(i);
-                                break;
-
-                            case R.id.menu_mappe:
-                                i = new Intent(getApplicationContext(), MappeActivity.class);
-                                i.putExtra("selezione", "mappe");
-                                startActivity(i);
-                                break;
-
-                            case R.id.menu_profilo:
-                                i = new Intent(getApplicationContext(), ProfiloActivity.class);
-                                i.putExtra("selezione", "profilo");
-                                startActivity(i);
-                                break;
-                        }
-                        return true;
-                    }
-                });
-
-        Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
-        avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
+        //Spinner
+        spinnerVai= (Spinner) findViewById(R.id.spinnerVai);
+        adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerVai.setAdapter(adapter);
+        imageViewVai = (ImageView) findViewById(R.id.imageViewPianoVai);
+        spinnerVai.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                calcolaPercorso();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                int position = spinnerVai.getSelectedItemPosition();
+                Toast.makeText(getBaseContext(),adapterView.getItemAtPosition(i)+" selected",Toast.LENGTH_LONG).show();
+                switch(position){
+                    case 0:
+                        imageViewVai.setImageResource(R.drawable.q140);
+                        break;
+                    case 1:
+                        imageViewVai.setImageResource(R.drawable.quota145);
+                        break;
+                    case 2:
+                        imageViewVai.setImageResource(R.drawable.quota150);
+                        break;
+                    case 3:
+                        imageViewVai.setImageResource(R.drawable.quota155);
+                        break;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
-    }
 
-    private void calcolaPercorso(){
-        RichiestaPercorso richiestaPercorso = new RichiestaPercorso();
-        richiestaPercorso.ottieniPercorsoNoEmergenza(this);
-        int i = 2;
-    }
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setChecked(true);
     }
 
 }

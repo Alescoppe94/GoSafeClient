@@ -93,6 +93,7 @@ public class DAOUtente {
         }
         catch (SQLiteException sqle)
         {
+            sqle.printStackTrace();
             // Gestione delle eccezioni
             return false;
         }
@@ -109,6 +110,7 @@ public class DAOUtente {
         }
         catch (SQLiteException sqle)
         {
+            sqle.printStackTrace();
             // Gestione delle eccezioni
             return false;
         }
@@ -125,6 +127,7 @@ public class DAOUtente {
         }
         catch (SQLiteException sqle)
         {
+            sqle.printStackTrace();
             // Gestione delle eccezioni
             return false;
 
@@ -154,6 +157,7 @@ public class DAOUtente {
         }
         catch(SQLiteException sqle)
         {
+            sqle.printStackTrace();
             return null;
         }
 
@@ -192,6 +196,7 @@ public class DAOUtente {
         }
         catch (SQLiteException sqle)
         {
+            sqle.printStackTrace();
             // Gestione delle eccezioni
             return false;
         }

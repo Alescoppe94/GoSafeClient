@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
-import com.example.alessandro.gosafe.MainActivity;
 import com.example.alessandro.gosafe.R;
+import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.server.AggiornamentoInfoServer;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -20,8 +20,16 @@ import com.google.gson.Gson;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage){
-            Intent intent = new Intent(this, MainActivity.class);
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+
+        /*if(remoteMessage.getNotification().getTitle().equals("Aggiornamento")){
+
+            String body = remoteMessage.getNotification().getBody();
+            AggiornamentoInfoServer aggiornamentoInfoServer = new AggiornamentoInfoServer();
+            aggiornamentoInfoServer.aggiornamentoDbClient(body);
+
+        }else if(remoteMessage.getNotification().getTitle().equals("Java")) {*/
+            Intent intent = new Intent(this, VaiActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
@@ -32,6 +40,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationBuilder.setContentIntent(pendingIntent);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(0, notificationBuilder.build());
+        //}
+
     }
 
 }
