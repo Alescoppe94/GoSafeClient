@@ -14,15 +14,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 public class VaiActivity extends DefaultActivity {
 
@@ -50,8 +47,8 @@ public class VaiActivity extends DefaultActivity {
         }
 
         //Spinner
-        spinnerVai= (Spinner) findViewById(R.id.spinnerVai);
-        adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
+        spinnerVai = (Spinner) findViewById(R.id.spinnerVai);
+        adapter = ArrayAdapter.createFromResource(this, R.array.piani, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerVai.setAdapter(adapter);
         imageViewVai = (ImageView) findViewById(R.id.imageViewPianoVai);
@@ -59,8 +56,8 @@ public class VaiActivity extends DefaultActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 int position = spinnerVai.getSelectedItemPosition();
-                Toast.makeText(getBaseContext(),adapterView.getItemAtPosition(i)+" selected",Toast.LENGTH_LONG).show();
-                switch(position){
+                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
+                switch (position) {
                     case 0:
                         imageViewVai.setImageResource(R.drawable.q140);
                         break;
@@ -75,6 +72,7 @@ public class VaiActivity extends DefaultActivity {
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -87,6 +85,21 @@ public class VaiActivity extends DefaultActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+
+        Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
+        avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calcolaPercorso();
+            }
+        });
+
     }
+
+    private void calcolaPercorso() {
+        RichiestaPercorso richiestaPercorso = new RichiestaPercorso();
+        richiestaPercorso.ottieniPercorsoNoEmergenza(this);
+    }
+
 
 }
