@@ -31,7 +31,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     public void onTokenRefresh(){
 
-        recent_token = FirebaseInstanceId.getInstance().getToken();
+        recent_token = FirebaseInstanceId.getInstance().getToken();  //da sistemare il caso in cui uno fa il login da offline e poi si connette a una rete: bisogna verificare che il token sia quello giusto sul server
         Log.d(REG_TOKEN, recent_token);
         MyFirebaseInstanceIdService.token=recent_token;
         //sendPost(recent_token);
