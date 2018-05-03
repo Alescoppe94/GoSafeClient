@@ -12,6 +12,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import com.example.alessandro.gosafe.entity.Percorso;
+import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 public class VaiActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -74,6 +78,20 @@ public class VaiActivity extends AppCompatActivity implements NavigationView.OnN
                         return true;
                     }
                 });
+
+        Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
+        avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calcolaPercorso();
+            }
+        });
+    }
+
+    private void calcolaPercorso(){
+        RichiestaPercorso richiestaPercorso = new RichiestaPercorso();
+        richiestaPercorso.ottieniPercorsoNoEmergenza(this);
+        int i = 2;
     }
 
     @Override

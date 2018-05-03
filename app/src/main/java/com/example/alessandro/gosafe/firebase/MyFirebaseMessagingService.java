@@ -21,14 +21,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
-
-        if(remoteMessage.getNotification().getTitle().equals("Aggiornamento")){
-
-            String body = remoteMessage.getNotification().getBody();
-            AggiornamentoInfoServer aggiornamentoInfoServer = new AggiornamentoInfoServer();
-            aggiornamentoInfoServer.aggiornamentoDbClient(body);
-
-        }else if(remoteMessage.getNotification().getTitle().equals("Java")) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -40,8 +32,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationBuilder.setContentIntent(pendingIntent);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(0, notificationBuilder.build());
-        }
-
     }
 
 }

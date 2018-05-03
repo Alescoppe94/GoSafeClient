@@ -1,6 +1,9 @@
 package com.example.alessandro.gosafe.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Alessandro on 12/04/2018.
@@ -69,10 +72,10 @@ public class Tronco {
         float costo = 0;
         while (it.hasNext()) {
             Map.Entry<Float, Float> coeff_val = it.next();
-            costo += (coeff_val.getKey()*coeff_val.getValue()); //TODO: valutare se aggiungere los e lunghezza
+            costo += (coeff_val.getKey()*coeff_val.getValue());
         }
-        setCosto(costo);
         return costo;
+
     }*/
 
 }

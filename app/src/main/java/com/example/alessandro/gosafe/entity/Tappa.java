@@ -9,6 +9,7 @@ public class Tappa {
     private int id;
     private int percorsoId;
     private Tronco tronco;
+    private boolean direzione;
 
     public Tappa(Tronco tronco, int percorsoId) {
         this.id=0;
@@ -16,10 +17,10 @@ public class Tappa {
         this.tronco = tronco;
     }
 
-    public Tappa(int id, int percorsoId, Tronco tronco) {
-        this.id=id;
-        this.percorsoId= percorsoId;
+    public Tappa(Tronco tronco, boolean direzione) {
+        this.id=0;
         this.tronco = tronco;
+        this.direzione = direzione;
     }
 
     public Tappa(Tronco tronco) {
@@ -48,4 +49,11 @@ public class Tappa {
         this.percorsoId = percorsoId;
     }
 
+    public boolean isDirezione() {
+        return direzione;
+    }
+
+    public void setDirezione(boolean direzione) {
+        this.direzione = direzione;
+    }
 }
