@@ -12,9 +12,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.alessandro.gosafe.LoginActivity;
-import com.example.alessandro.gosafe.MainActivity;
 import com.example.alessandro.gosafe.ProfiloActivity;
 import com.example.alessandro.gosafe.R;
+import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
@@ -197,7 +197,7 @@ public class Autenticazione {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 //utente.loginLocale(ctx, true);
-                                Intent i = new Intent(ctx, MainActivity.class);
+                                Intent i = new Intent(ctx, VaiActivity.class);
                                 ctx.startActivity(i);
                             }
                         });
@@ -375,7 +375,7 @@ public class Autenticazione {
                 utente.registrazioneLocale(ctx);
                 //utente.loginLocale(ctx, true);
 
-                Intent i = new Intent(ctx, MainActivity.class);
+                Intent i = new Intent(ctx, VaiActivity.class);
 
                 ctx.startActivity(i);
             }

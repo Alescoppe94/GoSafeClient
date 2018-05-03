@@ -26,6 +26,18 @@ class DBHelper extends SQLiteOpenHelper {
             DAOUtente.FIELD_ISAUTENTICATO + " TEXT NOT NULL, " +
             DAOUtente.FIELD_TOKEN + " TEXT NULL)";
 
+    private static final String TABLE_TRONCO = "CREATE TABLE " + DAOTronco.TBL_NAME + " (" +
+            DAOTronco.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
+            DAOTronco.FIELD_BEACONAID + " INTEGER NOT NULL, " +
+            DAOTronco.FIELD_BEACONBID + " INTEGER NOT NULL, " +
+            DAOTronco.FIELD_AGIBILE + " TEXT NOT NULL, " +
+            DAOTronco.FIELD_COSTO + " INTEGER NOT NULL, " +
+            DAOTronco.FIELD_AREA + " INTEGER NULL)";
+
+    private static final String TABLE_BEACON = "CREATE TABLE " + DAOBeacon.TBL_NAME + " (" +
+            DAOBeacon.FIELD_ID + " STRING PRIMARY KEY NOT NULL, " +
+            DAOBeacon.FIELD_ISPUNTODIRACCOLTA + " TEXT NOT NULL, " +
+            DAOBeacon.FIELD_PIANOID + " INTEGER NOT NULL)";
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -34,7 +46,10 @@ class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         db.execSQL(TABLE_UTENTE);
+        db.execSQL(TABLE_TRONCO);
+        db.execSQL(TABLE_BEACON);
     }
 
     @Override
