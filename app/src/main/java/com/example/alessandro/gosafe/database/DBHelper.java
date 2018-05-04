@@ -28,14 +28,13 @@ class DBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_TRONCO = "CREATE TABLE " + DAOTronco.TBL_NAME + " (" +
             DAOTronco.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
-            DAOTronco.FIELD_BEACONAID + " INTEGER NOT NULL, " +
-            DAOTronco.FIELD_BEACONBID + " INTEGER NOT NULL, " +
+            DAOTronco.FIELD_BEACONAID + " TEXT NOT NULL, " +
+            DAOTronco.FIELD_BEACONBID + " TEXT NOT NULL, " +
             DAOTronco.FIELD_AGIBILE + " TEXT NOT NULL, " +
-            DAOTronco.FIELD_COSTO + " INTEGER NOT NULL, " +
             DAOTronco.FIELD_AREA + " INTEGER NULL)";
 
     private static final String TABLE_BEACON = "CREATE TABLE " + DAOBeacon.TBL_NAME + " (" +
-            DAOBeacon.FIELD_ID + " STRING PRIMARY KEY NOT NULL, " +
+            DAOBeacon.FIELD_ID + " TEXT PRIMARY KEY NOT NULL, " +
             DAOBeacon.FIELD_ISPUNTODIRACCOLTA + " TEXT NOT NULL, " +
             DAOBeacon.FIELD_PIANOID + " INTEGER NOT NULL)";
 
@@ -58,6 +57,10 @@ class DBHelper extends SQLiteOpenHelper {
         //TODO gestire prossimamente senza cancellare tutto
         db.execSQL("DROP TABLE IF EXISTS " + DAOUtente.TBL_NAME);
         db.execSQL(TABLE_UTENTE);
+        db.execSQL("DROP TABLE IF EXISTS " + DAOTronco.TBL_NAME);
+        db.execSQL(TABLE_TRONCO);
+        db.execSQL("DROP TABLE IF EXISTS " + DAOBeacon.TBL_NAME);
+        db.execSQL(TABLE_BEACON);
 
         SharedPreferences pref = context.getSharedPreferences("utenti_loggati", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();

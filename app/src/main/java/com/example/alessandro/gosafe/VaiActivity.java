@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 
 public class VaiActivity extends DefaultActivity {
 
@@ -48,6 +49,9 @@ public class VaiActivity extends DefaultActivity {
             s.putExtras(bundle);
             startService(s);
         }
+
+        Intent u = new Intent(this, CheckForDbUpdatesService.class);
+        startService(u);
 
         //Spinner
         spinnerVai= (Spinner) findViewById(R.id.spinnerVai);
@@ -87,6 +91,7 @@ public class VaiActivity extends DefaultActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+
     }
 
 }
