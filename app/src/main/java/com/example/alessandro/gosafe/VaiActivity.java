@@ -97,7 +97,11 @@ public class VaiActivity extends DefaultActivity {
     }
 
     private void calcolaPercorso() {
-        RichiestaPercorso richiestaPercorso = new RichiestaPercorso();
+        DAOUtente daoUtente = new DAOUtente(this);
+        daoUtente.open();
+        Utente utente_attivo = daoUtente.findUtente();
+        daoUtente.close();
+        RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
         richiestaPercorso.ottieniPercorsoNoEmergenza(this);
     }
 

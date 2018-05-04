@@ -2,10 +2,8 @@ package com.example.alessandro.gosafe.server;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import com.example.alessandro.gosafe.entity.Beacon;
-import com.example.alessandro.gosafe.entity.Percorso;
-import com.example.alessandro.gosafe.entity.Tappa;
-import com.example.alessandro.gosafe.entity.Tronco;
+import com.example.alessandro.gosafe.EmergenzaActivity;
+import com.example.alessandro.gosafe.entity.*;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -20,8 +18,10 @@ public class RichiestaPercorso {
 
     private HttpURLConnection conn;
     private final String PATH = "http://10.0.2.2:8080";
+    private Utente utente_attivo;
 
-    public RichiestaPercorso() {
+    public RichiestaPercorso(Utente utente_attivo) {
+        this.utente_attivo = utente_attivo;
     }
 
     public void ottieniPercorsoNoEmergenza(Context ctx) {
@@ -60,7 +60,7 @@ public class RichiestaPercorso {
                 return null;
             } else {
                 try {
-                    URL url = new URL(PATH + "/gestionemappe/mappe/calcolapercorso/1/3");
+                    URL url = new URL(PATH + "/gestionemappe/mappe/calcolapercorso/"+utente_attivo.getBeaconid()+"/3"); //TODO:da modificare
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoInput(true);
                     conn.setRequestMethod("GET");
@@ -104,6 +104,86 @@ public class RichiestaPercorso {
         }
     }
 
+    public void visualizzaPercorso(Context ctx) { new VisualizzaPercorsoTask(ctx).execute();
+    }
+
+    private class VisualizzaPercorsoTask extends AsyncTask<Void,Void,String> {
+        private Context ctx;
+        private AsyncTask<Void,Void,Boolean> execute;
+
+        public VisualizzaPercorsoTask(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            execute = new checkConnessioneTask().execute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            boolean connesso = false;
+
+            try {
+                connesso = execute.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            if (!connesso) {
+                return null;
+            } else {
+                try {
+                    URL url = new URL(PATH + "/gestionemappe/mappe/visualizzapercorso/" + utente_attivo.getId_utente() + "/" + utente_attivo.getBeaconid());
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoInput(true);
+                    conn.setRequestMethod("GET");
+                    conn.connect();
+
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    String inputLine;
+
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+                    }
+
+                    br.close();
+                    return sb.toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (conn != null) {
+                        try {
+                            conn.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Percorso percorso;
+            if(result==null){
+                //percorso = calcolaPercorsoEmergenza();
+            } else {
+                Notifica notifica = new Gson().fromJson(result, Notifica.class);
+                percorso = notifica.getPercorso();
+            }
+            //TODO: disegnare su mappa il percorso su mappa
+        }
+
+    }
+
     private class checkConnessioneTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
@@ -136,8 +216,6 @@ public class RichiestaPercorso {
         }
     }
 
-
-
     //TODO: 1 - valutare se lasciare metodi di calcoloPercorso qui o inserirli in un "controller"
     //      2 - dao come fo?
     //      3 - da dove prendo beaconPart e beaconArr?
@@ -169,7 +247,60 @@ public class RichiestaPercorso {
         return percorso;
     }
 
+    public void calcolaPercorsoEmergenza(String beaconPart) {
+        Set<Beacon> pdr = beaconDAO.getAllPuntiDiRaccolta();
+        Beacon partenza = beaconDAO.getBeaconById(beaconPart);
+        if (partenza != null) {
+            boolean emergenza = true;
+            Map<LinkedList<Beacon>, Float> percorsi_ottimi = new HashMap<>();
+            Iterator<Beacon> n = pdr.iterator();
+            while (n.hasNext()) {
+                Beacon arrivo = n.next();
 
+                Map<LinkedList<Beacon>, Float> percorsoOttimo_costoOttimo =  calcoloDijkstra(partenza, arrivo, emergenza);
+
+                Map.Entry<LinkedList<Beacon>, Float> entry = percorsoOttimo_costoOttimo.entrySet().iterator().next();
+
+                percorsi_ottimi.put(entry.getKey(), entry.getValue());
+            }
+            LinkedList<Beacon> percorso_def = new LinkedList<>();
+            float costo_percorso_def = Float.MAX_VALUE;
+            Iterator<Map.Entry<LinkedList<Beacon>, Float>> iter = percorsi_ottimi.entrySet().iterator();
+            while (iter.hasNext()) {
+                //Log.d("scelta percorso", "entrato");
+                Map.Entry<LinkedList<Beacon>, Float> percorso_costo = iter.next();
+                float costo_valore = percorso_costo.getValue();
+                if (costo_valore < costo_percorso_def) {
+                    percorso_def = percorso_costo.getKey();
+                    costo_percorso_def = costo_valore;
+                }
+            }
+            if (percorsi_ottimi.isEmpty()) {
+                percorso_def.add(partenza);
+            }
+            LinkedList<Tappa> tappeOttime = new LinkedList<>();
+            boolean existPercorso = percorsoDAO.findPercorsoByBeaconId(beaconPart);
+            int idPercorso;
+            if(existPercorso) {
+                idPercorso = percorsoDAO.getPercorsoByBeaconId(beaconPart).getId();
+                for(int i = 0; i < percorso_def.size()-1; i++) {
+                    Tronco troncoOttimo = troncoDAO.getTroncoByBeacons(percorso_def.get(i), percorso_def.get(i+1));
+                    boolean direzione = troncoDAO.checkDirezioneTronco(troncoOttimo);
+                    Tappa tappaOttima = new Tappa(troncoOttimo, idPercorso, direzione);
+                    tappeOttime.add(tappaOttima);
+                }
+                tappaDAO.aggiornaTappe(idPercorso, tappeOttime);
+            } else {
+                for(int i = 0; i < percorso_def.size()-1; i++) {
+                    Tronco troncoOttimo = troncoDAO.getTroncoByBeacons(percorso_def.get(i), percorso_def.get(i+1));
+                    boolean direzione = troncoDAO.checkDirezioneTronco(troncoOttimo);
+                    Tappa tappaOttima = new Tappa(troncoOttimo, direzione);
+                    tappeOttime.add(tappaOttima);
+                }
+                tappaDAO.creaPercorsoConTappe(partenza, tappeOttime);
+            }
+        }
+    }
 
     private Map<LinkedList<Beacon>, Float> calcoloDijkstra(Beacon partenza, Beacon arrivo, boolean emergenza){
 

@@ -149,7 +149,7 @@ public class BluetoothLeService extends Service {
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
                         System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
-                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey());
+                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey()); //TODO:aggiornamento posizione su DB locale
                         AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
                         ai.aggiornamentoPosizione(utente_attivo);
                     }
