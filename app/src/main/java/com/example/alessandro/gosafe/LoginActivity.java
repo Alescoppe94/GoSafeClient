@@ -149,11 +149,7 @@ public class LoginActivity extends AppCompatActivity {
 
         } else {
 
-            Utente utente;
-            if(MyFirebaseInstanceIdService.get_token()==null)
-                utente = new Utente(username, password);
-            else
-                utente = new Utente(username, password, MyFirebaseInstanceIdService.get_token());
+            Utente utente = new Utente(username, password);
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.autenticazioneUtente(this);
         }

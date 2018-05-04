@@ -1,5 +1,6 @@
 package com.example.alessandro.gosafe;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -19,6 +20,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
+
 public class VaiActivity extends DefaultActivity {
 
     Spinner spinnerVai;
@@ -29,6 +35,23 @@ public class VaiActivity extends DefaultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vai);
+
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+            DAOUtente daoUtente = new DAOUtente(this);
+            daoUtente.open();
+            Utente user = daoUtente.findUtente();
+            daoUtente.close();
+            Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+            bundle.putLong("periodo", 20000);
+            s.putExtras(bundle);
+            startService(s);
+        }
+
+        Intent u = new Intent(this, CheckForDbUpdatesService.class);
+        startService(u);
 
         //Spinner
         spinnerVai= (Spinner) findViewById(R.id.spinnerVai);
@@ -68,6 +91,7 @@ public class VaiActivity extends DefaultActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+
     }
 
 }

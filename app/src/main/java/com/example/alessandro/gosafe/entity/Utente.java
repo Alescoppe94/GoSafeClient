@@ -3,6 +3,7 @@ package com.example.alessandro.gosafe.entity;
 import android.content.Context;
 
 import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.firebase.MyFirebaseInstanceIdService;
 
 import java.io.Serializable;
 
@@ -27,17 +28,9 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
 
         this.username=username;
         this.password=password;
+        this.token = MyFirebaseInstanceIdService.get_token();
 
     }
-
-    public Utente(String username, String password, String token){
-
-        this.username=username;
-        this.password=password;
-        this.token=token;
-
-    }
-
 
     public Utente(String username, String password, /*String email,*/ String nome, String cognome, boolean is_autenticato) {
         this.username = username;
@@ -46,6 +39,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
         this.nome = nome;
         this.cognome = cognome;
         this.is_autenticato = is_autenticato;
+        this.token = MyFirebaseInstanceIdService.get_token();
     }
 
     public Utente(long id_utente, String username, String password, String nome, String cognome, String beaconid, int percorsoid, boolean is_autenticato, String token) {
