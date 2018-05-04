@@ -164,7 +164,7 @@ public class DAOUtente {
         return utente;
     }
 
-    public Utente findUtente(){
+    public Utente findUtente(){ //TODO: ??
         Utente utente = null;
         Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
         if (cursor.moveToFirst()) {
