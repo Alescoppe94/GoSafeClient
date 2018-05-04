@@ -21,7 +21,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     private int percorsoid;
     private boolean is_autenticato;//true solo quando l'utente è autenticato sul server
     private String token;
-    private String email;
+    //private String email;
 
     public Utente(String username, String password){
 
@@ -39,10 +39,10 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
 
-    public Utente(String username, String password, String email, String nome, String cognome, boolean is_autenticato) {
+    public Utente(String username, String password, /*String email,*/ String nome, String cognome, boolean is_autenticato) {
         this.username = username;
         this.password = password;
-        this.email = email;
+        //this.email = email;
         this.nome = nome;
         this.cognome = cognome;
         this.is_autenticato = is_autenticato;
