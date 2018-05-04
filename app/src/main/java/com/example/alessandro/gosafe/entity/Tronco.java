@@ -13,14 +13,12 @@ public class Tronco {
 
     private int id;
     private boolean agibile;
-    private float costo;
     private ArrayList<Beacon> beaconEstremi;
     private float area;
 
-    public Tronco(int id,boolean agibile, float costo, ArrayList<Beacon> beaconEstremi, float area) {
+    public Tronco(int id,boolean agibile, ArrayList<Beacon> beaconEstremi, float area) {
         this.id = id;
         this.agibile = agibile;
-        this.costo = costo;
         this.beaconEstremi = beaconEstremi;
         this.area = area;
     }
@@ -39,14 +37,6 @@ public class Tronco {
 
     public void setAgibile(boolean agibile) {
         this.agibile = agibile;
-    }
-
-    public float getCosto() {
-        return costo;
-    }
-
-    public void setCosto(float costo) {
-        this.costo = costo;
     }
 
     public ArrayList<Beacon> getBeaconEstremi() {

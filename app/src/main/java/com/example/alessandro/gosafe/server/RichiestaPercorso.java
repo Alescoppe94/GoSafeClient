@@ -3,6 +3,8 @@ package com.example.alessandro.gosafe.server;
 import android.content.Context;
 import android.os.AsyncTask;
 import com.example.alessandro.gosafe.EmergenzaActivity;
+import com.example.alessandro.gosafe.database.DAOBeacon;
+import com.example.alessandro.gosafe.database.DAOTronco;
 import com.example.alessandro.gosafe.entity.*;
 import com.google.gson.Gson;
 
@@ -19,6 +21,7 @@ public class RichiestaPercorso {
     private HttpURLConnection conn;
     private final String PATH = "http://10.0.2.2:8080";
     private Utente utente_attivo;
+
 
     public RichiestaPercorso(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -96,7 +99,7 @@ public class RichiestaPercorso {
             super.onPostExecute(result);
             Percorso percorso;
             if(result==null){
-                //percorso = calcolaPercorsoNoEmergenza();
+                percorso = calcolaPercorsoNoEmergenza(ctx);
             } else {
                 percorso = new Gson().fromJson(result, Percorso.class);
             }
@@ -104,8 +107,7 @@ public class RichiestaPercorso {
         }
     }
 
-    public void visualizzaPercorso(Context ctx) { new VisualizzaPercorsoTask(ctx).execute();
-    }
+    public void visualizzaPercorso(Context ctx) { new VisualizzaPercorsoTask(ctx).execute(); }
 
     private class VisualizzaPercorsoTask extends AsyncTask<Void,Void,String> {
         private Context ctx;
@@ -174,7 +176,7 @@ public class RichiestaPercorso {
             super.onPostExecute(result);
             Percorso percorso;
             if(result==null){
-                //percorso = calcolaPercorsoEmergenza();
+                percorso = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(), ctx);
             } else {
                 Notifica notifica = new Gson().fromJson(result, Notifica.class);
                 percorso = notifica.getPercorso();
@@ -220,23 +222,29 @@ public class RichiestaPercorso {
     //      2 - dao come fo?
     //      3 - da dove prendo beaconPart e beaconArr?
 
-    /*private Percorso calcolaPercorsoNoEmergenza() {
-        Beacon partenza = beaconDAO.getBeaconById(beaconPart);
+    private Percorso calcolaPercorsoNoEmergenza(Context ctx) {
         boolean emergenza = false;
-        Beacon arrivo = beaconDAO.getBeaconById(beaconArr);
+        DAOBeacon beaconDAO = new DAOBeacon(ctx);
+        beaconDAO.open();
+        Beacon partenza = beaconDAO.getBeaconById(utente_attivo.getBeaconid());
+        Beacon arrivo = beaconDAO.getBeaconById(beaconArr); // prendere dall'interfaccia
+        beaconDAO.close();
         Percorso percorso;
 
         if (partenza != null && arrivo != null) {
 
-            Map<LinkedList<Beacon>, Float> percorsoOttimo_costoOttimo =  calcoloDijkstra(partenza, arrivo, emergenza);
+            Map<LinkedList<Beacon>, Float> percorsoOttimo_costoOttimo =  calcoloDijkstra(partenza, arrivo, emergenza, ctx);
 
             LinkedList<Tappa> tappeOttime = new LinkedList<>();
 
             Map.Entry<LinkedList<Beacon>, Float> entry = percorsoOttimo_costoOttimo.entrySet().iterator().next();
 
             for(int i = 0; i < entry.getKey().size()-1; i++) {
+                DAOTronco troncoDAO = new DAOTronco(ctx);
+                troncoDAO.open();
                 Tronco troncoOttimo = troncoDAO.getTroncoByBeacons(entry.getKey().get(i), entry.getKey().get(i+1));
                 boolean direzione = troncoDAO.checkDirezioneTronco(troncoOttimo);
+                troncoDAO.close();
                 Tappa tappaOttima = new Tappa(troncoOttimo, direzione);
                 tappeOttime.add(tappaOttima);
             }
@@ -247,9 +255,12 @@ public class RichiestaPercorso {
         return percorso;
     }
 
-    public void calcolaPercorsoEmergenza(String beaconPart) {
+    public Percorso calcolaPercorsoEmergenza(String beaconPart, Context ctx) {
+        DAOBeacon beaconDAO = new DAOBeacon(ctx);
+        beaconDAO.open();
         Set<Beacon> pdr = beaconDAO.getAllPuntiDiRaccolta();
         Beacon partenza = beaconDAO.getBeaconById(beaconPart);
+        beaconDAO.close();
         if (partenza != null) {
             boolean emergenza = true;
             Map<LinkedList<Beacon>, Float> percorsi_ottimi = new HashMap<>();
@@ -257,7 +268,7 @@ public class RichiestaPercorso {
             while (n.hasNext()) {
                 Beacon arrivo = n.next();
 
-                Map<LinkedList<Beacon>, Float> percorsoOttimo_costoOttimo =  calcoloDijkstra(partenza, arrivo, emergenza);
+                Map<LinkedList<Beacon>, Float> percorsoOttimo_costoOttimo =  calcoloDijkstra(partenza, arrivo, emergenza, ctx);
 
                 Map.Entry<LinkedList<Beacon>, Float> entry = percorsoOttimo_costoOttimo.entrySet().iterator().next();
 
@@ -279,32 +290,27 @@ public class RichiestaPercorso {
                 percorso_def.add(partenza);
             }
             LinkedList<Tappa> tappeOttime = new LinkedList<>();
-            boolean existPercorso = percorsoDAO.findPercorsoByBeaconId(beaconPart);
-            int idPercorso;
-            if(existPercorso) {
-                idPercorso = percorsoDAO.getPercorsoByBeaconId(beaconPart).getId();
-                for(int i = 0; i < percorso_def.size()-1; i++) {
-                    Tronco troncoOttimo = troncoDAO.getTroncoByBeacons(percorso_def.get(i), percorso_def.get(i+1));
-                    boolean direzione = troncoDAO.checkDirezioneTronco(troncoOttimo);
-                    Tappa tappaOttima = new Tappa(troncoOttimo, idPercorso, direzione);
-                    tappeOttime.add(tappaOttima);
-                }
-                tappaDAO.aggiornaTappe(idPercorso, tappeOttime);
-            } else {
-                for(int i = 0; i < percorso_def.size()-1; i++) {
-                    Tronco troncoOttimo = troncoDAO.getTroncoByBeacons(percorso_def.get(i), percorso_def.get(i+1));
-                    boolean direzione = troncoDAO.checkDirezioneTronco(troncoOttimo);
-                    Tappa tappaOttima = new Tappa(troncoOttimo, direzione);
-                    tappeOttime.add(tappaOttima);
-                }
-                tappaDAO.creaPercorsoConTappe(partenza, tappeOttime);
+            for(int i = 0; i < percorso_def.size()-1; i++) {
+                DAOTronco troncoDAO = new DAOTronco(ctx);
+                troncoDAO.open();
+                Tronco troncoOttimo = troncoDAO.getTroncoByBeacons(percorso_def.get(i), percorso_def.get(i+1));
+                boolean direzione = troncoDAO.checkDirezioneTronco(troncoOttimo);
+                troncoDAO.close();
+                Tappa tappaOttima = new Tappa(troncoOttimo, direzione);
+                tappeOttime.add(tappaOttima);
             }
+            Percorso percorso = new Percorso(tappeOttime, partenza);
+            return percorso;
         }
+        return null;
     }
 
-    private Map<LinkedList<Beacon>, Float> calcoloDijkstra(Beacon partenza, Beacon arrivo, boolean emergenza){
+    private Map<LinkedList<Beacon>, Float> calcoloDijkstra(Beacon partenza, Beacon arrivo, boolean emergenza, Context ctx){
 
+        DAOTronco troncoDAO = new DAOTronco(ctx);
+        troncoDAO.open();
         Set<Tronco> allTronchiEdificio = troncoDAO.getAllTronchi();
+        troncoDAO.close();
         Map<LinkedList<Beacon>, Float> costi_percorsi = new HashMap<>();
         Beacon beacon_controllato = partenza;
         ArrayList<Beacon> beacon_visitati = new ArrayList<>();
@@ -423,5 +429,5 @@ public class RichiestaPercorso {
 
         return uguali;
 
-    }*/
+    }
 }

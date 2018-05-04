@@ -10,6 +10,11 @@ import android.database.sqlite.SQLiteException;
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by Alessandro on 13/04/2018.
  */
@@ -124,7 +129,7 @@ public class DAOBeacon {
         {
             crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
             Boolean ispuntodiraccolta = (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false;
-            Piano piano = new Piano();                                      //da rivedere se serve
+            Piano piano = new Piano();                                      //TODO: da rivedere se serve(pianodao.getPianoById
             piano.setPiano(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));  //da rivedere se serve
             while(crs.moveToNext())
             {
@@ -160,4 +165,28 @@ public class DAOBeacon {
         }
     }
 
+    public Set<Beacon> getAllPuntiDiRaccolta() {
+        Set<Beacon> allPuntiDiRaccolta = new HashSet<>();
+        Cursor crs;
+        try
+        {
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ISPUNTODIRACCOLTA + " = 1 ",null,null,null,null);
+            while(crs.moveToNext())
+            {
+                Piano piano = new Piano();                                      //TODO: da rivedere se serve(pianodao.getPianoById
+                piano.setPiano(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));  //da rivedere se serve
+                Beacon beaconDiRaccolta = new Beacon(
+                        crs.getString(crs.getColumnIndex(FIELD_ID)),
+                        (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false,
+                        piano);
+                allPuntiDiRaccolta.add(beaconDiRaccolta);
+            }
+            crs.close();
+        }
+        catch(SQLiteException sqle)
+        {
+            return null;
+        }
+        return allPuntiDiRaccolta;
+    }
 }
