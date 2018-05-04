@@ -7,35 +7,36 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 
 /**
  * Created by Alessandro on 04/05/2018.
  */
 
-public class DAOPeso {
+public class DAOPiano {
 
     private DBHelper dbhelper;
     private Context ctx;
     private SQLiteDatabase db;
 
-    public static final String TBL_NAME="Peso";
-    public static final String FIELD_ID="ID_peso";
-    public static final String FIELD_NOME="nome";
-    public static final String FIELD_COEFFICIENTE="coefficiente";
+    public static final String TBL_NAME="Piano";
+    public static final String FIELD_ID="ID_piano";
+    public static final String FIELD_IMMAGINE="immagine";
+    public static final String FIELD_PIANO="piano";
     private static final String[] FIELD_ALL = new String[]
             {
                     FIELD_ID,
-                    FIELD_NOME,
-                    FIELD_COEFFICIENTE
+                    FIELD_IMMAGINE,
+                    FIELD_PIANO
             };
 
-    public DAOPeso(Context ctx)
+    public DAOPiano(Context ctx)
     {
         this.ctx=ctx;
     }
 
-    public DAOPeso open() throws SQLException {
+    public DAOPiano open() throws SQLException {
         dbhelper = new DBHelper(ctx);
         try {
             db=dbhelper.getWritableDatabase();
@@ -51,24 +52,25 @@ public class DAOPeso {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(int idPeso, String nome, float coeff)
+    private ContentValues createContentValues(Piano piano)
     {
         ContentValues cv=new ContentValues();
-        cv.put(FIELD_ID, idPeso);
-        cv.put(FIELD_NOME, nome);
-        cv.put(FIELD_COEFFICIENTE, coeff); // qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
+        cv.put(FIELD_ID, piano.getId());
+        cv.put(FIELD_IMMAGINE, piano.getImmagine());
+        cv.put(FIELD_PIANO, String.valueOf(piano.getPiano())); // qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
         return cv;
     }
 
-    public boolean save(int idPeso, String nome, float coeff)
+    public boolean save(Piano piano)
     {
         boolean ins;
+        int id_piano = piano.getId();
         Cursor crs;
         try
         {
-            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+ idPeso,null,null,null,null);
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_piano,null,null,null,null);
             if(crs.getCount()==0){
-                ContentValues initialValues = createContentValues(idPeso, nome, coeff);
+                ContentValues initialValues = createContentValues(piano);
                 ins = db.insert(TBL_NAME, null, initialValues)>=0;
             }
             else//esiste già un beacon con questo id
@@ -83,11 +85,11 @@ public class DAOPeso {
         }
     }
 
-    public boolean delete(int idPeso)
+    public boolean delete(Piano piano)
     {
         try
         {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + idPeso, null)>0;
+            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + piano.getId(), null)>0;
             return del;
         }
         catch (SQLiteException sqle)
@@ -114,11 +116,11 @@ public class DAOPeso {
         }
     }
 
-    public boolean update(int idPeso, String nome, float coeff)
+    public boolean update(Piano piano)
     {
         /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
         String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
-        ContentValues updateValues = createContentValues(idPeso, nome, coeff);
+        ContentValues updateValues = createContentValues(piano);
         try
         {
             boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;

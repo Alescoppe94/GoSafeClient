@@ -38,6 +38,22 @@ class DBHelper extends SQLiteOpenHelper {
             DAOBeacon.FIELD_ISPUNTODIRACCOLTA + " TEXT NOT NULL, " +
             DAOBeacon.FIELD_PIANOID + " INTEGER NOT NULL)";
 
+    private static final String TABLE_PIANO = "CREATE TABLE " + DAOPiano.TBL_NAME + " (" +
+            DAOPiano.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
+            DAOPiano.FIELD_IMMAGINE + " TEXT NOT NULL, " +
+            DAOPiano.FIELD_PIANO + " INTEGER NOT NULL)";
+
+    private static final String TABLE_PESO = "CREATE TABLE " + DAOPeso.TBL_NAME + " (" +
+            DAOPeso.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
+            DAOPeso.FIELD_NOME + " TEXT NOT NULL, " +
+            DAOPeso.FIELD_COEFFICIENTE + " REAL NOT NULL)";
+
+    private static final String TABLE_PESITRONCO = "CREATE TABLE " + DAOPesiTronco.TBL_NAME + " (" +
+            DAOPesiTronco.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
+            DAOPesiTronco.FIELD_TRONCOID + " INTEGER NOT NULL, " +
+            DAOPesiTronco.FIELD_PESOID + " INTEGER NOT NULL, " +
+            DAOPesiTronco.FIELD_VALORE + " REAL NOT NULL)";
+
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
@@ -49,6 +65,9 @@ class DBHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_UTENTE);
         db.execSQL(TABLE_TRONCO);
         db.execSQL(TABLE_BEACON);
+        db.execSQL(TABLE_PIANO);
+        db.execSQL(TABLE_PESO);
+        db.execSQL(TABLE_PESITRONCO);
     }
 
     @Override
@@ -61,6 +80,12 @@ class DBHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_TRONCO);
         db.execSQL("DROP TABLE IF EXISTS " + DAOBeacon.TBL_NAME);
         db.execSQL(TABLE_BEACON);
+        db.execSQL("DROP TABLE IF EXISTS " + DAOPiano.TBL_NAME);
+        db.execSQL(TABLE_PIANO);
+        db.execSQL("DROP TABLE IF EXISTS " + DAOPeso.TBL_NAME);
+        db.execSQL(TABLE_PESO);
+        db.execSQL("DROP TABLE IF EXISTS " + DAOPesiTronco.TBL_NAME);
+        db.execSQL(TABLE_PESITRONCO);
 
         SharedPreferences pref = context.getSharedPreferences("utenti_loggati", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();

@@ -57,7 +57,7 @@ public class DAOBeacon {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, beacon.getId());
         cv.put(FIELD_ISPUNTODIRACCOLTA, beacon.is_puntodiraccola());
-        cv.put(FIELD_PIANOID, String.valueOf(beacon.getPiano())); // qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
+        cv.put(FIELD_PIANOID, String.valueOf(beacon.getPiano().getId())); // qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
         return cv;
     }
 

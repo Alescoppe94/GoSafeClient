@@ -10,8 +10,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.example.alessandro.gosafe.database.DAOBeacon;
+import com.example.alessandro.gosafe.database.DAOPesiTronco;
+import com.example.alessandro.gosafe.database.DAOPeso;
+import com.example.alessandro.gosafe.database.DAOPiano;
 import com.example.alessandro.gosafe.database.DAOTronco;
 import com.example.alessandro.gosafe.entity.Beacon;
+import com.example.alessandro.gosafe.entity.Piano;
 import com.example.alessandro.gosafe.entity.Tronco;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -115,6 +120,7 @@ public class CheckForDbUpdatesService extends Service {
                 DAOTronco troncodao = new DAOTronco(getApplicationContext());
                 troncodao.open();
                 JsonArray tronchiArray = jsonResponse.get("tronco").getAsJsonArray();
+
                 for (JsonElement jsonTronco : tronchiArray){
                     JsonObject jsonObject = jsonTronco.getAsJsonObject();
                     Beacon beaconA = new Beacon();
@@ -129,6 +135,74 @@ public class CheckForDbUpdatesService extends Service {
                     boolean notInDb = troncodao.save(tronco);
                     if(!notInDb){
                         troncodao.update(tronco);
+
+                    }
+                }
+            }
+
+            if (jsonResponse.get("beacon").getAsJsonArray().size() != 0) {
+
+                DAOBeacon beacondao = new DAOBeacon(getApplicationContext());
+                beacondao.open();
+                JsonArray beaconArray = jsonResponse.get("beacon").getAsJsonArray();
+
+                for (JsonElement jsonBeacon : beaconArray){
+                    JsonObject jsonObject = jsonBeacon.getAsJsonObject();
+                    Piano piano = new Piano();
+                    piano.setId(jsonObject.get("pianoId").getAsInt());
+                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano);
+                    boolean notInDb = beacondao.save(beacon);
+                    if(!notInDb){
+                        beacondao.update(beacon);
+
+                    }
+                }
+            }
+
+            if (jsonResponse.get("piano").getAsJsonArray().size() != 0) {
+
+                DAOPiano pianodao = new DAOPiano(getApplicationContext());
+                pianodao.open();
+                JsonArray beaconArray = jsonResponse.get("piano").getAsJsonArray();
+
+                for (JsonElement jsonPiano : beaconArray){
+                    JsonObject jsonObject = jsonPiano.getAsJsonObject();
+                    Piano piano = new Piano(jsonObject.get("id").getAsInt(), jsonObject.get("immagine").getAsString(), jsonObject.get("piano").getAsInt());
+                    boolean notInDb = pianodao.save(piano);
+                    if(!notInDb){
+                        pianodao.update(piano);
+
+                    }
+                }
+            }
+
+            if (jsonResponse.get("peso").getAsJsonArray().size() != 0) {
+
+                DAOPeso pesodao = new DAOPeso(getApplicationContext());
+                pesodao.open();
+                JsonArray beaconArray = jsonResponse.get("peso").getAsJsonArray();
+
+                for (JsonElement jsonPeso : beaconArray){
+                    JsonObject jsonObject = jsonPeso.getAsJsonObject();
+                    boolean notInDb = pesodao.save(jsonObject.get("id").getAsInt(), jsonObject.get("nome").getAsString(), jsonObject.get("coefficiente").getAsFloat());
+                    if(!notInDb){
+                        pesodao.update(jsonObject.get("id").getAsInt(), jsonObject.get("nome").getAsString(), jsonObject.get("coefficiente").getAsFloat());
+
+                    }
+                }
+            }
+
+            if (jsonResponse.get("pesitronco").getAsJsonArray().size() != 0) {
+
+                DAOPesiTronco pesitroncodao = new DAOPesiTronco(getApplicationContext());
+                pesitroncodao.open();
+                JsonArray beaconArray = jsonResponse.get("pesitroncodao").getAsJsonArray();
+
+                for (JsonElement jsonPesitronco : beaconArray){
+                    JsonObject jsonObject = jsonPesitronco.getAsJsonObject();
+                    boolean notInDb = pesitroncodao.save(jsonObject.get("id").getAsInt(), jsonObject.get("troncoId").getAsInt(), jsonObject.get("pesoId").getAsInt(), jsonObject.get("valore").getAsFloat());
+                    if(!notInDb){
+                        pesitroncodao.update(jsonObject.get("id").getAsInt(), jsonObject.get("troncoId").getAsInt(), jsonObject.get("pesoId").getAsInt(), jsonObject.get("valore").getAsFloat());
 
                     }
                 }
