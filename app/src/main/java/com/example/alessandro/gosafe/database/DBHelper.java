@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.File;
+
 /**
  * Classe di gestione del DB
  * Crea il DB (se non esistente) e lo aggiorna (in base alla versione) creando e cancellando a
@@ -92,4 +94,12 @@ class DBHelper extends SQLiteOpenHelper {
         editor.clear();
         editor.commit();
     }
+
+    public long lastUpdate(){
+
+        File dbpath = context.getDatabasePath(DB_NAME);
+        return dbpath.lastModified();
+
+    }
+
 }
