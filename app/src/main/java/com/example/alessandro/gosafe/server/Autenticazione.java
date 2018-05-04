@@ -294,6 +294,7 @@ public class Autenticazione {
                     }
 
                     br.close();
+                    System.out.println(sb.toString());
                     return sb.toString();
                 } catch (IOException e) {
                     e.printStackTrace();

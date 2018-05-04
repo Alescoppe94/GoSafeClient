@@ -15,7 +15,14 @@ public class Piano {
 
     }
 
-    public Piano(String immagine, int piano, Tronco[] tronchi) {
+    public Piano(int id, String immagine, int piano) {
+        this.id = id;
+        this.immagine = immagine;
+        this.piano = piano;
+    }
+
+    public Piano(int id, String immagine, int piano, Tronco[] tronchi) {
+        this.id = id;
         this.immagine = immagine;
         this.piano = piano;
         this.tronchi = tronchi;

@@ -14,12 +14,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
-import com.example.alessandro.gosafe.server.RichiestaPercorso;
+import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 
 public class VaiActivity extends DefaultActivity {
 
@@ -46,9 +50,12 @@ public class VaiActivity extends DefaultActivity {
             startService(s);
         }
 
+        Intent u = new Intent(this, CheckForDbUpdatesService.class);
+        startService(u);
+
         //Spinner
-        spinnerVai = (Spinner) findViewById(R.id.spinnerVai);
-        adapter = ArrayAdapter.createFromResource(this, R.array.piani, android.R.layout.simple_spinner_item);
+        spinnerVai= (Spinner) findViewById(R.id.spinnerVai);
+        adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerVai.setAdapter(adapter);
         imageViewVai = (ImageView) findViewById(R.id.imageViewPianoVai);
@@ -56,8 +63,8 @@ public class VaiActivity extends DefaultActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 int position = spinnerVai.getSelectedItemPosition();
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
-                switch (position) {
+                Toast.makeText(getBaseContext(),adapterView.getItemAtPosition(i)+" selected",Toast.LENGTH_LONG).show();
+                switch(position){
                     case 0:
                         imageViewVai.setImageResource(R.drawable.q140);
                         break;
@@ -72,7 +79,6 @@ public class VaiActivity extends DefaultActivity {
                         break;
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -86,24 +92,6 @@ public class VaiActivity extends DefaultActivity {
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
 
-        Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
-        avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calcolaPercorso();
-            }
-        });
-
     }
-
-    private void calcolaPercorso() {
-        DAOUtente daoUtente = new DAOUtente(this);
-        daoUtente.open();
-        Utente utente_attivo = daoUtente.findUtente();
-        daoUtente.close();
-        RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
-        richiestaPercorso.ottieniPercorsoNoEmergenza(this);
-    }
-
 
 }
