@@ -160,7 +160,7 @@ public class DAOTronco {
         ContentValues updateValues = createContentValues(tronco);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + tronco.getId(), null)>0;
             return upd;
         }
         catch (SQLiteException sqle)

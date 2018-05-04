@@ -123,7 +123,7 @@ public class DAOPiano {
         ContentValues updateValues = createContentValues(piano);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + piano.getId(), null)>0;
             return upd;
         }
         catch (SQLiteException sqle)

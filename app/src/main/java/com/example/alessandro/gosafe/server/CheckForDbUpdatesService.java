@@ -57,7 +57,7 @@ public class CheckForDbUpdatesService extends Service {
             public void run() {
                 checkForUpdates();
             }
-        }, 5000, 150000);
+        }, 5000, 15000); //gli aggiornamenti vengono controllati ogni 15 secondi si può cambiare
         return super.onStartCommand(intent, flags, startId);
 
     }
@@ -73,9 +73,7 @@ public class CheckForDbUpdatesService extends Service {
         String result = null;
         File dbpath = getApplicationContext().getDatabasePath("gosafe.db");
         long lastModified = dbpath.lastModified();
-        String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);  //da sostituire con l'ultimo aggiornamento
-
-        System.out.println(formattedDate);
+        String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
         try {
             String request = "http://10.0.2.2:8080/gestionemappe/db/aggiornadb/" + formattedDate;

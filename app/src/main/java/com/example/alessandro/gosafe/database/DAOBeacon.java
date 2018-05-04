@@ -150,7 +150,7 @@ public class DAOBeacon {
         ContentValues updateValues = createContentValues(beacon);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + beacon.getId(), null)>0;
             return upd;
         }
         catch (SQLiteException sqle)
