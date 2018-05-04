@@ -129,8 +129,10 @@ public class DAOBeacon {
         {
             crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
             Boolean ispuntodiraccolta = (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false;
-            Piano piano = new Piano();                                      //TODO: da rivedere se serve(pianodao.getPianoById
-            piano.setPiano(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));  //da rivedere se serve
+            DAOPiano pianoDAO = new DAOPiano(ctx);
+            pianoDAO.open();
+            Piano piano = pianoDAO.getPianoById(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));
+            pianoDAO.close();
             while(crs.moveToNext())
             {
                 beacon = new Beacon(
@@ -173,8 +175,10 @@ public class DAOBeacon {
             crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ISPUNTODIRACCOLTA + " = 1 ",null,null,null,null);
             while(crs.moveToNext())
             {
-                Piano piano = new Piano();                                      //TODO: da rivedere se serve(pianodao.getPianoById
-                piano.setPiano(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));  //da rivedere se serve
+                DAOPiano pianoDAO = new DAOPiano(ctx);
+                pianoDAO.open();
+                Piano piano = pianoDAO.getPianoById(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));
+                pianoDAO.close();
                 Beacon beaconDiRaccolta = new Beacon(
                         crs.getString(crs.getColumnIndex(FIELD_ID)),
                         (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false,

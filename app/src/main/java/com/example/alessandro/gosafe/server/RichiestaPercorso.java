@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.database.DAOBeacon;
+import com.example.alessandro.gosafe.database.DAOPesiTronco;
 import com.example.alessandro.gosafe.database.DAOTronco;
 import com.example.alessandro.gosafe.entity.*;
 import com.google.gson.Gson;
@@ -103,7 +104,7 @@ public class RichiestaPercorso {
             } else {
                 percorso = new Gson().fromJson(result, Percorso.class);
             }
-            //TODO: disegnare su mappa il percorso su mappa
+            //TODO: disegnare il percorso su mappa
         }
     }
 
@@ -181,7 +182,7 @@ public class RichiestaPercorso {
                 Notifica notifica = new Gson().fromJson(result, Notifica.class);
                 percorso = notifica.getPercorso();
             }
-            //TODO: disegnare su mappa il percorso su mappa
+            //TODO: disegnare il percorso su mappa
         }
 
     }
@@ -219,15 +220,14 @@ public class RichiestaPercorso {
     }
 
     //TODO: 1 - valutare se lasciare metodi di calcoloPercorso qui o inserirli in un "controller"
-    //      2 - dao come fo?
-    //      3 - da dove prendo beaconPart e beaconArr?
+    //      2 - da dove prendo beaconPart e beaconArr?
 
     private Percorso calcolaPercorsoNoEmergenza(Context ctx) {
         boolean emergenza = false;
         DAOBeacon beaconDAO = new DAOBeacon(ctx);
         beaconDAO.open();
         Beacon partenza = beaconDAO.getBeaconById(utente_attivo.getBeaconid());
-        Beacon arrivo = beaconDAO.getBeaconById(beaconArr); // prendere dall'interfaccia
+        Beacon arrivo = beaconDAO.getBeaconById(beaconArr); // TODO:prendere dall'interfaccia
         beaconDAO.close();
         Percorso percorso;
 
@@ -352,9 +352,12 @@ public class RichiestaPercorso {
                 }
                 Float costo;
                 if (emergenza){
-                    costo = tronco.calcolaCosto();
+                    costo = tronco.calcolaCosto(ctx);
                 }else{
+                    DAOPesiTronco pesiTroncoDAO = new DAOPesiTronco(ctx);
+                    pesiTroncoDAO.open();
                     costo = pesiTroncoDAO.geValoreByPesoId(tronco.getId(), "l");
+                    pesiTroncoDAO.close();
                 }
                 costo_percorso_parziale += costo;
                 Beacon beacon_finale = percorso_parziale.getLast();

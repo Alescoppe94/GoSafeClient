@@ -1,5 +1,8 @@
 package com.example.alessandro.gosafe.entity;
 
+import android.content.Context;
+import com.example.alessandro.gosafe.database.DAOPesiTronco;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,9 +58,11 @@ public class Tronco {
         this.area = area;
     }
 
-    /*public float calcolaCosto(){
-        PesiTroncoDAO pesiTroncoDAO = new PesiTroncoDAO();
+    public float calcolaCosto(Context ctx){
+        DAOPesiTronco pesiTroncoDAO = new DAOPesiTronco(ctx);
+        pesiTroncoDAO.open();
         HashMap<Float, Float> coeffVal = pesiTroncoDAO.getPesiTronco(this.id);
+        pesiTroncoDAO.close();
         Iterator<Map.Entry<Float, Float>> it = coeffVal.entrySet().iterator();
         float costo = 0;
         while (it.hasNext()) {
@@ -66,6 +71,5 @@ public class Tronco {
         }
         return costo;
 
-    }*/
-
+    }
 }
