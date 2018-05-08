@@ -100,7 +100,7 @@ public class RichiestaPercorso {
             super.onPostExecute(result);
             Percorso percorso;
             if(result==null){
-                percorso = calcolaPercorsoNoEmergenza(ctx);
+                //percorso = calcolaPercorsoNoEmergenza(ctx);
             } else {
                 percorso = new Gson().fromJson(result, Percorso.class);
             }
@@ -177,7 +177,7 @@ public class RichiestaPercorso {
             super.onPostExecute(result);
             Percorso percorso;
             if(result==null){
-                percorso = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(), ctx);
+                //percorso = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(), ctx);
             } else {
                 Notifica notifica = new Gson().fromJson(result, Notifica.class);
                 percorso = notifica.getPercorso();
@@ -222,7 +222,7 @@ public class RichiestaPercorso {
     //TODO: 1 - valutare se lasciare metodi di calcoloPercorso qui o inserirli in un "controller"
     //      2 - da dove prendo beaconPart e beaconArr?
 
-    private Percorso calcolaPercorsoNoEmergenza(Context ctx) {
+    /*private Percorso calcolaPercorsoNoEmergenza(Context ctx) {
         boolean emergenza = false;
         DAOBeacon beaconDAO = new DAOBeacon(ctx);
         beaconDAO.open();
@@ -432,5 +432,5 @@ public class RichiestaPercorso {
 
         return uguali;
 
-    }
+    }*/
 }

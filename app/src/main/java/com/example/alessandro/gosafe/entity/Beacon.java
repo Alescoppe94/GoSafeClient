@@ -9,7 +9,8 @@ public class Beacon {
     private String id;
     private boolean is_puntodiraccolta;
     private Piano piano;
-    
+
+    public Beacon(){}
 
     public Beacon(String id, boolean is_puntodiraccolta, Piano piano) {
         this.id = id;
