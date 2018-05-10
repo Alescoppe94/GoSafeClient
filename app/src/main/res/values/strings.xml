@@ -36,8 +36,5 @@
     <string-array name="piani">
         <item>Piano 140</item>
         <item>Piano 145</item>
-        <item>Piano 150</item>
-        <item>Piano 155</item>
-        <item>Piano 160</item>
     </string-array>
 </resources>
