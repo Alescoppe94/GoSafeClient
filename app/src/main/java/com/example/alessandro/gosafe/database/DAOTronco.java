@@ -58,7 +58,7 @@ public class DAOTronco {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(Tronco tronco)
+    public ContentValues createContentValues(Tronco tronco)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, tronco.getId());

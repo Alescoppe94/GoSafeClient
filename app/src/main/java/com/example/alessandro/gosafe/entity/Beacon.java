@@ -9,13 +9,21 @@ public class Beacon {
     private String id;
     private boolean is_puntodiraccolta;
     private Piano piano;
+    private float coordx;
+    private float coordy;
 
     public Beacon(){}
 
-    public Beacon(String id, boolean is_puntodiraccolta, Piano piano) {
+    public Beacon(String id){
+        this.id = id;
+    }
+
+    public Beacon(String id, boolean is_puntodiraccolta, Piano piano, float coordx, float coordy) {
         this.id = id;
         this.is_puntodiraccolta = is_puntodiraccolta;
         this.piano = piano;
+        this.coordx = coordx;
+        this.coordy = coordy;
     }
 
     public String getId() {
@@ -40,4 +48,19 @@ public class Beacon {
         this.piano = piano;
     }
 
+    public float getCoordx() {
+        return coordx;
+    }
+
+    public void setCoordx(float coordx) {
+        this.coordx = coordx;
+    }
+
+    public float getCoordy() {
+        return coordy;
+    }
+
+    public void setCoordy(float coordy) {
+        this.coordy = coordy;
+    }
 }

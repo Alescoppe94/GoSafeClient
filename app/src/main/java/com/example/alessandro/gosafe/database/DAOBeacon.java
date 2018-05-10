@@ -29,11 +29,15 @@ public class DAOBeacon {
     public static final String FIELD_ID="ID_beacon";
     public static final String FIELD_ISPUNTODIRACCOLTA="is_puntodiraccolta";
     public static final String FIELD_PIANOID="pianoid";
+    public static final String FIELD_COORDX="coordx";
+    public static final String FIELD_COORDY="coordy";
     private static final String[] FIELD_ALL = new String[]
             {
                     FIELD_ID,
                     FIELD_ISPUNTODIRACCOLTA,
-                    FIELD_PIANOID
+                    FIELD_PIANOID,
+                    FIELD_COORDX,
+                    FIELD_COORDY
             };
 
     public DAOBeacon(Context ctx)
@@ -57,7 +61,7 @@ public class DAOBeacon {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(Beacon beacon)
+    public ContentValues createContentValues(Beacon beacon)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, beacon.getId());
@@ -138,7 +142,9 @@ public class DAOBeacon {
                 beacon = new Beacon(
                         crs.getString(crs.getColumnIndex(FIELD_ID)),
                         ispuntodiraccolta,
-                        piano);
+                        piano,
+                        crs.getFloat(crs.getColumnIndex(FIELD_COORDX)),
+                        crs.getFloat(crs.getColumnIndex(FIELD_COORDY)));
             }
             crs.close();
         }
@@ -182,7 +188,9 @@ public class DAOBeacon {
                 Beacon beaconDiRaccolta = new Beacon(
                         crs.getString(crs.getColumnIndex(FIELD_ID)),
                         (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false,
-                        piano);
+                        piano,
+                        crs.getFloat(crs.getColumnIndex(FIELD_COORDX)),
+                        crs.getFloat(crs.getColumnIndex(FIELD_COORDY)));
                 allPuntiDiRaccolta.add(beaconDiRaccolta);
             }
             crs.close();

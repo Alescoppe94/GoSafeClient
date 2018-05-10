@@ -55,7 +55,7 @@ public class DAOPiano {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(Piano piano)
+    public ContentValues createContentValues(Piano piano)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, piano.getId());

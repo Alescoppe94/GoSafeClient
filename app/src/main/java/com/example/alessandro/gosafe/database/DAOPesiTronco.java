@@ -55,7 +55,7 @@ public class DAOPesiTronco {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(int id, int troncoId, int pesoId, float valore)
+    public ContentValues createContentValues(int id, int troncoId, int pesoId, float valore)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, id);

@@ -102,4 +102,23 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public static String getTableTronco() {
+        return TABLE_TRONCO;
+    }
+
+    public static String getTableBeacon() {
+        return TABLE_BEACON;
+    }
+
+    public static String getTablePiano() {
+        return TABLE_PIANO;
+    }
+
+    public static String getTablePeso() {
+        return TABLE_PESO;
+    }
+
+    public static String getTablePesitronco() {
+        return TABLE_PESITRONCO;
+    }
 }

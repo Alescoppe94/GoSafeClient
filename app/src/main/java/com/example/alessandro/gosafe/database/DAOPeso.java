@@ -51,7 +51,7 @@ public class DAOPeso {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(int idPeso, String nome, float coeff)
+    public ContentValues createContentValues(int idPeso, String nome, float coeff)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, idPeso);
