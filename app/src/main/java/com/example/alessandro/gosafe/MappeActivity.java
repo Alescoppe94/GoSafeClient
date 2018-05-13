@@ -74,15 +74,7 @@ public class MappeActivity extends DefaultActivity{
                         load = true;
                         break;
                     case 1:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.quota145));
-                        load = true;
-                        break;
-                    case 2:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.quota150));
-                        load = true;
-                        break;
-                    case 3:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.quota155));
+                        imageViewPiano.setImage(ImageSource.resource(R.drawable.q145));
                         load = true;
                         break;
                 }
@@ -95,44 +87,7 @@ public class MappeActivity extends DefaultActivity{
         });
 
         //serve per definire le gesture da rilevare, per ora lo uso solo per settare il pin con long press
-        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Single tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-            @Override
-            public void onLongPress(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    if(load) {
-                        /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
-                        PointF mCoord = imageViewPiano.sourceToViewCoord((float) 1160 , (float) 2980);
-                        newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
-                        load = false;
-                    }
-                    imageViewPiano.play(sCoord, newCoord);
-                    Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Double tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Double tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        });
+        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener());
 
         //setto il listener per l'evento
         imageViewPiano.setOnTouchListener(new View.OnTouchListener() {
