@@ -27,7 +27,6 @@ public class DAOTronco {
     public static final String FIELD_BEACONAID="beaconAId";
     public static final String FIELD_BEACONBID="beaconBId";
     public static final String FIELD_AGIBILE="agibile";
-    public static final String FIELD_COSTO="costo";
     public static final String FIELD_AREA="area";
     private static final String[] FIELD_ALL = new String[]
             {
@@ -35,7 +34,6 @@ public class DAOTronco {
                     FIELD_BEACONAID,
                     FIELD_BEACONBID,
                     FIELD_AGIBILE,
-                    FIELD_COSTO,
                     FIELD_AREA
             };
 
@@ -67,7 +65,6 @@ public class DAOTronco {
         cv.put(FIELD_BEACONAID, tronco.getBeaconEstremi().get(0).getId());
         cv.put(FIELD_BEACONBID, tronco.getBeaconEstremi().get(1).getId());
         cv.put(FIELD_AGIBILE, tronco.isAgibile());
-        cv.put(FIELD_COSTO, tronco.getCosto());
         cv.put(FIELD_AREA, tronco.getArea());
         return cv;
     }
@@ -143,7 +140,6 @@ public class DAOTronco {
                 tronco = new Tronco(
                         crs.getInt(crs.getColumnIndex(FIELD_ID)),
                         agibile,
-                        crs.getInt(crs.getColumnIndex(FIELD_COSTO)),
                         estremiTronco,
                         crs.getInt(crs.getColumnIndex(FIELD_AREA)));
             }
@@ -164,7 +160,7 @@ public class DAOTronco {
         ContentValues updateValues = createContentValues(tronco);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + tronco.getId(), null)>0;
             return upd;
         }
         catch (SQLiteException sqle)

@@ -294,6 +294,7 @@ public class Autenticazione {
                     }
 
                     br.close();
+                    System.out.println(sb.toString());
                     return sb.toString();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -383,17 +384,17 @@ public class Autenticazione {
     }
 
     public void updateUtente(Context ctx/*, String token*/) {
-        new updateUtenteTask(utente_attivo, ctx/*, token*/).execute();
+        new UpdateUtenteTask(utente_attivo, ctx/*, token*/).execute();
     }
 
-    private class updateUtenteTask extends AsyncTask<Void, Void, String> {
+    private class UpdateUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
         private Context ctx;
         //private String token;
         private ProgressDialog update_in_corso;
         //private AsyncTask<Void, Void, Boolean> execute;
 
-        public updateUtenteTask(Utente utente, Context ctx/*, String token*/) {
+        public UpdateUtenteTask(Utente utente, Context ctx/*, String token*/) {
             this.utente = utente;
             this.ctx = ctx;
             //this.token = token;
@@ -536,6 +537,73 @@ public class Autenticazione {
             }
 
         }
+    }
+
+    public void logoutUtente(Context ctx) {
+        new LogoutUtenteTask(utente_attivo, ctx).execute();
+    }
+
+    private class LogoutUtenteTask extends AsyncTask<Void, Void, String>{
+
+        private Utente utente;
+        private Context ctx;
+        private ProgressDialog logout_in_corso;
+
+        public LogoutUtenteTask(Utente utente, Context ctx) {
+            this.utente = utente;
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            HttpURLConnection conn = null;
+
+            Gson gson = new Gson();
+            String dati_utente = gson.toJson(utente);
+
+            try {
+                URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/logout");
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setRequestMethod("PUT");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setInstanceFollowRedirects(true);
+                conn.connect();
+
+                OutputStream os = conn.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+                osw.write(dati_utente);
+                osw.flush();
+                osw.close();
+
+                /*StringBuilder sbe = new StringBuilder();
+                BufferedReader bre = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+                String inputeLine;
+                while ((inputeLine = bre.readLine()) != null) {
+                    sbe.append(inputeLine + "\n");
+                }
+                System.out.println(sbe.toString());
+                bre.close();*/
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                br.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (conn != null) {
+                    try {
+                        conn.disconnect();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+
+
     }
 
 }

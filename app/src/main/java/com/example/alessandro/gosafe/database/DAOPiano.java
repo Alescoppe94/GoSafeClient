@@ -11,32 +11,32 @@ import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 
 /**
- * Created by Alessandro on 13/04/2018.
+ * Created by Alessandro on 04/05/2018.
  */
 
-public class DAOBeacon {
+public class DAOPiano {
 
     private DBHelper dbhelper;
     private Context ctx;
     private SQLiteDatabase db;
 
-    public static final String TBL_NAME="Beacon";
-    public static final String FIELD_ID="ID_beacon";
-    public static final String FIELD_ISPUNTODIRACCOLTA="is_puntodiraccolta";
-    public static final String FIELD_PIANOID="pianoid";
+    public static final String TBL_NAME="Piano";
+    public static final String FIELD_ID="ID_piano";
+    public static final String FIELD_IMMAGINE="immagine";
+    public static final String FIELD_PIANO="piano";
     private static final String[] FIELD_ALL = new String[]
             {
                     FIELD_ID,
-                    FIELD_ISPUNTODIRACCOLTA,
-                    FIELD_PIANOID
+                    FIELD_IMMAGINE,
+                    FIELD_PIANO
             };
 
-    public DAOBeacon(Context ctx)
+    public DAOPiano(Context ctx)
     {
         this.ctx=ctx;
     }
 
-    public DAOBeacon open() throws SQLException {
+    public DAOPiano open() throws SQLException {
         dbhelper = new DBHelper(ctx);
         try {
             db=dbhelper.getWritableDatabase();
@@ -52,25 +52,25 @@ public class DAOBeacon {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(Beacon beacon)
+    private ContentValues createContentValues(Piano piano)
     {
         ContentValues cv=new ContentValues();
-        cv.put(FIELD_ID, beacon.getId());
-        cv.put(FIELD_ISPUNTODIRACCOLTA, beacon.is_puntodiraccola());
-        cv.put(FIELD_PIANOID, String.valueOf(beacon.getPiano().getId())); // qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
+        cv.put(FIELD_ID, piano.getId());
+        cv.put(FIELD_IMMAGINE, piano.getImmagine());
+        cv.put(FIELD_PIANO, String.valueOf(piano.getPiano())); // qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
         return cv;
     }
 
-    public boolean save(Beacon beacon)
+    public boolean save(Piano piano)
     {
         boolean ins;
-        String id_beacon = beacon.getId();
+        int id_piano = piano.getId();
         Cursor crs;
         try
         {
-            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_piano,null,null,null,null);
             if(crs.getCount()==0){
-                ContentValues initialValues = createContentValues(beacon);
+                ContentValues initialValues = createContentValues(piano);
                 ins = db.insert(TBL_NAME, null, initialValues)>=0;
             }
             else//esiste già un beacon con questo id
@@ -85,11 +85,11 @@ public class DAOBeacon {
         }
     }
 
-    public boolean delete(Beacon beacon)
+    public boolean delete(Piano piano)
     {
         try
         {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + beacon.getId(), null)>0;
+            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + piano.getId(), null)>0;
             return del;
         }
         catch (SQLiteException sqle)
@@ -116,41 +116,14 @@ public class DAOBeacon {
         }
     }
 
-    public Beacon getBeaconById(String id_beacon)
-    {
-        Cursor crs;
-        Beacon beacon=null;
-        try
-        {
-            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
-            Boolean ispuntodiraccolta = (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false;
-            Piano piano = new Piano();                                      //da rivedere se serve
-            piano.setPiano(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));  //da rivedere se serve
-            while(crs.moveToNext())
-            {
-                beacon = new Beacon(
-                        crs.getString(crs.getColumnIndex(FIELD_ID)),
-                        ispuntodiraccolta,
-                        piano);
-            }
-            crs.close();
-        }
-        catch(SQLiteException sqle)
-        {
-            return null;
-        }
-
-        return beacon;
-    }
-
-    public boolean update(Beacon beacon)
+    public boolean update(Piano piano)
     {
         /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
         String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
-        ContentValues updateValues = createContentValues(beacon);
+        ContentValues updateValues = createContentValues(piano);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + beacon.getId(), null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + piano.getId(), null)>0;
             return upd;
         }
         catch (SQLiteException sqle)

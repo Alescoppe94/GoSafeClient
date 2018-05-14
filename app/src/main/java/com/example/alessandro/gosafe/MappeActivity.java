@@ -3,7 +3,9 @@ package com.example.alessandro.gosafe;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -36,6 +38,8 @@ public class MappeActivity extends DefaultActivity{
     private Matrix matrix = new Matrix();
     private ImageView imageView;
     private Float scale =1f;
+    private PointF newCoord;
+    private boolean load = true;
 
     /*roba per menu a tendina*/
     Spinner spinner;
@@ -51,12 +55,14 @@ public class MappeActivity extends DefaultActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
 
+
         spinner=(Spinner)findViewById(R.id.spinner);
         adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
         imageViewPiano = (PinView) findViewById(R.id.imageViewPiano);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -65,15 +71,11 @@ public class MappeActivity extends DefaultActivity{
                 switch (position) {
                     case 0:
                         imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
+                        load = true;
                         break;
                     case 1:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.quota145));
-                        break;
-                    case 2:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.quota150));
-                        break;
-                    case 3:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.quota155));
+                        imageViewPiano.setImage(ImageSource.resource(R.drawable.q145));
+                        load = true;
                         break;
                 }
             }
@@ -85,38 +87,7 @@ public class MappeActivity extends DefaultActivity{
         });
 
         //serve per definire le gesture da rilevare, per ora lo uso solo per settare il pin con long press
-        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Single tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-            @Override
-            public void onLongPress(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    imageViewPiano.play(sCoord);
-                    Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Double tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Double tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        });
+        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener());
 
         //setto il listener per l'evento
         imageViewPiano.setOnTouchListener(new View.OnTouchListener() {

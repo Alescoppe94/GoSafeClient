@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.firebase.MyFirebaseInstanceIdService;
 import com.example.alessandro.gosafe.server.Autenticazione;
 
 public class RegistrazioneActivity extends AppCompatActivity {
