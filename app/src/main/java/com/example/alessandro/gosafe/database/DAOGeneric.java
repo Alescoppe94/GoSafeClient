@@ -64,7 +64,7 @@ public class DAOGeneric{
                 Tronco tronco = new Tronco(jsonObject.get("id").getAsInt(), jsonObject.get("agibile").getAsBoolean(), beaconEstremi, jsonObject.get("area").getAsFloat());
                 DAOTronco daoTronco = new DAOTronco(ctx);
                 ContentValues cv = daoTronco.createContentValues(tronco);
-                db.insert(DBHelper.getTableTronco(), null, cv);
+                db.insert("Tronco", null, cv);
             }
             db.execSQL("DROP TABLE IF EXISTS " + DAOBeacon.TBL_NAME);
             db.execSQL(DBHelper.getTableBeacon());
@@ -75,7 +75,7 @@ public class DAOGeneric{
                 Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano, jsonObject.get("coordx").getAsFloat(), jsonObject.get("coordy").getAsFloat());
                 DAOBeacon daoBeacon = new DAOBeacon(ctx);
                 ContentValues cv = daoBeacon.createContentValues(beacon);
-                db.insert(DBHelper.getTableBeacon(), null, cv);
+                db.insert("Beacon", null, cv);
             }
             db.execSQL("DROP TABLE IF EXISTS " + DAOPiano.TBL_NAME);
             db.execSQL(DBHelper.getTablePiano());
@@ -84,7 +84,7 @@ public class DAOGeneric{
                 Piano piano = new Piano(jsonObject.get("id").getAsInt(), jsonObject.get("immagine").getAsString(), jsonObject.get("piano").getAsInt());
                 DAOPiano daoPiano = new DAOPiano(ctx);
                 ContentValues cv = daoPiano.createContentValues(piano);
-                db.insert(DBHelper.getTablePiano(), null, cv);
+                db.insert("Piano", null, cv);
             }
             db.execSQL("DROP TABLE IF EXISTS " + DAOPeso.TBL_NAME);
             db.execSQL(DBHelper.getTablePeso());
@@ -92,7 +92,7 @@ public class DAOGeneric{
                 JsonObject jsonObject = jsonPeso.getAsJsonObject();
                 DAOPeso daoPeso= new DAOPeso(ctx);
                 ContentValues cv = daoPeso.createContentValues(jsonObject.get("id").getAsInt(), jsonObject.get("nome").getAsString(), jsonObject.get("coefficiente").getAsFloat());
-                db.insert(DBHelper.getTablePeso(), null, cv);
+                db.insert("Peso", null, cv);
             }
             db.execSQL("DROP TABLE IF EXISTS " + DAOPesiTronco.TBL_NAME);
             db.execSQL(DBHelper.getTablePesitronco());
@@ -100,7 +100,7 @@ public class DAOGeneric{
                 JsonObject jsonObject = jsonPesiTronco.getAsJsonObject();
                 DAOPesiTronco daoPesiTronco= new DAOPesiTronco(ctx);
                 ContentValues cv = daoPesiTronco.createContentValues(jsonObject.get("id").getAsInt(), jsonObject.get("troncoId").getAsInt(), jsonObject.get("pesoId").getAsInt(), jsonObject.get("valore").getAsFloat());
-                db.insert(DBHelper.getTablePesitronco(), null, cv);
+                db.insert("PesiTronco", null, cv);
             }
             db.setTransactionSuccessful();
         } catch(Exception e){
