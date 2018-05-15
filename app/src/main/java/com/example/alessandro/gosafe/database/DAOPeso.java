@@ -121,7 +121,7 @@ public class DAOPeso {
         ContentValues updateValues = createContentValues(idPeso, nome, coeff);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + idPeso, null)>0;
             return upd;
         }
         catch (SQLiteException sqle)
