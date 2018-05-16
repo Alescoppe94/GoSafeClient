@@ -19,7 +19,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
@@ -27,8 +31,6 @@ import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
-import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
-import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 public class VaiActivity extends DefaultActivity {
 
