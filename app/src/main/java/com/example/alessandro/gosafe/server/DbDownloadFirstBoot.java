@@ -1,7 +1,9 @@
 package com.example.alessandro.gosafe.server;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.alessandro.gosafe.database.DAOGeneric;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -20,16 +22,17 @@ import java.net.URL;
 public class DbDownloadFirstBoot {
 
 
-    public void dbdownloadFirstBootAsyncTask(){
-        new DbDownloadFirstBootAsyncTask().execute();
+    public void dbdownloadFirstBootAsyncTask(Context ctx){
+        new DbDownloadFirstBootAsyncTask(ctx).execute();
     }
 
     private class DbDownloadFirstBootAsyncTask extends AsyncTask<Void, Void, String>{
 
+        Context ctx;
 
-        public DbDownloadFirstBootAsyncTask(){
+        public DbDownloadFirstBootAsyncTask(Context ctx){
 
-
+            this.ctx=ctx;
 
         }
 
@@ -80,7 +83,10 @@ public class DbDownloadFirstBoot {
 
             JsonObject tabelleJson = gson.fromJson(result, JsonObject.class);
 
-
+            DAOGeneric daoGeneric = new DAOGeneric(ctx);
+            daoGeneric.open();
+            daoGeneric.ricreaDb(tabelleJson);
+            daoGeneric.close();
 
         }
 
