@@ -18,6 +18,11 @@ public class Percorso {
         this.beaconPartenza = beaconPartenza;
     }
 
+    public Percorso(LinkedList<Tappa> tappe, Beacon beaconPartenza) {
+        this.tappe = tappe;
+        this.beaconPartenza = beaconPartenza;
+    }
+
     public int getId() {
         return id;
     }
