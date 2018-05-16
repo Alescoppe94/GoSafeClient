@@ -31,6 +31,8 @@ import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
+import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
+import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 public class VaiActivity extends DefaultActivity {
 
