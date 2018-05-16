@@ -52,8 +52,25 @@ public class VaiActivity extends DefaultActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
 
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+            DAOUtente daoUtente = new DAOUtente(this);
+            daoUtente.open();
+            Utente user = daoUtente.findUtente();
+            daoUtente.close();
+            Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+            bundle.putLong("periodo", 20000);
+            s.putExtras(bundle);
+            startService(s);
+        }
 
-        spinner=(Spinner)findViewById(R.id.spinner);
+        Intent u = new Intent(this, CheckForDbUpdatesService.class);
+        startService(u);
+
+        //Spinner
+        spinner= (Spinner) findViewById(R.id.spinner);
         adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
