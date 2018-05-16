@@ -27,6 +27,7 @@ import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
+import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 public class VaiActivity extends DefaultActivity {
@@ -51,6 +52,9 @@ public class VaiActivity extends DefaultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
+
+        DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
+        dbDownload.dbdownloadFirstBootAsyncTask(this);
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
@@ -156,13 +160,13 @@ public class VaiActivity extends DefaultActivity {
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
 
-        Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
+        /*Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
         avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 calcolaPercorso();
             }
-        });
+        });*/
     }
 
     private void calcolaPercorso() {
