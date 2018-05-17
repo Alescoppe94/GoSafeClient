@@ -7,6 +7,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Alessandro on 04/05/2018.
  */
@@ -51,7 +55,7 @@ public class DAOPesiTronco {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(int id, int troncoId, int pesoId, float valore)
+    public ContentValues createContentValues(int id, int troncoId, int pesoId, float valore)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, id);
@@ -132,4 +136,44 @@ public class DAOPesiTronco {
         }
     }
 
+    public HashMap<Float,Float> getPesiTronco(int troncoId) {
+
+        HashMap<Float, Float> coeffVal = new HashMap<>();
+        Cursor crs;
+        try
+        {
+            crs=db.rawQuery("select valore,coefficiente from " +TBL_NAME + " INNER JOIN Peso on Peso.id = pesoId WHERE troncoId ="+ troncoId,null);
+            while(crs.moveToNext())
+            {
+                coeffVal.put(crs.getFloat(crs.getColumnIndex("coefficiente")), crs.getFloat(crs.getColumnIndex(FIELD_VALORE)));
+            }
+            crs.close();
+        }
+        catch(SQLiteException sqle)
+        {
+            sqle.printStackTrace();
+            return null;
+        }
+        return coeffVal;
+    }
+
+    public Float geValoreByPesoId(int troncoId, String peso) {
+        Float valore = null;
+        Cursor crs;
+        try
+        {
+            crs=db.rawQuery("select valore from " +TBL_NAME + " INNER JOIN Peso on Peso.id = pesoId WHERE troncoId ="+ troncoId + " AND Peso.nome = " + peso,null);
+            while(crs.moveToNext())
+            {
+                valore = crs.getFloat(crs.getColumnIndex(FIELD_VALORE));
+            }
+            crs.close();
+        }
+        catch(SQLiteException sqle)
+        {
+            sqle.printStackTrace();
+            return null;
+        }
+        return valore;
+    }
 }

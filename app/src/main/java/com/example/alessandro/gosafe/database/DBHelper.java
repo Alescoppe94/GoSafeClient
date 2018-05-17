@@ -39,8 +39,8 @@ class DBHelper extends SQLiteOpenHelper {
             DAOBeacon.FIELD_ID + " TEXT PRIMARY KEY NOT NULL, " +
             DAOBeacon.FIELD_ISPUNTODIRACCOLTA + " TEXT NOT NULL, " +
             DAOBeacon.FIELD_PIANOID + " INTEGER NOT NULL, " +
-            DAOBeacon.FIELD_COORDX + " INTEGER NOT NULL, " +
-            DAOBeacon.FIELD_COORDY + " INTEGER NOT NULL)";
+            DAOBeacon.FIELD_COORDX + " FLOAT NOT NULL, " +
+            DAOBeacon.FIELD_COORDY + " FLOAT NOT NULL)";
 
     private static final String TABLE_PIANO = "CREATE TABLE " + DAOPiano.TBL_NAME + " (" +
             DAOPiano.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
@@ -104,4 +104,23 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public static String getTableTronco() {
+        return TABLE_TRONCO;
+    }
+
+    public static String getTableBeacon() {
+        return TABLE_BEACON;
+    }
+
+    public static String getTablePiano() {
+        return TABLE_PIANO;
+    }
+
+    public static String getTablePeso() {
+        return TABLE_PESO;
+    }
+
+    public static String getTablePesitronco() {
+        return TABLE_PESITRONCO;
+    }
 }

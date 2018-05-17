@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteException;
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Tronco;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by Alessandro on 13/04/2018.
@@ -58,7 +58,7 @@ public class DAOTronco {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(Tronco tronco)
+    public ContentValues createContentValues(Tronco tronco)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, tronco.getId());
@@ -170,4 +170,91 @@ public class DAOTronco {
         return false;
     }
 
+    public Tronco getTroncoByBeacons(Beacon beaconA, Beacon beaconB) {
+
+        Cursor crs;
+        Tronco tronco=null;
+        DAOBeacon daoBeacon = new DAOBeacon(ctx);
+        ArrayList<Beacon> estremiTronco = new ArrayList<>();
+        estremiTronco.add(beaconA);
+        estremiTronco.add(beaconB);
+        try
+        {
+            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_BEACONAID+"=" + beaconA.getId() + " AND " + FIELD_BEACONBID+"=" + beaconB.getId() + " OR " + FIELD_BEACONAID+"=" + beaconB.getId() + " AND " + FIELD_BEACONBID+"=" + beaconA.getId(),null,null,null,null);
+            Boolean agibile = (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false;
+            while(crs.moveToNext())
+            {
+                tronco = new Tronco(
+                        crs.getInt(crs.getColumnIndex(FIELD_ID)),
+                        agibile,
+                        estremiTronco,
+                        crs.getInt(crs.getColumnIndex(FIELD_AREA)));
+            }
+            crs.close();
+        }
+        catch(SQLiteException sqle)
+        {
+            sqle.printStackTrace();
+        }
+
+        return tronco;
+    }
+
+    public boolean checkDirezioneTronco(Tronco troncoOttimo) {
+
+        Cursor crs;
+        boolean success = false;
+        try
+        {
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"=" + troncoOttimo.getId() + " AND " + FIELD_BEACONAID+"=" + troncoOttimo.getBeaconEstremi().get(0).getId() + " AND " + FIELD_BEACONBID+"=" + troncoOttimo.getBeaconEstremi().get(1).getId(),null,null,null,null);
+            if(crs.getCount()==1)
+                success = true;
+            crs.close();
+        }
+        catch (SQLiteException sqle)
+        {
+            sqle.printStackTrace();
+        }
+        return success;
+    }
+
+    public Set<Tronco> getAllTronchi() {
+
+        Set<Tronco> allTronchiEdificio = new HashSet<>();
+        Cursor crs;
+        try
+        {
+            crs = db.query(TBL_NAME, FIELD_ALL, null,null,null,null,null);
+            while(crs.moveToNext())
+            {
+                ArrayList<Beacon> estremiOrdinati = new ArrayList<>();
+                ArrayList<Beacon> estremiInvertiti = new ArrayList<>();
+                DAOBeacon beaconDAO = new DAOBeacon(ctx);
+                beaconDAO.open();
+                estremiOrdinati.add(beaconDAO.getBeaconById(crs.getString(crs.getColumnIndex(FIELD_BEACONAID))));
+                estremiOrdinati.add(beaconDAO.getBeaconById(crs.getString(crs.getColumnIndex(FIELD_BEACONBID))));
+                estremiInvertiti.add(beaconDAO.getBeaconById(crs.getString(crs.getColumnIndex(FIELD_BEACONBID))));
+                estremiInvertiti.add(beaconDAO.getBeaconById(crs.getString(crs.getColumnIndex(FIELD_BEACONAID))));
+                beaconDAO.close();
+                Tronco troncoOrd = new Tronco(
+                        crs.getInt(crs.getColumnIndex(FIELD_ID)),
+                        (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false,
+                        estremiOrdinati,
+                        crs.getInt(crs.getColumnIndex(FIELD_AREA)));
+                Tronco troncoInv = new Tronco(
+                        crs.getInt(crs.getColumnIndex(FIELD_ID)),
+                        (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false,
+                        estremiInvertiti,
+                        crs.getInt(crs.getColumnIndex(FIELD_AREA)));
+                allTronchiEdificio.add(troncoOrd);
+                allTronchiEdificio.add(troncoInv);
+            }
+            crs.close();
+        }
+        catch(SQLiteException sqle)
+        {
+            return null;
+        }
+        return allTronchiEdificio;
+    }
 }
