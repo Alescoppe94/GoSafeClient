@@ -138,7 +138,6 @@ public class VaiActivity extends DefaultActivity {
                     PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
                     if(load) {
                         /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
-
                         PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
                         newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
                         load = false;
