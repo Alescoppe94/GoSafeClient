@@ -2,6 +2,7 @@ package com.example.alessandro.gosafe;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
@@ -27,7 +28,9 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
@@ -40,6 +43,8 @@ public class VaiActivity extends DefaultActivity {
     private Float scale =1f;
     private PointF newCoord;
     private boolean load = true;
+    int position;
+    DAOBeacon beacon;
 
     /*roba per menu a tendina*/
     Spinner spinner;
@@ -55,6 +60,8 @@ public class VaiActivity extends DefaultActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
 
+        beacon = new DAOBeacon(this);
+        beacon.open();
 
         spinner=(Spinner)findViewById(R.id.spinner);
         adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
@@ -66,7 +73,7 @@ public class VaiActivity extends DefaultActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int position = spinner.getSelectedItemPosition();
+                position = spinner.getSelectedItemPosition();
                 Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
                 switch (position) {
                     case 0:
@@ -92,35 +99,25 @@ public class VaiActivity extends DefaultActivity {
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (imageViewPiano.isReady()) {
                     PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Single tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-            @Override
-            public void onLongPress(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    if(load) {
+                    if (load){
                         /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
+
+                        Cursor crs = beacon.getAllBeacon(String.valueOf(position));
+                        System.out.println("Crs "+crs.toString());
+                        while(crs.isFirst())
+                        {
+                            System.out.println("Piano "+crs.getString(crs.getColumnIndex("id")));
+                        }
+                        //crs.close();
+
                         PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
                         newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
                         load = false;
                     }
                     imageViewPiano.play(sCoord, newCoord);
-                    Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Single tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Double tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Double tap: Image not ready", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }

@@ -38,7 +38,9 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_BEACON = "CREATE TABLE " + DAOBeacon.TBL_NAME + " (" +
             DAOBeacon.FIELD_ID + " TEXT PRIMARY KEY NOT NULL, " +
             DAOBeacon.FIELD_ISPUNTODIRACCOLTA + " TEXT NOT NULL, " +
-            DAOBeacon.FIELD_PIANOID + " INTEGER NOT NULL)";
+            DAOBeacon.FIELD_PIANOID + " INTEGER NOT NULL, " +
+            DAOBeacon.FIELD_COORDX + " INTEGER NOT NULL, " +
+            DAOBeacon.FIELD_COORDY + " INTEGER NOT NULL)";
 
     private static final String TABLE_PIANO = "CREATE TABLE " + DAOPiano.TBL_NAME + " (" +
             DAOPiano.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +

@@ -21,14 +21,18 @@ public class DAOBeacon {
     private SQLiteDatabase db;
 
     public static final String TBL_NAME="Beacon";
-    public static final String FIELD_ID="ID_beacon";
+    public static final String FIELD_ID="id";
     public static final String FIELD_ISPUNTODIRACCOLTA="is_puntodiraccolta";
-    public static final String FIELD_PIANOID="pianoid";
+    public static final String FIELD_PIANOID="pianoId";
+    public static final String FIELD_COORDX="coordx";
+    public static final String FIELD_COORDY="coordy";
     private static final String[] FIELD_ALL = new String[]
             {
                     FIELD_ID,
                     FIELD_ISPUNTODIRACCOLTA,
-                    FIELD_PIANOID
+                    FIELD_PIANOID,
+                    FIELD_COORDX,
+                    FIELD_COORDY
             };
 
     public DAOBeacon(Context ctx)
@@ -159,5 +163,24 @@ public class DAOBeacon {
             return false;
         }
     }
+
+    public Cursor getAllBeacon(String posizione)
+    {
+        System.out.println("Posizione "+posizione);
+        Cursor crs;
+        try
+        {
+            /*crs=db.rawQuery("SELECT * FROM Beacon WHERE pianoid = ? ", new String [] {posizione});*/
+            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_PIANOID+"="+ posizione,null,null,null,null, null);
+        }
+        catch(SQLiteException sqle)
+        {
+            System.out.println("ECCEZIONE");
+            return null;
+        }
+
+        return crs;
+    }
+
 
 }
