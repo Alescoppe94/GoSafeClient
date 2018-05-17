@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.server.AggiornamentoInfoServer;
@@ -29,7 +30,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             aggiornamentoInfoServer.aggiornamentoDbClient(body);
 
         }else if(remoteMessage.getNotification().getTitle().equals("Java")) {*/
-            Intent intent = new Intent(this, VaiActivity.class);
+            Intent intent = new Intent(this, EmergenzaActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
