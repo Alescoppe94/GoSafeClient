@@ -65,6 +65,13 @@
                 android:adjustViewBounds="true"
                 android:scaleType="matrix" />
 
+            <Button
+                android:id="@+id/avvia_percorso_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Avvia Percorso" android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
+
 
         </LinearLayout>
 

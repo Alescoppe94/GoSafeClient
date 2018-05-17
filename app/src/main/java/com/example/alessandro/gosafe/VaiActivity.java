@@ -2,6 +2,8 @@ package com.example.alessandro.gosafe;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
@@ -13,6 +15,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.FloatMath;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,10 +31,13 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
+import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
+import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 public class VaiActivity extends DefaultActivity {
 
@@ -40,12 +47,17 @@ public class VaiActivity extends DefaultActivity {
     private Float scale =1f;
     private PointF newCoord;
     private boolean load = true;
+    float distance;
+    float temp=10000000;
+    int idbeacon;
 
     /*roba per menu a tendina*/
     Spinner spinner;
     private PinView pinView;
     int x;
     int y;
+    DAOBeacon daoBeacon;
+    int position;
 
     ArrayAdapter<CharSequence> adapter;
     private PinView imageViewPiano;
@@ -55,7 +67,10 @@ public class VaiActivity extends DefaultActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
 
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
+        dbDownload.dbdownloadFirstBootAsyncTask(this);
+
+        /*BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             DAOUtente daoUtente = new DAOUtente(this);
             daoUtente.open();
@@ -67,9 +82,15 @@ public class VaiActivity extends DefaultActivity {
             bundle.putLong("periodo", 20000);
             s.putExtras(bundle);
             startService(s);
-        }
+        }*/
+        daoBeacon = new DAOBeacon(this);
+        daoBeacon.open();
 
-        spinner=(Spinner)findViewById(R.id.spinner);
+        Intent u = new Intent(this, CheckForDbUpdatesService.class);
+        startService(u);
+
+        //Spinner
+        spinner= (Spinner) findViewById(R.id.spinner);
         adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -79,7 +100,7 @@ public class VaiActivity extends DefaultActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int position = spinner.getSelectedItemPosition();
+                position = spinner.getSelectedItemPosition();
                 Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
                 switch (position) {
                     case 0:
@@ -117,10 +138,26 @@ public class VaiActivity extends DefaultActivity {
                     PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
                     if(load) {
                         /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
+
                         PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
                         newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
                         load = false;
                     }
+                    Cursor cursor;
+                    cursor = daoBeacon.getAllBeaconInPiano(position);
+                    Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+                    while (cursor.moveToNext()){
+                        int coordx = cursor.getInt(cursor.getColumnIndex("coordx"));
+                        int coordy = cursor.getInt(cursor.getColumnIndex("coordy"));
+                        distance = (float)Math.sqrt(((sCoord.x-coordx)*(sCoord.x-coordx))+((sCoord.y-coordy)*(sCoord.y-coordy)));
+                        System.out.println("Distanza: " +distance);
+                        if (distance < temp){
+                            temp=distance;
+                            idbeacon=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
+                        }
+                    }
+                    System.out.println("Id del beacon + vicino: "+idbeacon);
+                    temp=10000000;
                     imageViewPiano.play(sCoord, newCoord);
                     Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
                 } else {
@@ -154,6 +191,29 @@ public class VaiActivity extends DefaultActivity {
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+
+        /*Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
+        avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calcolaPercorso();
+            }
+        });*/
+    }
+
+    private void calcolaPercorso() {
+        DAOUtente daoUtente = new DAOUtente(this);
+        daoUtente.open();
+        Utente utente_attivo = daoUtente.findUtente();
+        daoUtente.close();
+        RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
+        richiestaPercorso.ottieniPercorsoNoEmergenza(this);
+    }
+
+    @Override
+    public void onDestroy(){
+        daoBeacon.close();
+        super.onDestroy();
 
     }
 
