@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -49,10 +50,8 @@ public class VaiActivity extends DefaultActivity {
     private Float scale =1f;
     private PointF newCoord;
     private boolean load = true;
-    int position;
-    DAOBeacon beacon;
     float distance;
-    float temp;
+    float temp=10000000;
     int idbeacon;
 
     /*roba per menu a tendina*/
@@ -60,6 +59,8 @@ public class VaiActivity extends DefaultActivity {
     private PinView pinView;
     int x;
     int y;
+    DAOBeacon daoBeacon;
+    int position;
 
     ArrayAdapter<CharSequence> adapter;
     private PinView imageViewPiano;
@@ -71,8 +72,6 @@ public class VaiActivity extends DefaultActivity {
 
         DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
         dbDownload.dbdownloadFirstBootAsyncTask(this);
-        beacon = new DAOBeacon(this);
-        beacon.open();
 
         /*BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
@@ -87,6 +86,8 @@ public class VaiActivity extends DefaultActivity {
             s.putExtras(bundle);
             startService(s);
         }*/
+        daoBeacon = new DAOBeacon(this);
+        daoBeacon.open();
 
         Intent u = new Intent(this, CheckForDbUpdatesService.class);
         startService(u);
@@ -152,36 +153,47 @@ public class VaiActivity extends DefaultActivity {
                     Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
                 }
                 return true;
-
-                   /* if (imageViewPiano.isReady()) {
-                        PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                        if(load) {
+            }
+            @Override
+            public void onLongPress(MotionEvent e) {
+                if (imageViewPiano.isReady()) {
+                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
+                    if(load) {
                         /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
-
-                       /*     PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
-                            newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
-                            load = false;
-                        }
-                        Cursor cursor;
-                        cursor = beacon.getAllBeacon(position);
-                        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
-                        while (cursor.moveToNext()){
-                            int coordx = cursor.getInt(cursor.getColumnIndex("coordx"));
-                            int coordy = cursor.getInt(cursor.getColumnIndex("coordy"));
-                            distance = (float)Math.sqrt(((sCoord.x-coordx)*(sCoord.x-coordx))+((sCoord.y-coordy)*(sCoord.y-coordy)));
-                            if (distance < temp){
-                                temp=distance;
-                                idbeacon=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
-                            }
-                        }
-                        System.out.println("Id del beacon + vicino: "+idbeacon);
-                        temp=10000000;
-                        imageViewPiano.play(sCoord, newCoord);
-                        Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
+                        PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
+                        newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
+                        load = false;
                     }
-                return true;*/
+                    Cursor cursor;
+                    cursor = daoBeacon.getAllBeaconInPiano(position);
+                    Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+                    while (cursor.moveToNext()){
+                        int coordx = cursor.getInt(cursor.getColumnIndex("coordx"));
+                        int coordy = cursor.getInt(cursor.getColumnIndex("coordy"));
+                        distance = (float)Math.sqrt(((sCoord.x-coordx)*(sCoord.x-coordx))+((sCoord.y-coordy)*(sCoord.y-coordy)));
+                        System.out.println("Distanza: " +distance);
+                        if (distance < temp){
+                            temp=distance;
+                            idbeacon=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
+                        }
+                    }
+                    System.out.println("Id del beacon + vicino: "+idbeacon);
+                    temp=10000000;
+                    imageViewPiano.play(sCoord, newCoord);
+                    Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (imageViewPiano.isReady()) {
+                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
+                    Toast.makeText(getApplicationContext(), "Double tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Double tap: Image not ready", Toast.LENGTH_SHORT).show();
+                }
+                return true;
             }
         });
 
@@ -221,7 +233,9 @@ public class VaiActivity extends DefaultActivity {
 
     @Override
     public void onDestroy(){
-        beacon.close();
+        daoBeacon.close();
         super.onDestroy();
+
     }
+
 }

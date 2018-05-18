@@ -204,19 +204,9 @@ public class DAOBeacon {
         return allPuntiDiRaccolta;
     }
 
-    public Cursor getAllBeacon(int posizione)
-    {
+    public Cursor getAllBeaconInPiano(int position){
         Cursor crs;
-        try
-        {
-           crs=db.query(TBL_NAME, FIELD_ALL, FIELD_PIANOID+"="+ posizione,null,null,null,null, null);
-        }
-        catch(SQLiteException sqle)
-        {
-            return null;
-        }
-
+        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_PIANOID+"="+position,null,null,null,null);
         return crs;
-        }
-
+    }
 }
