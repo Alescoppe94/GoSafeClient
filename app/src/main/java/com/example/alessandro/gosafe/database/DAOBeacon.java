@@ -203,23 +203,20 @@ public class DAOBeacon {
         }
         return allPuntiDiRaccolta;
     }
-    public Cursor getAllBeacon(String posizione)
+
+    public Cursor getAllBeacon(int posizione)
     {
-        System.out.println("Posizione "+posizione);
         Cursor crs;
         try
         {
-            /*crs=db.rawQuery("SELECT * FROM Beacon WHERE pianoid = ? ", new String [] {posizione});*/
-            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_PIANOID+"="+ posizione,null,null,null,null, null);
+           crs=db.query(TBL_NAME, FIELD_ALL, FIELD_PIANOID+"="+ posizione,null,null,null,null, null);
         }
         catch(SQLiteException sqle)
         {
-            System.out.println("ECCEZIONE");
             return null;
         }
 
         return crs;
-    }
-
+        }
 
 }

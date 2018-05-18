@@ -2,7 +2,7 @@ package com.example.alessandro.gosafe.server;
 
 import android.app.Service;
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
+import java.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.IBinder;
@@ -72,7 +72,7 @@ public class CheckForDbUpdatesService extends Service {
         String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
         try {
-            String request = "http://10.0.2.2:8080/gestionemappe/db/aggiornadb/" + formattedDate;
+            String request = "http://192.168.1.197:8080/gestionemappe/db/aggiornadb/" + formattedDate;
             URL url = new URL(request);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");

@@ -3,6 +3,7 @@ package com.example.alessandro.gosafe;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +39,8 @@ import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
+import java.util.Set;
+
 public class VaiActivity extends DefaultActivity {
 
     private ScaleGestureDetector SGD;
@@ -47,6 +51,9 @@ public class VaiActivity extends DefaultActivity {
     private boolean load = true;
     int position;
     DAOBeacon beacon;
+    float distance;
+    float temp;
+    int idbeacon;
 
     /*roba per menu a tendina*/
     Spinner spinner;
@@ -67,7 +74,7 @@ public class VaiActivity extends DefaultActivity {
         beacon = new DAOBeacon(this);
         beacon.open();
 
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        /*BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             DAOUtente daoUtente = new DAOUtente(this);
             daoUtente.open();
@@ -79,7 +86,7 @@ public class VaiActivity extends DefaultActivity {
             bundle.putLong("periodo", 20000);
             s.putExtras(bundle);
             startService(s);
-        }
+        }*/
 
         Intent u = new Intent(this, CheckForDbUpdatesService.class);
         startService(u);
@@ -124,13 +131,16 @@ public class VaiActivity extends DefaultActivity {
                     if (load){
                         /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
 
-                        Cursor crs = beacon.getAllBeacon(String.valueOf(position));
+                       /* Set<Beacon> punti = beacon.getAllBeacon(position);
                         System.out.println("Crs "+crs.toString());
-                        while(crs.isFirst())
+                        for(int i=0; i < punti.size(); i++)
                         {
-                            System.out.println("Piano "+crs.getString(crs.getColumnIndex("id")));
-                        }
+                            System.out.println("Piano "+);
+                        }*/
                         //crs.close();
+
+                  //      Cursor crs = beacon.getAllBeacon(position);
+                    //    Log.v("Cursor Object ", DatabaseUtils.dumpCursorToString(crs));
 
                         PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
                         newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
@@ -142,6 +152,36 @@ public class VaiActivity extends DefaultActivity {
                     Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
                 }
                 return true;
+
+                   /* if (imageViewPiano.isReady()) {
+                        PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
+                        if(load) {
+                        /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
+
+                       /*     PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
+                            newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
+                            load = false;
+                        }
+                        Cursor cursor;
+                        cursor = beacon.getAllBeacon(position);
+                        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+                        while (cursor.moveToNext()){
+                            int coordx = cursor.getInt(cursor.getColumnIndex("coordx"));
+                            int coordy = cursor.getInt(cursor.getColumnIndex("coordy"));
+                            distance = (float)Math.sqrt(((sCoord.x-coordx)*(sCoord.x-coordx))+((sCoord.y-coordy)*(sCoord.y-coordy)));
+                            if (distance < temp){
+                                temp=distance;
+                                idbeacon=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
+                            }
+                        }
+                        System.out.println("Id del beacon + vicino: "+idbeacon);
+                        temp=10000000;
+                        imageViewPiano.play(sCoord, newCoord);
+                        Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
+                    }
+                return true;*/
             }
         });
 
@@ -179,4 +219,9 @@ public class VaiActivity extends DefaultActivity {
         richiestaPercorso.ottieniPercorsoNoEmergenza(this);
     }
 
+    @Override
+    public void onDestroy(){
+        beacon.close();
+        super.onDestroy();
+    }
 }
