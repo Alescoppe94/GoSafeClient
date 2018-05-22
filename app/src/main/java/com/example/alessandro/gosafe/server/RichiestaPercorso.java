@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://192.168.1.197:8080";
+    private final String PATH = "http://10.0.2.2:8080";
     private Utente utente_attivo;
 
 
@@ -35,7 +35,7 @@ public class RichiestaPercorso {
     private class OttieniPercorsoNoEmergenzaTask extends AsyncTask<Void, Void, String>{
 
         private Context ctx;
-        private AsyncTask<Void, Void, Boolean> execute;
+        private boolean connesso;
 
         public OttieniPercorsoNoEmergenzaTask(Context ctx){
             this.ctx = ctx;
@@ -44,21 +44,12 @@ public class RichiestaPercorso {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            execute = new checkConnessioneTask().execute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
         }
 
         @Override
         protected String doInBackground(Void... voids) {
-
-            boolean connesso = false;
-
-            try {
-                connesso = execute.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
 
             if (!connesso) {
                 return null;
@@ -112,7 +103,7 @@ public class RichiestaPercorso {
 
     private class VisualizzaPercorsoTask extends AsyncTask<Void,Void,String> {
         private Context ctx;
-        private AsyncTask<Void,Void,Boolean> execute;
+        private boolean connesso;
 
         public VisualizzaPercorsoTask(Context ctx) {
             this.ctx = ctx;
@@ -121,21 +112,12 @@ public class RichiestaPercorso {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            execute = new checkConnessioneTask().execute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
         }
 
         @Override
         protected String doInBackground(Void... voids) {
-
-            boolean connesso = false;
-
-            try {
-                connesso = execute.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
 
             if (!connesso) {
                 return null;
@@ -185,38 +167,6 @@ public class RichiestaPercorso {
             //TODO: disegnare il percorso su mappa
         }
 
-    }
-
-    private class checkConnessioneTask extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... arg0) {
-            try {
-                conn = (HttpURLConnection) new URL(PATH + "/").openConnection();
-                conn.setConnectTimeout(3000);
-                conn.setReadTimeout(3000);
-                conn.setRequestMethod("HEAD");
-                int responseCode = conn.getResponseCode();
-                return (200 <= responseCode && responseCode <= 399);
-            } catch (IOException exception) {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... arg0) {
-
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-
-        }
     }
 
     //TODO: 1 - valutare se lasciare metodi di calcoloPercorso qui o inserirli in un "controller"

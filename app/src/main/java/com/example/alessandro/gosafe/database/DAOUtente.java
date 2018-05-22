@@ -202,6 +202,26 @@ public class DAOUtente {
         }
     }
 
+    public Utente getUserByUsername(String username) {
+        Utente utente = null;
+        Cursor  cursor = db.query(TBL_NAME, FIELD_ALL, FIELD_USER+" = '" + username + "'",null,null,null,null);
+        if (cursor.moveToFirst()) {
+
+            utente = new Utente(
+                    cursor.getLong(cursor.getColumnIndex(FIELD_ID)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_USER)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_PASS)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_NOME)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_COGNOME)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_BEACONID)),
+                    cursor.getInt(cursor.getColumnIndex(FIELD_PERCORSOID)),
+                    true,
+                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)));
+        }
+        cursor.close();
+        return utente;
+    }
+
    /* public Utente findByUsername(String username)
     {
         Cursor crs;

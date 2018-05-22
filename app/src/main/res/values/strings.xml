@@ -26,6 +26,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="error_invalid_login_hostuser">Non è stato possibile effettuare il login in quanto il server non è al momento disponibile. Potrai comunque, in maniera anonima, navigare verso un punto dell\'edificio</string>
 
     <!-- Strings related to update -->
     <string name="update_in_corso">Modifica in corso, attendere...</string>
