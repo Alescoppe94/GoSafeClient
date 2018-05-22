@@ -33,11 +33,14 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
+
+import java.util.Set;
 
 public class VaiActivity extends DefaultActivity {
 
@@ -126,6 +129,25 @@ public class VaiActivity extends DefaultActivity {
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (imageViewPiano.isReady()) {
                     PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
+                    if (load){
+                        /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
+
+                       /* Set<Beacon> punti = beacon.getAllBeacon(position);
+                        System.out.println("Crs "+crs.toString());
+                        for(int i=0; i < punti.size(); i++)
+                        {
+                            System.out.println("Piano "+);
+                        }*/
+                        //crs.close();
+
+                  //      Cursor crs = beacon.getAllBeacon(position);
+                    //    Log.v("Cursor Object ", DatabaseUtils.dumpCursorToString(crs));
+
+                        PointF mCoord = imageViewPiano.sourceToViewCoord((float) 346 , (float) 1072);
+                        newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
+                        load = false;
+                    }
+                    imageViewPiano.play(sCoord, newCoord);
                     Toast.makeText(getApplicationContext(), "Single tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
