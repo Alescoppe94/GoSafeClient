@@ -1,8 +1,10 @@
 package com.example.alessandro.gosafe.server;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.database.DAOGeneric;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -29,6 +31,7 @@ public class DbDownloadFirstBoot {
     private class DbDownloadFirstBootAsyncTask extends AsyncTask<Void, Void, String>{
 
         Context ctx;
+        private boolean connesso;
 
         public DbDownloadFirstBootAsyncTask(Context ctx){
 
@@ -37,41 +40,51 @@ public class DbDownloadFirstBoot {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
+        }
+
+        @Override
         protected String doInBackground(Void... voids) {
 
-            HttpURLConnection connection = null;
+            if(!connesso){
+                return null;
+            } else {
+                HttpURLConnection connection = null;
 
-            try {
-                URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/download");
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.connect();
+                try {
+                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/download");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.connect();
 
-                StringBuilder sb = new StringBuilder();
+                    StringBuilder sb = new StringBuilder();
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                String inputLine;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                    String inputLine;
 
-                while ((inputLine = br.readLine()) != null) {
-                    sb.append(inputLine + "\n");
-                }
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+                    }
 
-                br.close();
-                return sb.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    try {
-                        connection.disconnect();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    br.close();
+                    return sb.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        try {
+                            connection.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
-
             return null;
         }
 
@@ -79,15 +92,16 @@ public class DbDownloadFirstBoot {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
 
-            Gson gson = new Gson();
+            if(result!=null) {
+                Gson gson = new Gson();
 
-            JsonObject tabelleJson = gson.fromJson(result, JsonObject.class);
+                JsonObject tabelleJson = gson.fromJson(result, JsonObject.class);
 
-            DAOGeneric daoGeneric = new DAOGeneric(ctx);
-            daoGeneric.open();
-            daoGeneric.ricreaDb(tabelleJson);
-            daoGeneric.close();
-
+                DAOGeneric daoGeneric = new DAOGeneric(ctx);
+                daoGeneric.open();
+                daoGeneric.ricreaDb(tabelleJson);
+                daoGeneric.close();
+            }
         }
 
     }

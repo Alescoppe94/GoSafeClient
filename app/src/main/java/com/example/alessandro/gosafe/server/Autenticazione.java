@@ -323,6 +323,8 @@ public class Autenticazione {
                         utente.setNome(utentedb.getNome());
                         utente.setCognome(utentedb.getCognome());
                         utente.setIs_autenticato(true);
+                        Intent i = new Intent(ctx, VaiActivity.class);
+                        ctx.startActivity(i);
                     } else {
                         AlertDialog password_errata = new AlertDialog.Builder(ctx).create();
                         password_errata.setTitle("Password errata");
@@ -418,7 +420,7 @@ public class Autenticazione {
         private Context ctx;
         //private String token;
         private ProgressDialog update_in_corso;
-        //private AsyncTask<Void, Void, Boolean> execute;
+        private boolean connesso;
 
         public UpdateUtenteTask(Utente utente, Context ctx/*, String token*/) {
             this.utente = utente;
@@ -435,20 +437,12 @@ public class Autenticazione {
             update_in_corso.setCanceledOnTouchOutside(false);
             update_in_corso.setMessage(ctx.getString(R.string.update_in_corso));
             update_in_corso.show();
-            //execute = new controlloConnessioneTask().execute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
         }
 
         @Override
         protected String doInBackground(Void... arg0) {
-            boolean connesso = true;
-
-            /*try {
-                connesso = execute.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
 
             if (!connesso) {
                 return null;
@@ -517,17 +511,17 @@ public class Autenticazione {
             JsonObject jsonResponse = new Gson().fromJson(result, JsonObject.class);
 
             if (result == null) {
-                AlertDialog registrazione_impossibile = new AlertDialog.Builder(ctx).create();
-                registrazione_impossibile.setTitle("Impossibile effettuare la modifica");
-                registrazione_impossibile.setMessage(ctx.getString(R.string.server_not_respond_registrazione));
-                registrazione_impossibile.setCanceledOnTouchOutside(false);
-                registrazione_impossibile.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                AlertDialog update_impossibile = new AlertDialog.Builder(ctx).create();
+                update_impossibile.setTitle("Impossibile effettuare la modifica");
+                update_impossibile.setMessage(ctx.getString(R.string.server_not_respond_update_info_utente));
+                update_impossibile.setCanceledOnTouchOutside(false);
+                update_impossibile.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         });
-                registrazione_impossibile.show();
+                update_impossibile.show();
             } else if(jsonResponse.has("esito")) {
                 if (jsonResponse.get("esito").getAsString().equals("Username in uso")) {
                     AlertDialog username_in_uso = new AlertDialog.Builder(ctx).create();
@@ -574,6 +568,7 @@ public class Autenticazione {
         private Utente utente;
         private Context ctx;
         private ProgressDialog logout_in_corso;
+        private boolean connesso;
 
         public LogoutUtenteTask(Utente utente, Context ctx) {
             this.utente = utente;
@@ -581,28 +576,38 @@ public class Autenticazione {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
+        }
+
+        @Override
         protected String doInBackground(Void... voids) {
 
-            HttpURLConnection conn = null;
+            if (!connesso) {
+                return null;
+            } else {
+                HttpURLConnection conn = null;
 
-            Gson gson = new Gson();
-            String dati_utente = gson.toJson(utente);
+                Gson gson = new Gson();
+                String dati_utente = gson.toJson(utente);
 
-            try {
-                URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/logout");
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("PUT");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setInstanceFollowRedirects(true);
-                conn.connect();
+                try {
+                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/logout");
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setRequestMethod("PUT");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setInstanceFollowRedirects(true);
+                    conn.connect();
 
-                OutputStream os = conn.getOutputStream();
-                OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-                osw.write(dati_utente);
-                osw.flush();
-                osw.close();
+                    OutputStream os = conn.getOutputStream();
+                    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+                    osw.write(dati_utente);
+                    osw.flush();
+                    osw.close();
 
                 /*StringBuilder sbe = new StringBuilder();
                 BufferedReader bre = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
@@ -612,21 +617,42 @@ public class Autenticazione {
                 }
                 System.out.println(sbe.toString());
                 bre.close();*/
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                br.close();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    br.close();
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (conn != null) {
-                    try {
-                        conn.disconnect();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (conn != null) {
+                        try {
+                            conn.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+                return null;
             }
-            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result == null) {
+                AlertDialog logout_impossibile = new AlertDialog.Builder(ctx).create();
+                logout_impossibile.setTitle("Impossibile effettuare il logout");
+                logout_impossibile.setMessage(ctx.getString(R.string.server_not_respond_logout));
+                logout_impossibile.setCanceledOnTouchOutside(false);
+                logout_impossibile.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                logout_impossibile.show();
+            } else {
+                //TODO: dove vado dopo il logout?5
+            }
         }
 
 

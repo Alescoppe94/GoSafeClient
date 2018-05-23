@@ -31,6 +31,10 @@
     <!-- Strings related to update -->
     <string name="update_in_corso">Modifica in corso, attendere...</string>
     <string name="update_effettuata">Modifica effettuata con successo.</string>
+    <string name="server_not_respond_update_info_utente">Non è stato possibile effettuare la modifica dei dati in quanto il server non è al momento disponibile. Riprova più tardi.</string>
+
+    <!-- Strings related to login -->
+    <string name="server_not_respond_logout">Non è stato possibile effettuare il logout in quanto il server non è al momento disponibile. Riprova più tardi.</string>
 
     <!-- Strings related to Mappe-->
     <string name="seleziona_piano">Seleziona un piano</string>

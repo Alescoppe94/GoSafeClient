@@ -66,21 +66,27 @@ public class CheckForDbUpdatesService extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void checkForUpdates(){
-        String result = null;
-        File dbpath = getApplicationContext().getDatabasePath("gosafe.db");
-        long lastModified = dbpath.lastModified();
-        String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
-        try {
-            String request = "http://10.0.2.2:8080/gestionemappe/db/aggiornadb/" + formattedDate;
-            URL url = new URL(request);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.connect();
+        CheckConnessione checkConnessione = new CheckConnessione();
+        boolean connesso = checkConnessione.checkConnessione();
 
-            StringBuilder sb = new StringBuilder();
+        if(connesso) {
+
+            String result = null;
+            File dbpath = getApplicationContext().getDatabasePath("gosafe.db");
+            long lastModified = dbpath.lastModified();
+            String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
+
+            try {
+                String request = "http://10.0.2.2:8080/gestionemappe/db/aggiornadb/" + formattedDate;
+                URL url = new URL(request);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.connect();
+
+                StringBuilder sb = new StringBuilder();
             /*StringBuilder sbe = new StringBuilder();
             BufferedReader bre = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
             String inputeLine;
@@ -89,28 +95,29 @@ public class CheckForDbUpdatesService extends Service {
             }
             System.out.println(sbe.toString());
             bre.close();*/
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-            String inputLine;
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                String inputLine;
 
-            while ((inputLine = br.readLine()) != null) {
-                sb.append(inputLine + "\n");
-            }
+                while ((inputLine = br.readLine()) != null) {
+                    sb.append(inputLine + "\n");
+                }
 
-            br.close();
-            result = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                br.close();
+                result = sb.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    try {
+                        connection.disconnect();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
-        if(result != null){
-            updateDB(result);
+            if (result != null) {
+                updateDB(result);
+            }
         }
     }
 
