@@ -34,6 +34,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
@@ -212,7 +213,7 @@ public class VaiActivity extends DefaultActivity {
                         e1.printStackTrace();
                     }
                     System.out.println("Vai activity: richiesta percorso -> " +richiestaPercorso.percorsoPost);
-                    
+
                     //DISEGNO DEL PERCORSO
 
                 } else {

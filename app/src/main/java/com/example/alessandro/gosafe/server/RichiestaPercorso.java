@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://192.168.1.111:8080";
+    private final String PATH = "http://192.168.1.197:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     private ArrayList<Integer> coorddelpercorso = new ArrayList<Integer>();
