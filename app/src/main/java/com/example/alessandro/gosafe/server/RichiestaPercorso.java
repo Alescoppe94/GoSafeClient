@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://192.168.1.197:8080";
+    private final String PATH = "http://192.168.1.60:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     private ArrayList<Integer> coorddelpercorso = new ArrayList<Integer>();
@@ -124,7 +124,7 @@ public class RichiestaPercorso {
             // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
             percorso.add(Integer.parseInt(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
-            for(int i = 1 ; i< percorsoPost.getTappe().size()-1;i=i+2){ //1 8 8 4 4
+            for(int i = 1 ; i< percorsoPost.getTappe().size()-1;i++){ //1 8 8 4 4
                 Tappa tappa = percorsoPost.getTappe().get(i);
                 percorso.add(Integer.parseInt(tappa.getTronco().getBeaconEstremi().get(0).getId()));
 
