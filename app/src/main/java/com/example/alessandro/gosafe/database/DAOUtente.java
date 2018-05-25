@@ -3,9 +3,11 @@ package com.example.alessandro.gosafe.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import com.example.alessandro.gosafe.entity.Utente;
 
@@ -164,9 +166,10 @@ public class DAOUtente {
         return utente;
     }
 
-    public Utente findUtente(){ //TODO: ??
+    public Utente findUtente(){
         Utente utente = null;
         Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
+        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
         if (cursor.moveToFirst()) {
 
             utente = new Utente(
@@ -202,35 +205,21 @@ public class DAOUtente {
         }
     }
 
-   /* public Utente findByUsername(String username)
+   /*public int findBeaconByIdUtente(int idUtente)
     {
         Cursor crs;
-        Utente utente=null;
-        try
-        {
-            crs=db.query(true, TBL_NAME, FIELD_ALL, FIELD_USER+" like '"+username+"'",null,null,null,null,null);
+        int idBeacon;
+
+            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+idUtente,null,null,null,null);
             while(crs.moveToNext())
             {
-                utente = new Utente(
-                        crs.getString(crs.getColumnIndex(FIELD_USER)),
-                        crs.getString(crs.getColumnIndex(FIELD_PASS)),
-                        crs.getString(crs.getColumnIndex(FIELD_NOME)),
-                        crs.getString(crs.getColumnIndex(FIELD_COGNOME)),
-                        crs.getInt(crs.getColumnIndex(FIELD_BEACONID)),
-                        crs.getInt(crs.getColumnIndex(FIELD_PERCORSOID)),
-                        false,
-                        crs.getString(crs.getColumnIndex(FIELD_TOKEN)));
+                idBeacon = crs.getInt(crs.getColumnIndex(FIELD_BEACONID));
             }
             crs.close();
-        }
-        catch(SQLiteException sqle)
-        {
-            return null;
-        }
 
-        return utente;
-    }
-    */
+        return idBeacon;
+    }*/
+
 
     /*public Cursor findAll()
     {

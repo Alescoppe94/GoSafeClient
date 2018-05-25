@@ -3,13 +3,17 @@ package com.example.alessandro.gosafe.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.PointF;
+import android.util.Log;
 
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,9 @@ public class DAOBeacon {
     public static final String FIELD_PIANOID="pianoid";
     public static final String FIELD_COORDX="coordx";
     public static final String FIELD_COORDY="coordy";
+    public ArrayList<Integer> coorddelpunto = new ArrayList<Integer>() ;
+    public ArrayList<Integer> xcoordandycoord = new ArrayList<>();
+
     private static final String[] FIELD_ALL = new String[]
             {
                     FIELD_ID,
@@ -134,6 +141,7 @@ public class DAOBeacon {
         try
         {
             crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
+            Log.v("Cursor Object DAOBEACON", DatabaseUtils.dumpCursorToString(crs));
             Boolean ispuntodiraccolta = (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false;
             DAOPiano pianoDAO = new DAOPiano(ctx);
             pianoDAO.open();
@@ -203,4 +211,40 @@ public class DAOBeacon {
         }
         return allPuntiDiRaccolta;
     }
+
+    public Cursor getAllBeaconInPiano(int position){
+        Cursor crs;
+        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_PIANOID+"="+position,null,null,null,null);
+        return crs;
+    }
+
+    public ArrayList<Integer> getCoords(ArrayList<Integer> percorso) { // Prende un insieme di id_beacon in input {1,8,4,5}
+        for(int i = 0; i<percorso.size(); i++){
+            Cursor crs;
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "=" +percorso.get(i) ,null,null,null,null);
+            System.out.println("GETI: " +percorso.get(i));
+            if(crs!= null && crs.moveToFirst()){
+                int xcoord = crs.getInt(crs.getColumnIndex(FIELD_COORDX));
+                int ycoord = crs.getInt(crs.getColumnIndex(FIELD_COORDY));
+                coorddelpunto.add(xcoord); // Fa una append delle coordinate x e y
+                coorddelpunto.add(ycoord);
+                crs.close();
+            }
+        }
+        return coorddelpunto; // Ritorna in output le coordinate x e y di tutti i beacon in input {B1.X = 1463,B1.Y = 222, B2.X= 2234, B2.Y= 177,...}
+    }
+
+    public ArrayList<Integer> getCoordsByIdBeacon(int idBeacon){
+        Cursor crs;
+        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "=" +idBeacon ,null,null,null,null);
+        if(crs!= null && crs.moveToFirst()){
+            int xcoord = crs.getInt(crs.getColumnIndex(FIELD_COORDX));
+            int ycoord = crs.getInt(crs.getColumnIndex(FIELD_COORDY));
+            xcoordandycoord.add(xcoord);
+            xcoordandycoord.add(ycoord);
+            crs.close();
+        }
+        return xcoordandycoord;
+    }
+
 }

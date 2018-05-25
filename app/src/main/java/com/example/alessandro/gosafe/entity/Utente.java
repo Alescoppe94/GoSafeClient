@@ -18,7 +18,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     private String password;
     private String nome;
     private String cognome;
-    private String beaconId = "";
+    private String beaconId;
     private int percorsoid;
     private boolean is_autenticato;//true solo quando l'utente è autenticato sul server
     private String token;

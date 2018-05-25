@@ -2,11 +2,14 @@ package com.example.alessandro.gosafe.server;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
+
 import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOPesiTronco;
 import com.example.alessandro.gosafe.database.DAOTronco;
 import com.example.alessandro.gosafe.entity.*;
+import com.example.alessandro.gosafe.helpers.PinView;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -20,25 +23,32 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.111:8080";
     private Utente utente_attivo;
+    public Percorso percorsoPost;
+    private ArrayList<Integer> coorddelpercorso = new ArrayList<Integer>();
+    private ArrayList<Integer> percorso = new ArrayList<Integer>();
 
 
     public RichiestaPercorso(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
     }
 
-    public void ottieniPercorsoNoEmergenza(Context ctx) {
-        new OttieniPercorsoNoEmergenzaTask(ctx).execute();
+    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano) {
+        new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano).execute();
     }
 
     private class OttieniPercorsoNoEmergenzaTask extends AsyncTask<Void, Void, String>{
 
+        private final String beaconArr;
         private Context ctx;
+        private PinView imageViewPiano;
         private AsyncTask<Void, Void, Boolean> execute;
 
-        public OttieniPercorsoNoEmergenzaTask(Context ctx){
+        public OttieniPercorsoNoEmergenzaTask(Context ctx, String beaconArr, PinView imageViewPiano){
             this.ctx = ctx;
+            this.beaconArr = beaconArr;
+            this.imageViewPiano = imageViewPiano;
         }
 
         @Override
@@ -51,6 +61,7 @@ public class RichiestaPercorso {
         protected String doInBackground(Void... voids) {
 
             boolean connesso = false;
+            System.out.println("Do in bckgr: " +beaconArr);
 
             try {
                 connesso = execute.get();
@@ -64,7 +75,8 @@ public class RichiestaPercorso {
                 return null;
             } else {
                 try {
-                    URL url = new URL(PATH + "/gestionemappe/mappe/calcolapercorso/"+utente_attivo.getBeaconid()+"/3"); //TODO:da modificare
+                    System.out.println("BEACON DI ARRIVO IN RICH PERC: " +beaconArr);
+                    URL url = new URL(PATH + "/gestionemappe/mappe/calcolapercorso/"+utente_attivo.getBeaconid()+"/"+beaconArr+""); //Gli devo passare il beacon d'arrivo
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoInput(true);
                     conn.setRequestMethod("GET");
@@ -98,13 +110,39 @@ public class RichiestaPercorso {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Percorso percorso;
-            if(result==null){
-                //percorso = calcolaPercorsoNoEmergenza(ctx);
-            } else {
-                percorso = new Gson().fromJson(result, Percorso.class);
+
+            //Percorso percorso;
+            if(result==null){ //Se il server è giù...
+                percorsoPost = calcolaPercorsoNoEmergenza(ctx, beaconArr);
+                System.out.println("Percorso finale: "+percorsoPost);
+            } else { //Se il server risponde...
+                percorsoPost = new Gson().fromJson(result, Percorso.class);
+                System.out.println("Percorso finale: "+percorsoPost.getTappe());/*Ritorna una lista vuota, male male*/
+
             }
-            //TODO: disegnare il percorso su mappa
+
+            // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
+            //1 8 8 4 4 5
+            percorso.add(Integer.parseInt(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
+            for(int i = 1 ; i< percorsoPost.getTappe().size()-1;i=i+2){ //1 8 8 4 4
+                Tappa tappa = percorsoPost.getTappe().get(i);
+                percorso.add(Integer.parseInt(tappa.getTronco().getBeaconEstremi().get(0).getId()));
+
+            }
+            percorso.add(Integer.parseInt(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getId()));            //1 8 8 4 4 5 ->
+            percorso.add(Integer.parseInt(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getId()));            //1 8 8 4 4 5 ->
+            // 8 8 4 4
+
+            //1 | 8 4 | 5
+
+            System.out.println("Percorso in Rich Perc: " +percorso);
+
+            DAOBeacon daoBeacon = new DAOBeacon(ctx);
+            daoBeacon.open();
+            coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
+            imageViewPiano.play(coorddelpercorso);
+            //Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
+            daoBeacon.close();
         }
     }
 
@@ -222,7 +260,7 @@ public class RichiestaPercorso {
     //TODO: 1 - valutare se lasciare metodi di calcoloPercorso qui o inserirli in un "controller"
     //      2 - da dove prendo beaconPart e beaconArr?
 
-    /*private Percorso calcolaPercorsoNoEmergenza(Context ctx) {
+    public Percorso calcolaPercorsoNoEmergenza(Context ctx, String beaconArr) {
         boolean emergenza = false;
         DAOBeacon beaconDAO = new DAOBeacon(ctx);
         beaconDAO.open();
@@ -432,5 +470,5 @@ public class RichiestaPercorso {
 
         return uguali;
 
-    }*/
+    }
 }
