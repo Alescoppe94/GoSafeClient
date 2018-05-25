@@ -31,6 +31,8 @@ import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
+import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
+import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 public class VaiActivity extends DefaultActivity {
 
@@ -55,6 +57,9 @@ public class VaiActivity extends DefaultActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
 
+        DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
+        dbDownload.dbdownloadFirstBootAsyncTask(this);
+
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             DAOUtente daoUtente = new DAOUtente(this);
@@ -69,7 +74,11 @@ public class VaiActivity extends DefaultActivity {
             startService(s);
         }
 
-        spinner=(Spinner)findViewById(R.id.spinner);
+        Intent u = new Intent(this, CheckForDbUpdatesService.class);
+        startService(u);
+
+        //Spinner
+        spinner= (Spinner) findViewById(R.id.spinner);
         adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -155,6 +164,22 @@ public class VaiActivity extends DefaultActivity {
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
 
+        /*Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
+        avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calcolaPercorso();
+            }
+        });*/
+    }
+
+    private void calcolaPercorso() {
+        DAOUtente daoUtente = new DAOUtente(this);
+        daoUtente.open();
+        Utente utente_attivo = daoUtente.findUtente();
+        daoUtente.close();
+        RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
+        richiestaPercorso.ottieniPercorsoNoEmergenza(this);
     }
 
 }

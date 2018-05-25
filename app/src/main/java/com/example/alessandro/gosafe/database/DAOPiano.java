@@ -10,6 +10,9 @@ import android.database.sqlite.SQLiteException;
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Alessandro on 04/05/2018.
  */
@@ -52,7 +55,7 @@ public class DAOPiano {
         dbhelper.close();
     }
 
-    private ContentValues createContentValues(Piano piano)
+    public ContentValues createContentValues(Piano piano)
     {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, piano.getId());
@@ -133,4 +136,27 @@ public class DAOPiano {
         }
     }
 
+    public Piano getPianoById(int idPiano) {
+
+        Cursor crs;
+        Piano piano=null;
+        try
+        {
+            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+idPiano,null,null,null,null);
+            while(crs.moveToNext())
+            {
+                piano = new Piano(
+                        crs.getInt(crs.getColumnIndex(FIELD_ID)),
+                        crs.getString(crs.getColumnIndex(FIELD_IMMAGINE)),
+                        crs.getInt(crs.getColumnIndex(FIELD_PIANO)));
+            }
+            crs.close();
+        }
+        catch(SQLiteException sqle)
+        {
+            return null;
+        }
+
+        return piano;
+    }
 }
