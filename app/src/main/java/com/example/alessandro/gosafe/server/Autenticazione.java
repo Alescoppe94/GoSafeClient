@@ -345,9 +345,6 @@ public class Autenticazione {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    Intent i = new Intent(ctx, VaiActivity.class);
-
-                                    ctx.startActivity(i);
                                 }
                             });
                     utente_non_trovato.show();
@@ -385,7 +382,7 @@ public class Autenticazione {
                     long id_utente = jobj.get("id").getAsLong();
                     String username = jobj.get("username").getAsString();
                     String password = jobj.get("password").getAsString();
-                    String beacon = jobj.get("beacon").getAsString();
+                    String beaconId = "1"; //jobj.get("beaconId").getAsString();
                     String nome = jobj.get("nome").getAsString();
                     String cognome = jobj.get("cognome").getAsString();
 
@@ -396,7 +393,7 @@ public class Autenticazione {
                     utente.setId_utente(id_utente);
                     utente.setUsername(username);
                     utente.setPassword(password);
-                    utente.setBeaconid(beacon);
+                    utente.setBeaconid(beaconId);
                     utente.setNome(nome);
                     utente.setCognome(cognome);
                     utente.setIs_autenticato(true);
@@ -651,7 +648,10 @@ public class Autenticazione {
                         });
                 logout_impossibile.show();
             } else {
-                //TODO: dove vado dopo il logout?5
+                Intent i;
+                i = new Intent(ctx, LoginActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ctx.startActivity(i);
             }
         }
 

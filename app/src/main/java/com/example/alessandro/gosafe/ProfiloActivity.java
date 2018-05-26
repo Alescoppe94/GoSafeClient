@@ -137,12 +137,6 @@ public class ProfiloActivity extends DefaultActivity  {
         daoutente.deleteAll();
         daoutente.close();
 
-        Intent i;
-        i = new Intent(getApplicationContext(), LoginActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        //finish();
-
     }
 
     /*public void indietro(View view){
