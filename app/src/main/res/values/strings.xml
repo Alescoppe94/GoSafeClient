@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">GoSafe</string>
+    <string name="title_emergenza">SALVO!!</string>
     <string name="title_vai">Vai</string>
     <string name="title_mappe">Mappe</string>
     <string name="title_profilo">Profilo</string>

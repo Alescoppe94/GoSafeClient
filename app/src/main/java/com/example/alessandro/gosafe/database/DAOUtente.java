@@ -3,9 +3,11 @@ package com.example.alessandro.gosafe.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import com.example.alessandro.gosafe.entity.Utente;
 
@@ -167,6 +169,7 @@ public class DAOUtente {
     public Utente findUtente(){ //TODO: ??
         Utente utente = null;
         Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
+        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
         if (cursor.moveToFirst()) {
 
             utente = new Utente(

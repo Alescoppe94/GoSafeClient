@@ -61,8 +61,6 @@ import static android.content.ContentValues.TAG;
 
 
 /*Service che si occupa di connettere e leggere i dati dal Beacon.*/
-@TargetApi(Build.VERSION_CODES.N_MR1)
-@RequiresApi(api = Build.VERSION_CODES.M)
 
 public class BluetoothLeService extends Service {
     private static String LOG_TAG = "BluetoothLeService";
@@ -99,7 +97,6 @@ public class BluetoothLeService extends Service {
         //sessione=new Sessione(this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void getBluetoothAdapterAndLeScanner() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
@@ -271,7 +268,6 @@ public class BluetoothLeService extends Service {
 
         }
         /*Metodo che viene richiamato una volta che sono stati richiesti i dati al dispositivo*/
-        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 
