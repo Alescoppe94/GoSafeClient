@@ -26,8 +26,11 @@ public class RichiestaPercorso {
     private final String PATH = "http://192.168.1.197:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
+    public Percorso percorsoEmergenza;
     private ArrayList<Integer> coorddelpercorso = new ArrayList<Integer>();
     private ArrayList<Integer> percorso = new ArrayList<Integer>();
+    private ArrayList<Integer> percorsoEmer = new ArrayList<>();
+    private ArrayList<Integer> coordEmergenza = new ArrayList<>();
 
 
     public RichiestaPercorso(Utente utente_attivo) {
@@ -124,7 +127,7 @@ public class RichiestaPercorso {
             // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
             percorso.add(Integer.parseInt(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
-            for(int i = 1 ; i< percorsoPost.getTappe().size()-1;i=i+2){ //1 8 8 4 4
+            for(int i = 1 ; i< percorsoPost.getTappe().size()-1;i++){ //1 8 8 4 4
                 Tappa tappa = percorsoPost.getTappe().get(i);
                 percorso.add(Integer.parseInt(tappa.getTronco().getBeaconEstremi().get(0).getId()));
 
@@ -146,14 +149,16 @@ public class RichiestaPercorso {
         }
     }
 
-    public void visualizzaPercorso(Context ctx) { new VisualizzaPercorsoTask(ctx).execute(); }
+    public void visualizzaPercorso(Context ctx, PinView imageViewPiano) { new VisualizzaPercorsoTask(ctx, imageViewPiano).execute(); }
 
     private class VisualizzaPercorsoTask extends AsyncTask<Void,Void,String> {
         private Context ctx;
-        private AsyncTask<Void,Void,Boolean> execute;
+        private AsyncTask<Void, Void, Boolean> execute;
+        private PinView imageViewPiano;
 
-        public VisualizzaPercorsoTask(Context ctx) {
+        public VisualizzaPercorsoTask(Context ctx, PinView imageViewPiano) {
             this.ctx = ctx;
+            this.imageViewPiano = imageViewPiano;
         }
 
         @Override
@@ -214,15 +219,35 @@ public class RichiestaPercorso {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Percorso percorso;
-            if(result==null){
-                //percorso = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(), ctx);
+            if (result == null) {
+                percorsoEmergenza = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(),ctx);
             } else {
                 Notifica notifica = new Gson().fromJson(result, Notifica.class);
-                percorso = notifica.getPercorso();
+                percorsoEmergenza = notifica.getPercorso();
             }
-            //TODO: disegnare il percorso su mappa
-        }
+            // Devo tradurre il Percorso percorsoEmergenza in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
+            //1 8 8 4 4 5
+            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
+            for (int i = 1; i < percorsoEmergenza.getTappe().size() - 1; i++) { //1 8 8 4 4
+                Tappa tappa = percorsoEmergenza.getTappe().get(i);
+                percorsoEmer.add(Integer.parseInt(tappa.getTronco().getBeaconEstremi().get(0).getId()));
 
+            }
+            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0).getId()));            //1 8 8 4 4 5 ->
+            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1).getId()));            //1 8 8 4 4 5 ->
+            // 8 8 4 4
+
+            //1 | 8 4 | 5
+
+            System.out.println("Percorso in Rich Perc: " + percorsoEmer);
+
+            DAOBeacon daoBeacon = new DAOBeacon(ctx);
+            daoBeacon.open();
+            coordEmergenza = daoBeacon.getCoords(percorsoEmer);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
+            imageViewPiano.play(coordEmergenza);
+            //Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
+            daoBeacon.close();
+        }
     }
 
     private class checkConnessioneTask extends AsyncTask<Void, Void, Boolean> {

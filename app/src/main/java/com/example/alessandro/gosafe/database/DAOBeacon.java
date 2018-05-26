@@ -30,7 +30,7 @@ public class DAOBeacon {
     private SQLiteDatabase db;
 
     public static final String TBL_NAME="Beacon";
-    public static final String FIELD_ID="id";
+    public static final String FIELD_ID="ID_beacon";
     public static final String FIELD_ISPUNTODIRACCOLTA="is_puntodiraccolta";
     public static final String FIELD_PIANOID="pianoId";
     public static final String FIELD_COORDX="coordx";
