@@ -43,7 +43,7 @@ public class Autenticazione {
 
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://192.168.1.197:8080";
+    private final String PATH = "http://192.168.1.60:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -359,7 +359,7 @@ public class Autenticazione {
                 long id_utente = jobj.get("id").getAsLong();
                 String username = jobj.get("username").getAsString();
                 String password = jobj.get("password").getAsString();
-                String beaconId = jobj.get("beaconId").getAsString();
+                String beaconId = "1"; //jobj.get("beaconId").getAsString();
                 String nome = jobj.get("nome").getAsString();
                 String cognome = jobj.get("cognome").getAsString();
 
