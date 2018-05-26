@@ -55,7 +55,7 @@ public class DbDownloadFirstBoot {
                 HttpURLConnection connection = null;
 
                 try {
-                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/download");
+                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/db/download");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Content-Type", "application/json");

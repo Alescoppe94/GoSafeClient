@@ -43,7 +43,7 @@ public class Autenticazione {
 
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.60:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -385,7 +385,7 @@ public class Autenticazione {
                     long id_utente = jobj.get("id").getAsLong();
                     String username = jobj.get("username").getAsString();
                     String password = jobj.get("password").getAsString();
-                    //String email = jobj.get("email").getAsString();
+                    String beacon = jobj.get("beacon").getAsString();
                     String nome = jobj.get("nome").getAsString();
                     String cognome = jobj.get("cognome").getAsString();
 
@@ -396,7 +396,7 @@ public class Autenticazione {
                     utente.setId_utente(id_utente);
                     utente.setUsername(username);
                     utente.setPassword(password);
-                    //utente.setEmail(email);
+                    utente.setBeaconid(beacon);
                     utente.setNome(nome);
                     utente.setCognome(cognome);
                     utente.setIs_autenticato(true);
@@ -594,7 +594,7 @@ public class Autenticazione {
                 String dati_utente = gson.toJson(utente);
 
                 try {
-                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/logout");
+                    URL url = new URL(PATH+ "/gestionemappe/utente/logout");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");

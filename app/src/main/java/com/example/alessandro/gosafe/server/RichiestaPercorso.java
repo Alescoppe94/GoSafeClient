@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.60:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
@@ -232,9 +232,6 @@ public class RichiestaPercorso {
             daoBeacon.close();
         }
     }
-
-    //TODO: 1 - valutare se lasciare metodi di calcoloPercorso qui o inserirli in un "controller"
-    //      2 - da dove prendo beaconPart e beaconArr?
 
     public Percorso calcolaPercorsoNoEmergenza(Context ctx, String beaconArr) {
         boolean emergenza = false;
