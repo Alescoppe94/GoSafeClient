@@ -234,7 +234,7 @@ public class DAOBeacon {
         return coorddelpunto; // Ritorna in output le coordinate x e y di tutti i beacon in input {B1.X = 1463,B1.Y = 222, B2.X= 2234, B2.Y= 177,...}
     }
 
-    public ArrayList<Integer> getCoordsByIdBeacon(int idBeacon){
+    public ArrayList<Integer> getCoordsByIdBeacon(String idBeacon){
         Cursor crs;
         crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "=" +idBeacon ,null,null,null,null);
         if(crs!= null && crs.moveToFirst()){

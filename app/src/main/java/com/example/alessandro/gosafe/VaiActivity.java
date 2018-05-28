@@ -1,8 +1,10 @@
 package com.example.alessandro.gosafe;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Matrix;
@@ -10,6 +12,7 @@ import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -81,6 +84,8 @@ public class VaiActivity extends DefaultActivity {
         ctx = this;
         DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
         dbDownload.dbdownloadFirstBootAsyncTask(this);
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
         percorso = new ArrayList<Integer>(); //Questo percorso è fornito in modo statico -> Dobbiamo prendere i beacon da CalcolaPercorso
         /*percorso.add(0,1);
         percorso.add(1,8);
@@ -173,12 +178,10 @@ public class VaiActivity extends DefaultActivity {
                         daoUtente.open();
                         user = daoUtente.findUtente();
                         daoUtente.close();
-                        int coordxpartenza;
-                        int coordypartenza;
                         String idbeacondipartenza = user.getBeaconid();
-                        ArrayList<Integer> xcoordandycoord= daoBeacon.getCoordsByIdBeacon(Integer.valueOf(idbeacondipartenza));
-                        coordxpartenza = xcoordandycoord.get(0);
-                        coordypartenza = xcoordandycoord.get(1);
+                        ArrayList<Integer> xcoordandycoord= daoBeacon.getCoordsByIdBeacon(idbeacondipartenza);
+                        int coordxpartenza = xcoordandycoord.get(0);
+                        int coordypartenza = xcoordandycoord.get(1);
                         PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
                         newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
                         load = false;
@@ -256,6 +259,22 @@ public class VaiActivity extends DefaultActivity {
             }
         });*/
     }
+
+    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            final String action = intent.getAction();
+            String prova = intent.getStringExtra("device");
+            Toast.makeText(getApplicationContext(), prova, Toast.LENGTH_LONG).show();             //vedere di seguito perchè non funziona
+            /*ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(prova);
+            int coordxpartenza = newPosition.get(0);
+            int coordypartenza = newPosition.get(1);
+            PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
+            newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
+            imageViewPiano.setPin(newCoord);*/
+
+        }
+    };
 
     /*private void calcolaPercorso() {
         DAOUtente daoUtente = new DAOUtente(this);

@@ -133,8 +133,12 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
         this.cognome = cognome;
     }
 
-    public void setPosition(String pos){
+    public void setPosition(String pos, Context ctx){
         beaconId = pos;
+        DAOUtente u = new DAOUtente(ctx);
+        u.open();
+        u.update(this);
+        u.close();
     }
 
     public String getPosition(){
