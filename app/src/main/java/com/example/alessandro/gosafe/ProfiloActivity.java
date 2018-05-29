@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.server.Autenticazione;
 
 public class ProfiloActivity extends DefaultActivity  {
 
@@ -130,14 +131,11 @@ public class ProfiloActivity extends DefaultActivity  {
     public void logout (View view){
         DAOUtente daoutente = new DAOUtente(this);
         daoutente.open();
+        Utente utente = daoutente.findUtente();
+        Autenticazione autenticazione = new Autenticazione(utente);
+        autenticazione.logoutUtente(ProfiloActivity.this);
         daoutente.deleteAll();
         daoutente.close();
-
-        Intent i;
-        i = new Intent(getApplicationContext(), LoginActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        //finish();
 
     }
 

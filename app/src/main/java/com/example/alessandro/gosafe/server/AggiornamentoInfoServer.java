@@ -22,28 +22,6 @@ import java.net.URL;
 
 public class AggiornamentoInfoServer {
 
-    public void aggiornamentoDbClient(String dati_aggiornati){
-        new AggiornamentoDbClientTask(dati_aggiornati).execute();
-    }
-
-    private class AggiornamentoDbClientTask extends AsyncTask<Void, Void, String>{
-
-        String dati_aggiornati;
-
-        public AggiornamentoDbClientTask(String dati_aggiornati){
-
-            this.dati_aggiornati = dati_aggiornati;
-
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-
-            return null;
-        }
-
-    }
-
     public void aggiornamentoPosizione(Utente utente) {
         new AggiornamentoPosizioneTask(utente).execute();
     }
@@ -51,53 +29,65 @@ public class AggiornamentoInfoServer {
     private class AggiornamentoPosizioneTask extends AsyncTask<Void, Void, String>{
 
         Utente utente;
+        private boolean connesso;
 
         public AggiornamentoPosizioneTask(Utente utente) {
             this.utente = utente;
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
+        }
+
+        @Override
         protected String doInBackground(Void... voids) {
 
-            HttpURLConnection conn = null;
+            if (!connesso) {
+                return null;
+            } else {
+                HttpURLConnection conn = null;
 
-            Gson gson = new Gson();
-            String dati_pos = gson.toJson(utente);
+                Gson gson = new Gson();
+                String dati_pos = gson.toJson(utente);
 
-            try {
-                URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/updateposition");
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("PUT");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setInstanceFollowRedirects(true);
-                conn.connect();
+                try {
+                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/utente/updateposition");
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setRequestMethod("PUT");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setInstanceFollowRedirects(true);
+                    conn.connect();
 
-                OutputStream os = conn.getOutputStream();
-                OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-                osw.write(dati_pos);
-                osw.flush();
-                osw.close();
+                    OutputStream os = conn.getOutputStream();
+                    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+                    osw.write(dati_pos);
+                    osw.flush();
+                    osw.close();
 
-                StringBuilder sb = new StringBuilder();
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                String inputLine;
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    String inputLine;
 
-                while ((inputLine = br.readLine()) != null) {
-                    sb.append(inputLine + "\n");
-                }
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+                    }
 
-                br.close();
-                return sb.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (conn != null) {
-                    try {
-                        conn.disconnect();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    br.close();
+                    return sb.toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (conn != null) {
+                        try {
+                            conn.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

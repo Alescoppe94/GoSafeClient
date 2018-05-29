@@ -3,9 +3,11 @@ package com.example.alessandro.gosafe.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import com.example.alessandro.gosafe.entity.Utente;
 
@@ -164,9 +166,10 @@ public class DAOUtente {
         return utente;
     }
 
-    public Utente findUtente(){
+    public Utente findUtente(){ //TODO: ??
         Utente utente = null;
         Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
+        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
         if (cursor.moveToFirst()) {
 
             utente = new Utente(
@@ -191,7 +194,7 @@ public class DAOUtente {
         ContentValues updateValues = createContentValues(utente);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, null, null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + utente.getId_utente(), null)>0;
             return upd;
         }
         catch (SQLiteException sqle)
@@ -200,6 +203,26 @@ public class DAOUtente {
             // Gestione delle eccezioni
             return false;
         }
+    }
+
+    public Utente getUserByUsername(String username) {
+        Utente utente = null;
+        Cursor  cursor = db.query(TBL_NAME, FIELD_ALL, FIELD_USER+" = '" + username + "'",null,null,null,null);
+        if (cursor.moveToFirst()) {
+
+            utente = new Utente(
+                    cursor.getLong(cursor.getColumnIndex(FIELD_ID)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_USER)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_PASS)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_NOME)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_COGNOME)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_BEACONID)),
+                    cursor.getInt(cursor.getColumnIndex(FIELD_PERCORSOID)),
+                    true,
+                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)));
+        }
+        cursor.close();
+        return utente;
     }
 
    /* public Utente findByUsername(String username)

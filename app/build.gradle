@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.alessandro.gosafe"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -21,9 +21,9 @@ android {
 dependencies {
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     implementation 'com.android.support:design:26.1.0'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
