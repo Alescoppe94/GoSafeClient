@@ -236,7 +236,7 @@ public class DAOBeacon {
 
     public ArrayList<Integer> getCoordsByIdBeacon(String idBeacon){
         Cursor crs;
-        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "=" +idBeacon ,null,null,null,null);
+        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "='" +idBeacon+"'" ,null,null,null,null);
         if(crs!= null && crs.moveToFirst()){
             int xcoord = crs.getInt(crs.getColumnIndex(FIELD_COORDX));
             int ycoord = crs.getInt(crs.getColumnIndex(FIELD_COORDY));

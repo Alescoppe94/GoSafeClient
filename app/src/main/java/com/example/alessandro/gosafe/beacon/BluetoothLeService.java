@@ -167,7 +167,7 @@ public class BluetoothLeService extends Service {
             super.onScanResult(callbackType, result);
             BluetoothDevice device = result.getDevice();
             final String deviceName = device.getName();
-            Log.d("RSSI", String.valueOf(result.getRssi()) + " " + deviceName);
+            Log.d("RSSI", String.valueOf(result.getRssi()) + " " + device.getName());
             mBluetoothDeviceAddress=device.getAddress();
 
             if (deviceName != null && deviceName.length() > 0) {

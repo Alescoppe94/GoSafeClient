@@ -266,12 +266,12 @@ public class VaiActivity extends DefaultActivity {
             final String action = intent.getAction();
             String prova = intent.getStringExtra("device");
             Toast.makeText(getApplicationContext(), prova, Toast.LENGTH_LONG).show();             //vedere di seguito perchè non funziona
-            /*ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(prova);
+            ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(prova);
             int coordxpartenza = newPosition.get(0);
             int coordypartenza = newPosition.get(1);
             PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
             newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
-            imageViewPiano.setPin(newCoord);*/
+            imageViewPiano.setPin(newCoord);
 
         }
     };
