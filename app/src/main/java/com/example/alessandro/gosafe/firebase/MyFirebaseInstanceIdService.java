@@ -31,20 +31,20 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     public void onTokenRefresh(){
 
-        recent_token = FirebaseInstanceId.getInstance().getToken();
+        recent_token = FirebaseInstanceId.getInstance().getToken();  //da sistemare il caso in cui uno fa il login da offline e poi si connette a una rete: bisogna verificare che il token sia quello giusto sul server
         Log.d(REG_TOKEN, recent_token);
         MyFirebaseInstanceIdService.token=recent_token;
         //sendPost(recent_token);
 
     }
 
-    public void sendPost(final String recent_token) {
+    /*public void sendPost(final String recent_token) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/tokentest");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    URL url = new URL("https://10.0.2.2:8443/gestionemappe/db/tokentest");
+                    HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                     conn.setRequestProperty("Accept","application/json");
@@ -73,13 +73,15 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
         });
 
         thread.start();
-    }
+    }*/
 
     //public static void set_token(String token){ MyFirebaseInstanceIdService.token=token; }
 
     public static String get_token(){
-        MyFirebaseInstanceIdService.token = FirebaseInstanceId.getInstance().getToken();
+
+        token = FirebaseInstanceId.getInstance().getToken();
         return MyFirebaseInstanceIdService.token;
+
     }
 
 }

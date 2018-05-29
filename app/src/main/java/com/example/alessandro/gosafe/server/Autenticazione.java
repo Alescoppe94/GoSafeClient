@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.alessandro.gosafe.LoginActivity;
-import com.example.alessandro.gosafe.MainActivity;
+import com.example.alessandro.gosafe.ProfiloActivity;
 import com.example.alessandro.gosafe.R;
+import com.example.alessandro.gosafe.VaiActivity;
+import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,11 +26,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -54,7 +58,7 @@ public class Autenticazione {
         private Context ctx;
         //private String token;
         private ProgressDialog registrazione_in_corso;
-        //private AsyncTask<Void, Void, Boolean> execute;
+        private boolean connesso;
 
         public registrazioneUtenteTask(Utente utente, Context ctx/*, String token*/) {
             this.utente = utente;
@@ -71,20 +75,12 @@ public class Autenticazione {
             registrazione_in_corso.setCanceledOnTouchOutside(false);
             registrazione_in_corso.setMessage(ctx.getString(R.string.registrazione_in_corso));
             registrazione_in_corso.show();
-            //execute = new controlloConnessioneTask().execute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
         }
 
         @Override
         protected String doInBackground(Void... arg0) {
-            boolean connesso = true;
-
-            /*try {
-                connesso = execute.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
 
             if (!connesso) {
                 return null;
@@ -193,7 +189,7 @@ public class Autenticazione {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 //utente.loginLocale(ctx, true);
-                                Intent i = new Intent(ctx, MainActivity.class);
+                                Intent i = new Intent(ctx, VaiActivity.class);
                                 ctx.startActivity(i);
                             }
                         });
@@ -213,7 +209,7 @@ public class Autenticazione {
         private Context ctx;
         /*private String token;*/
         private ProgressDialog login_in_corso;
-        private AsyncTask<Void, Void, Boolean> execute;
+        private boolean connesso;
 
         public autenticazioneUtenteTask(Utente utente, Context ctx/*, String token*/) {
             this.utente = utente;
@@ -232,21 +228,13 @@ public class Autenticazione {
                 login_in_corso.setCanceledOnTouchOutside(false);
                 login_in_corso.setMessage(ctx.getString(R.string.login_in_corso));
                 login_in_corso.show();
+                CheckConnessione checkConnessione = new CheckConnessione();
+                connesso = checkConnessione.checkConnessione();
             }
-            //execute = new controlloConnessioneTask().execute();
         }
 
         @Override
         protected String doInBackground(Void... arg0) {
-            boolean connesso = true;
-
-            /*try {
-                connesso = execute.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
 
             if (!connesso) {
                 return null;
@@ -263,13 +251,16 @@ public class Autenticazione {
                 String dati_login = gson.toJson(utente);
 
                 try {
-                    URL url = new URL(PATH + "/gestionemappe/utente/login");
+                    String request = PATH + "/gestionemappe/utente/login";
+                    URL url = new URL(request);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/json");
                     connection.setRequestProperty("Accept", "application/json");
+                    //connection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+                    //connection.setRequestProperty("Accept","*/*");
                     connection.connect();
 
                     OutputStream os = connection.getOutputStream();
@@ -287,6 +278,7 @@ public class Autenticazione {
                     }
 
                     br.close();
+                    System.out.println(sb.toString());
                     return sb.toString();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -318,25 +310,37 @@ public class Autenticazione {
                 login_in_corso.dismiss();
             }
 
-            /*if (result == null) {
-                utente.loginLocale(ctx, false);
-            } else */
-            if (jsonResponse.has("esito")) {
-                if (jsonResponse.get("esito").getAsString().equals("ERROR: Password errata")) {
-                    AlertDialog password_errata = new AlertDialog.Builder(ctx).create();
-                    password_errata.setTitle("Password errata");
-                    password_errata.setMessage(ctx.getString(R.string.error_incorrect_password));
-                    password_errata.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    password_errata.show();
-                } else if (jsonResponse.get("esito").getAsString().equals("ERROR: Utente non trovato")) {
+            if (result == null) {
+                DAOUtente daoUtente = new DAOUtente(ctx);
+                daoUtente.open();
+                Utente utentedb = daoUtente.getUserByUsername(utente.getUsername());
+                daoUtente.close();
+                if(utentedb != null) {
+                    if(utente.getPassword().equals(utentedb.getPassword())) {
+                        utente.setId_utente(utentedb.getId_utente());
+                        utente.setUsername(utentedb.getUsername());
+                        utente.setPassword(utentedb.getPassword());
+                        utente.setNome(utentedb.getNome());
+                        utente.setCognome(utentedb.getCognome());
+                        utente.setIs_autenticato(true);
+                        Intent i = new Intent(ctx, VaiActivity.class);
+                        ctx.startActivity(i);
+                    } else {
+                        AlertDialog password_errata = new AlertDialog.Builder(ctx).create();
+                        password_errata.setTitle("Password errata");
+                        password_errata.setMessage(ctx.getString(R.string.error_incorrect_password));
+                        password_errata.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        password_errata.show();
+                    }
+                } else {
                     AlertDialog utente_non_trovato = new AlertDialog.Builder(ctx).create();
-                    utente_non_trovato.setTitle("Username errato");
-                    utente_non_trovato.setMessage(ctx.getString(R.string.error_invalid_username));
+                    utente_non_trovato.setTitle("Impossibile effettuare il login");
+                    utente_non_trovato.setMessage(ctx.getString(R.string.error_invalid_login_hostuser));
                     utente_non_trovato.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -344,41 +348,315 @@ public class Autenticazione {
                                 }
                             });
                     utente_non_trovato.show();
+
+                    //TODO: vai all'interfaccia dell'utente anonimo
                 }
+
             } else {
-                /*JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
-                long id_utente = jobj.get("id_utente").getAsLong();
-                String username = jobj.get("username").getAsString();
-                String password = jobj.get("password").getAsString();
-                String email = jobj.get("email").getAsString();
-                String nome = jobj.get("nome").getAsString();
-                String cognome = jobj.get("cognome").getAsString(); */
-
-                Intent i = new Intent(ctx, MainActivity.class);
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("user", utente);   //moddato ma si può cambiare
-
-                i.putExtras(bundle);
-                ctx.startActivity(i);
+                if (jsonResponse.has("esito")) {
+                    if (jsonResponse.get("esito").getAsString().equals("ERROR: Password errata")) {
+                        AlertDialog password_errata = new AlertDialog.Builder(ctx).create();
+                        password_errata.setTitle("Password errata");
+                        password_errata.setMessage(ctx.getString(R.string.error_incorrect_password));
+                        password_errata.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        password_errata.show();
+                    } else if (jsonResponse.get("esito").getAsString().equals("ERROR: Utente non trovato")) {
+                        AlertDialog utente_non_trovato = new AlertDialog.Builder(ctx).create();
+                        utente_non_trovato.setTitle("Username errato");
+                        utente_non_trovato.setMessage(ctx.getString(R.string.error_invalid_username));
+                        utente_non_trovato.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        utente_non_trovato.show();
+                    }
+                } else {
+                    JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
+                    long id_utente = jobj.get("id").getAsLong();
+                    String username = jobj.get("username").getAsString();
+                    String password = jobj.get("password").getAsString();
+                    String beaconId = "1"; //jobj.get("beaconId").getAsString();
+                    String nome = jobj.get("nome").getAsString();
+                    String cognome = jobj.get("cognome").getAsString();
 
                 /*if (token != null) {
                     new registrazioneTokenTask(token, id_utente).execute();
                 }*/
 
-                /*
-                utente.setId_utente(id_utente);
-                utente.setUsername(username);
-                utente.setPassword(password);
-                utente.setEmail(email);
-                utente.setNome(nome);
-                utente.setCognome(cognome);
-                utente.setIs_autenticato(true);
-                utente.registrazioneLocale(ctx);
-                utente.loginLocale(ctx, true);
-                */
+                    utente.setId_utente(id_utente);
+                    utente.setUsername(username);
+                    utente.setPassword(password);
+                    utente.setBeaconid(beaconId);
+                    utente.setNome(nome);
+                    utente.setCognome(cognome);
+                    utente.setIs_autenticato(true);
+                    utente.registrazioneLocale(ctx);
+                    //utente.loginLocale(ctx, true);
+
+                    Intent i = new Intent(ctx, VaiActivity.class);
+
+                    ctx.startActivity(i);
+                }
             }
         }
     }
+
+    public void updateUtente(Context ctx/*, String token*/) {
+        new UpdateUtenteTask(utente_attivo, ctx/*, token*/).execute();
+    }
+
+    private class UpdateUtenteTask extends AsyncTask<Void, Void, String> {
+        private Utente utente;
+        private Context ctx;
+        //private String token;
+        private ProgressDialog update_in_corso;
+        private boolean connesso;
+
+        public UpdateUtenteTask(Utente utente, Context ctx/*, String token*/) {
+            this.utente = utente;
+            this.ctx = ctx;
+            //this.token = token;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            update_in_corso = new ProgressDialog(ctx);
+            update_in_corso.setIndeterminate(true);
+            update_in_corso.setCancelable(false);
+            update_in_corso.setCanceledOnTouchOutside(false);
+            update_in_corso.setMessage(ctx.getString(R.string.update_in_corso));
+            update_in_corso.show();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
+        }
+
+        @Override
+        protected String doInBackground(Void... arg0) {
+
+            if (!connesso) {
+                return null;
+            } else {
+                try {
+                    Thread.sleep(1500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Gson gson = new Gson();
+                String dati_reg = gson.toJson(utente);
+
+                try {
+                    URL url = new URL(PATH + "/gestionemappe/utente/modifica");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoOutput(true);
+                    connection.setDoInput(true);
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.connect();
+
+                    OutputStream os = connection.getOutputStream();
+                    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+                    osw.write(dati_reg);
+                    osw.flush();
+                    osw.close();
+
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                    String inputLine;
+
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+
+                    }
+
+                    br.close();
+                    return sb.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        try {
+                            connection.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... arg0) {
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            update_in_corso.dismiss();
+
+            JsonObject jsonResponse = new Gson().fromJson(result, JsonObject.class);
+
+            if (result == null) {
+                AlertDialog update_impossibile = new AlertDialog.Builder(ctx).create();
+                update_impossibile.setTitle("Impossibile effettuare la modifica");
+                update_impossibile.setMessage(ctx.getString(R.string.server_not_respond_update_info_utente));
+                update_impossibile.setCanceledOnTouchOutside(false);
+                update_impossibile.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                update_impossibile.show();
+            } else if(jsonResponse.has("esito")) {
+                if (jsonResponse.get("esito").getAsString().equals("Username in uso")) {
+                    AlertDialog username_in_uso = new AlertDialog.Builder(ctx).create();
+                    username_in_uso.setTitle("Username già in uso");
+                    username_in_uso.setMessage(ctx.getString(R.string.registrazione_username_in_uso));
+                    username_in_uso.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    username_in_uso.show();
+                } else {
+                    JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
+                    String successo = jobj.get("esito").getAsString();
+                    //new registrazioneTokenTask(token, id_utente).execute();*/
+
+                    Log.d("caione", successo);
+
+                    if (successo.equals("success")) {
+                        DAOUtente daoutente = new DAOUtente(ctx);
+                        daoutente.open();
+                        daoutente.update(utente);
+                        daoutente.close();
+                    }
+
+
+                    Intent i;
+                    i = new Intent(ctx, ProfiloActivity.class);
+                    i.putExtra("selezione", "profilo");
+                    ctx.startActivity(i);
+                }
+            }
+
+        }
+    }
+
+    public void logoutUtente(Context ctx) {
+        new LogoutUtenteTask(utente_attivo, ctx).execute();
+    }
+
+    private class LogoutUtenteTask extends AsyncTask<Void, Void, String>{
+
+        private Utente utente;
+        private Context ctx;
+        private ProgressDialog logout_in_corso;
+        private boolean connesso;
+
+        public LogoutUtenteTask(Utente utente, Context ctx) {
+            this.utente = utente;
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            if (!connesso) {
+                return null;
+            } else {
+                HttpURLConnection conn = null;
+
+                Gson gson = new Gson();
+                String dati_utente = gson.toJson(utente);
+
+                try {
+                    URL url = new URL(PATH+ "/gestionemappe/utente/logout");
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setRequestMethod("PUT");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setInstanceFollowRedirects(true);
+                    conn.connect();
+
+                    OutputStream os = conn.getOutputStream();
+                    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+                    osw.write(dati_utente);
+                    osw.flush();
+                    osw.close();
+
+                /*StringBuilder sbe = new StringBuilder();
+                BufferedReader bre = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+                String inputeLine;
+                while ((inputeLine = bre.readLine()) != null) {
+                    sbe.append(inputeLine + "\n");
+                }
+                System.out.println(sbe.toString());
+                bre.close();*/
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    br.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (conn != null) {
+                        try {
+                            conn.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result == null) {
+                AlertDialog logout_impossibile = new AlertDialog.Builder(ctx).create();
+                logout_impossibile.setTitle("Impossibile effettuare il logout");
+                logout_impossibile.setMessage(ctx.getString(R.string.server_not_respond_logout));
+                logout_impossibile.setCanceledOnTouchOutside(false);
+                logout_impossibile.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                logout_impossibile.show();
+            } else {
+                Intent i;
+                i = new Intent(ctx, LoginActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ctx.startActivity(i);
+            }
+        }
+
+
+    }
+
 }
 

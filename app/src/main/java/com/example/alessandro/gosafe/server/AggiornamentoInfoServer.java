@@ -5,8 +5,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.alessandro.gosafe.entity.Utente;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -16,46 +22,76 @@ import java.net.URL;
 
 public class AggiornamentoInfoServer {
 
-    public void aggiornamentoPosizione(String username, String posizione) {
-        new AggiornamentoPosizioneTask(username, posizione).execute();
+    public void aggiornamentoPosizione(Utente utente) {
+        new AggiornamentoPosizioneTask(utente).execute();
     }
 
     private class AggiornamentoPosizioneTask extends AsyncTask<Void, Void, String>{
 
-        String username;
-        String posizione;
+        Utente utente;
+        private boolean connesso;
 
-        public AggiornamentoPosizioneTask(String username, String posizione) {
-            this.username = username;
-            this.posizione = posizione;
+        public AggiornamentoPosizioneTask(Utente utente) {
+            this.utente = utente;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            CheckConnessione checkConnessione = new CheckConnessione();
+            connesso = checkConnessione.checkConnessione();
         }
 
         @Override
         protected String doInBackground(Void... voids) {
 
+            if (!connesso) {
+                return null;
+            } else {
+                HttpURLConnection conn = null;
 
-            String[] macAddressParts = posizione.split(":");
-            String mac = "";
+                Gson gson = new Gson();
+                String dati_pos = gson.toJson(utente);
 
-// convert hex string to byte values
-            for(int i=0; i<6; i++){
-                mac += macAddressParts[i];
+                try {
+                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/utente/updateposition");
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setRequestMethod("PUT");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setInstanceFollowRedirects(true);
+                    conn.connect();
+
+                    OutputStream os = conn.getOutputStream();
+                    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+                    osw.write(dati_pos);
+                    osw.flush();
+                    osw.close();
+
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    String inputLine;
+
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+                    }
+
+                    br.close();
+                    return sb.toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (conn != null) {
+                        try {
+                            conn.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
-
-            try {
-                String url = "http://192.168.1.60:8080/gestionemappe/utente/updateposition/"+ username + "/" + mac;
-                URL request_url = new URL(url);
-                HttpURLConnection conn = (HttpURLConnection)request_url.openConnection();
-                conn.setConnectTimeout(100000);
-                conn.setReadTimeout(100000);
-                conn.setInstanceFollowRedirects(true);
-                Log.d("stato", String.valueOf(conn.getResponseCode()));
-
-                conn.disconnect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "ciao";
+            return null;
         }
     }
 

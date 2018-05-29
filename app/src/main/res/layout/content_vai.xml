@@ -1,49 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.alessandro.gosafe.VaiActivity"
-    tools:showIn="@layout/app_bar_vai">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="60dp">
+
+        <LinearLayout
+            android:id="@+id/linearspinner"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/textView5"
-            android:layout_alignStart="@+id/textView5"
-            android:layout_marginBottom="31dp"
-            android:text="Vai"
-            android:textSize="24sp" />
+            android:layout_alignParentStart="true"
+            android:gravity="top"
+            android:orientation="horizontal">
 
-        <Spinner
-                android:layout_width="100dp"
-                android:id="@+id/spinner2"
-                android:layout_marginEnd="32dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="83dp" android:layout_alignParentTop="true" android:layout_alignParentEnd="true"/>
-        <TextView
-                android:text="Seleziona la tua destinazione"
+            <TextView
+                android:id="@+id/pianoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView5"
-                android:layout_alignTop="@+id/spinner2" android:layout_toStartOf="@+id/spinner2"
-                android:layout_marginEnd="32dp"/>
+                android:layout_alignParentLeft="true"
+                android:text="@string/seleziona_piano"
+                android:textColor="#AAA"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="61dp"
-            android:text="Avvia percorso" />
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@+id/pianoTextView"
+                android:layout_weight="1"
+                android:background="@drawable/customborder" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/linearspinner"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/customborder"
+            android:orientation="vertical">
+
+            <!--<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+                android:id="@+id/imageViewPiano"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="matrix" />-->
+
+            <com.example.alessandro.gosafe.helpers.PinView
+                android:id="@+id/imageViewPiano"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="matrix" />
+
+            <Button
+                android:id="@+id/avvia_percorso_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Avvia Percorso" android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
+
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

@@ -100,6 +100,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        Button entra = (Button) findViewById(R.id.entraButton);  //bottone che bypassa il login
+        entra.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), VaiActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     /**
@@ -140,11 +149,7 @@ public class LoginActivity extends AppCompatActivity {
 
         } else {
 
-            Utente utente;
-            if(MyFirebaseInstanceIdService.get_token()==null)
-                utente = new Utente(username, password);
-            else
-                utente = new Utente(username, password, MyFirebaseInstanceIdService.get_token());
+            Utente utente = new Utente(username, password);
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.autenticazioneUtente(this);
         }

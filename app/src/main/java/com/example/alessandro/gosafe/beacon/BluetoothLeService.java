@@ -32,9 +32,11 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.AggiornamentoInfoServer;
 
@@ -60,8 +62,6 @@ import static android.content.ContentValues.TAG;
 
 
 /*Service che si occupa di connettere e leggere i dati dal Beacon.*/
-@TargetApi(Build.VERSION_CODES.N_MR1)
-@RequiresApi(api = Build.VERSION_CODES.M)
 
 public class BluetoothLeService extends Service {
     private static String LOG_TAG = "BluetoothLeService";
@@ -98,7 +98,6 @@ public class BluetoothLeService extends Service {
         //sessione=new Sessione(this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void getBluetoothAdapterAndLeScanner() {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
@@ -148,9 +147,9 @@ public class BluetoothLeService extends Service {
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
                         System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
-                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey());
+                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey(), getApplicationContext());
                         AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
-                        ai.aggiornamentoPosizione(utente_attivo.getUsername(), utente_attivo.getPosition());
+                        ai.aggiornamentoPosizione(utente_attivo);
                     }
                 }
             }, SCAN_PERIOD);
@@ -172,7 +171,7 @@ public class BluetoothLeService extends Service {
             mBluetoothDeviceAddress=device.getAddress();
 
             if (deviceName != null && deviceName.length() > 0) {
-                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X")) {
+                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) {
                     if(beaconsDetected.containsKey(mBluetoothDeviceAddress)) {
                         if (beaconsDetected.get(mBluetoothDeviceAddress) < result.getRssi())
                             beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
@@ -181,11 +180,11 @@ public class BluetoothLeService extends Service {
                             beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
                     connect();
                     //scanLeDevice(false);
-                    //final Intent intent = new Intent("univpm.iot_for_emergency.View.Funzionali.Trovato");
+                    final Intent intent = new Intent("updatepositionmap");
                     //Sessione sessione = new Sessione(getBaseContext());
                     //intent.putExtra("user", sessione.user());
-                    //intent.putExtra("device", mBluetoothDeviceAddress);
-                    //sendBroadcast(intent);
+                    intent.putExtra("device", mBluetoothDeviceAddress);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                     Log.d("dispositivo", mBluetoothDeviceAddress);
 
                 }
@@ -270,7 +269,6 @@ public class BluetoothLeService extends Service {
 
         }
         /*Metodo che viene richiamato una volta che sono stati richiesti i dati al dispositivo*/
-        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 
