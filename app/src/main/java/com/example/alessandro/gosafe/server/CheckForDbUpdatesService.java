@@ -127,7 +127,7 @@ public class CheckForDbUpdatesService extends Service {
                         }
                     }
                 }
-                if (!result.equals("")) {
+                if (result != null && !result.equals("")) {
                     updateDB(result);
                 }
             }
