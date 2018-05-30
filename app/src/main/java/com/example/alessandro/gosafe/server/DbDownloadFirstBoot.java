@@ -2,10 +2,14 @@ package com.example.alessandro.gosafe.server;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Base64;
 
 import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.database.DAOGeneric;
+import com.example.alessandro.gosafe.database.DAOUtente;
+import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -16,6 +20,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Alessandro on 16/05/2018.
@@ -55,11 +61,18 @@ public class DbDownloadFirstBoot {
                 HttpURLConnection connection = null;
 
                 try {
-                    URL url = new URL("http://192.168.1.197:8080/gestionemappe/db/download");
+                    DAOUtente daoUtente = new DAOUtente(ctx);
+                    daoUtente.open();
+                    Utente utente = daoUtente.findUtente();
+                    daoUtente.close();
+                    byte[] data = utente.getIdsessione().getBytes("UTF-8");
+                    String base64 = Base64.encodeToString(data,Base64.DEFAULT);
+                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/secured/download");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Content-Type", "application/json");
                     connection.setRequestProperty("Accept", "application/json");
+                    connection.setRequestProperty("Authorization", "basic " + base64);
                     connection.connect();
 
                     StringBuilder sb = new StringBuilder();
@@ -101,6 +114,10 @@ public class DbDownloadFirstBoot {
                 daoGeneric.open();
                 daoGeneric.ricreaDb(tabelleJson);
                 daoGeneric.close();
+
+                SharedPreferences.Editor editor = ctx.getSharedPreferences("dblastupdate", MODE_PRIVATE).edit();
+                editor.putLong("last_update", System.currentTimeMillis());
+                editor.apply();
             }
         }
 

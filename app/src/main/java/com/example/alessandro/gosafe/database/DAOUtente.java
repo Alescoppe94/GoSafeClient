@@ -27,6 +27,7 @@ public class DAOUtente {
     public static final String FIELD_PERCORSOID="percorsoid";
     public static final String FIELD_ISAUTENTICATO="isautenticato";
     public static final String FIELD_TOKEN="token";
+    public static final String FIELD_IDSESSIONE="idsessione";
     private static final String[] FIELD_ALL = new String[]
             {
                     FIELD_ID,
@@ -37,7 +38,8 @@ public class DAOUtente {
                     FIELD_BEACONID,
                     FIELD_PERCORSOID,
                     FIELD_ISAUTENTICATO,
-                    FIELD_TOKEN
+                    FIELD_TOKEN,
+                    FIELD_IDSESSIONE
             };
 
     public DAOUtente(Context ctx)
@@ -73,6 +75,7 @@ public class DAOUtente {
         cv.put(FIELD_PERCORSOID, utente.getPercorsoid());
         cv.put(FIELD_ISAUTENTICATO, utente.getIs_autenticato());
         cv.put(FIELD_TOKEN, utente.getToken());
+        cv.put(FIELD_IDSESSIONE,utente.getIdsessione());
         return cv;
     }
 
@@ -181,7 +184,8 @@ public class DAOUtente {
                     cursor.getString(cursor.getColumnIndex(FIELD_BEACONID)),
                     cursor.getInt(cursor.getColumnIndex(FIELD_PERCORSOID)),
                     true,
-                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)));
+                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_IDSESSIONE)));
         }
         cursor.close();
         return utente;
@@ -219,7 +223,8 @@ public class DAOUtente {
                     cursor.getString(cursor.getColumnIndex(FIELD_BEACONID)),
                     cursor.getInt(cursor.getColumnIndex(FIELD_PERCORSOID)),
                     true,
-                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)));
+                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)),
+                    cursor.getString(cursor.getColumnIndex(FIELD_IDSESSIONE)));
         }
         cursor.close();
         return utente;
