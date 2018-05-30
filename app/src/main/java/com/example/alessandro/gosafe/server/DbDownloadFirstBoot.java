@@ -2,6 +2,7 @@ package com.example.alessandro.gosafe.server;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.example.alessandro.gosafe.R;
@@ -16,6 +17,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Alessandro on 16/05/2018.
@@ -101,6 +104,10 @@ public class DbDownloadFirstBoot {
                 daoGeneric.open();
                 daoGeneric.ricreaDb(tabelleJson);
                 daoGeneric.close();
+
+                SharedPreferences.Editor editor = ctx.getSharedPreferences("dblastupdate", MODE_PRIVATE).edit();
+                editor.putLong("last_update", System.currentTimeMillis());
+                editor.apply();
             }
         }
 
