@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
@@ -56,6 +58,7 @@ public class VaiActivity extends DefaultActivity {
     private Float scale =1f;
     private PointF newCoord;
     private boolean load = true;
+    private boolean drawn = false;
     float distance;
     float temp=10000000;
     int idbeacondestinazione;
@@ -135,10 +138,22 @@ public class VaiActivity extends DefaultActivity {
                     case 0:
                         imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
                         load = true;
+                        if(drawn){
+                            //cancella vecchio percorso
+                            //chiama richiestapercorso
+                            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(user);
+                            richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position);
+                        }
                         break;
                     case 1:
                         imageViewPiano.setImage(ImageSource.resource(R.drawable.q145));
                         load = true;
+                        if(drawn){
+                            //cancella vecchio percorso
+                            //chiama richiestapercorso
+                            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(user);
+                            richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position);
+                        }
                         break;
                 }
             }
@@ -151,17 +166,6 @@ public class VaiActivity extends DefaultActivity {
 
         //serve per definire le gesture da rilevare, per ora lo uso solo per settare il pin con long press
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Single tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Single tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-
 
             //CALCOLO DEL PERCORSO E DISEGNO
 
@@ -170,8 +174,7 @@ public class VaiActivity extends DefaultActivity {
                 if (imageViewPiano.isReady()) {
                     PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
                     if(load) {
-                        /*Permette di capire quali sono i corrispettivi su schermo dei veri punti della mappa*/
-                        //PointF mCoord = imageViewPiano.sourceToViewCoord((float) 844 , (float) 1882);
+
 
                         //BEACON DI PARTENZA
                         //Definisco le 2 coordinate di partenza che prendo da beaconId dell'utente loggato
@@ -203,21 +206,19 @@ public class VaiActivity extends DefaultActivity {
                             idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
                         }
                     }
-                    System.out.println("Id del beacon + vicino: "+idbeacondestinazione);
+
                     temp=10000000;
 
 
                     //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopo
                     RichiestaPercorso richiestaPercorso = new RichiestaPercorso(user);
                     richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position);
+                    drawn = true;
                     try {
                         Thread.sleep(4000);
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
-                    System.out.println("Vai activity: richiesta percorso -> " +richiestaPercorso.percorsoPost);
-
-                    //DISEGNO DEL PERCORSO
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
