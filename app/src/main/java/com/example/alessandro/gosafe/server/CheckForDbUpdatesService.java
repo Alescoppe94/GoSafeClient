@@ -78,7 +78,7 @@ public class CheckForDbUpdatesService extends Service {
             String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
             try {
-                String request = "http://192.168.1.60:8080/gestionemappe/db/aggiornadb/" + formattedDate;
+                String request = "http://192.168.1.197:8080/gestionemappe/db/aggiornadb/" + formattedDate;
                 URL url = new URL(request);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -161,9 +161,9 @@ public class CheckForDbUpdatesService extends Service {
 
                 for (JsonElement jsonBeacon : beaconArray) {
                     JsonObject jsonObject = jsonBeacon.getAsJsonObject();
-                    Piano piano = new Piano();
-                    piano.setId(jsonObject.get("pianoId").getAsInt());
-                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano, jsonObject.get("coordx").getAsFloat(), jsonObject.get("coordy").getAsFloat());
+                    int piano;
+                    piano = jsonObject.get("pianoId").getAsInt();
+                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano, jsonObject.get("coordx").getAsInt(), jsonObject.get("coordy").getAsInt());
                     boolean notInDb = beacondao.save(beacon);
                     if (!notInDb) {
                         beacondao.update(beacon);

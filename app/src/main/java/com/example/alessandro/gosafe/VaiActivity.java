@@ -92,7 +92,7 @@ public class VaiActivity extends DefaultActivity {
         percorso.add(7, 24);
         System.out.println(percorso);*/
 
-       BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+       /*BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             DAOUtente daoUtente = new DAOUtente(this);
             daoUtente.open();
@@ -104,7 +104,7 @@ public class VaiActivity extends DefaultActivity {
             bundle.putLong("periodo", 20000);
             s.putExtras(bundle);
             startService(s);
-        }
+        }*/
         daoBeacon = new DAOBeacon(this);
         daoBeacon.open();
         daoUtente = new DAOUtente(this);
@@ -206,7 +206,7 @@ public class VaiActivity extends DefaultActivity {
 
                     //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopo
                     RichiestaPercorso richiestaPercorso = new RichiestaPercorso(user);
-                    richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano);
+                    richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position);
                     try {
                         Thread.sleep(4000);
                     } catch (InterruptedException e1) {

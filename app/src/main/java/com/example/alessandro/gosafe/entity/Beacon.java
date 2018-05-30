@@ -8,9 +8,9 @@ public class Beacon {
 
     private String id;
     private boolean is_puntodiraccolta;
-    private Piano piano;
-    private float coordx;
-    private float coordy;
+    private int piano;
+    private int coordx;
+    private int coordy;
 
     public Beacon(){}
 
@@ -18,7 +18,7 @@ public class Beacon {
         this.id = id;
     }
 
-    public Beacon(String id, boolean is_puntodiraccolta, Piano piano, float coordx, float coordy) {
+    public Beacon(String id, boolean is_puntodiraccolta, int piano, int coordx, int coordy) {
         this.id = id;
         this.is_puntodiraccolta = is_puntodiraccolta;
         this.piano = piano;
@@ -40,27 +40,27 @@ public class Beacon {
         this.is_puntodiraccolta = is_puntodiraccolta;
     }
 
-    public Piano getPiano() {
+    public int getPiano() {
         return piano;
     }
 
-    public void setPiano(Piano piano) {
+    public void setPiano(int piano) {
         this.piano = piano;
     }
 
-    public float getCoordx() {
+    public int getCoordx() {
         return coordx;
     }
 
-    public void setCoordx(float coordx) {
+    public void setCoordx(int coordx) {
         this.coordx = coordx;
     }
 
-    public float getCoordy() {
+    public int getCoordy() {
         return coordy;
     }
 
-    public void setCoordy(float coordy) {
+    public void setCoordy(int coordy) {
         this.coordy = coordy;
     }
 }
