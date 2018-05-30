@@ -173,12 +173,12 @@ public class DAOBeacon {
         ContentValues updateValues = createContentValues(beacon);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + beacon.getId(), null)>0;
+            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "='" + beacon.getId() + "'", null)>0;
             return upd;
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
     }
@@ -234,9 +234,9 @@ public class DAOBeacon {
         return coorddelpunto; // Ritorna in output le coordinate x e y di tutti i beacon in input {B1.X = 1463,B1.Y = 222, B2.X= 2234, B2.Y= 177,...}
     }
 
-    public ArrayList<Integer> getCoordsByIdBeacon(int idBeacon){
+    public ArrayList<Integer> getCoordsByIdBeacon(String idBeacon){
         Cursor crs;
-        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "=" +idBeacon ,null,null,null,null);
+        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "='" +idBeacon+"'" ,null,null,null,null);
         if(crs!= null && crs.moveToFirst()){
             int xcoord = crs.getInt(crs.getColumnIndex(FIELD_COORDX));
             int ycoord = crs.getInt(crs.getColumnIndex(FIELD_COORDY));
