@@ -54,7 +54,7 @@ public class AggiornamentoInfoServer {
                 String dati_pos = gson.toJson(utente);
 
                 try {
-                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/utente/updateposition");
+                    URL url = new URL("http://10.0.0.2:8080/gestionemappe/utente/updateposition");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
