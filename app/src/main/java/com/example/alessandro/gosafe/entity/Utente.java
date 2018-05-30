@@ -22,6 +22,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     private int percorsoid;
     private boolean is_autenticato;//true solo quando l'utente è autenticato sul server
     private String token;
+    private String idsessione;
     //private String email;
 
     public Utente(String username, String password){
@@ -42,7 +43,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
         this.token = MyFirebaseInstanceIdService.get_token();
     }
 
-    public Utente(long id_utente, String username, String password, String nome, String cognome, String beaconid, int percorsoid, boolean is_autenticato, String token) {
+    public Utente(long id_utente, String username, String password, String nome, String cognome, String beaconid, int percorsoid, boolean is_autenticato, String token, String idsessione) {
         this.id = id_utente;
         this.username = username;
         this.password = password;
@@ -52,6 +53,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
         this.percorsoid = percorsoid;
         this.is_autenticato = is_autenticato;
         this.token = token;
+        this.idsessione = idsessione;
     }
 
     public Utente(String username, String password, String nome, String cognome, String beaconid, int percorsoid, boolean is_autenticato, String token) {
@@ -145,6 +147,15 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
         return id;
     }
 
+    public String getIdsessione() {
+        return idsessione;
+    }
+
+    public void setIdsessione(String idsessione) {
+        this.idsessione = idsessione;
+    }
+
+
     //public void setId_utente(long id){this.id_utente= id;}
 
     //public void setIs_autenticato(Boolean autenticato){this.is_autenticato= autenticato;}
@@ -152,7 +163,8 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     public void registrazioneLocale(Context ctx) {
         DAOUtente u = new DAOUtente(ctx);
         u.open();
-        u.save(this);
+        if(!u.save(this))
+            u.update(this);
         u.close();
     }
 

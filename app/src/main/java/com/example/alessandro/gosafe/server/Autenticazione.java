@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
@@ -176,10 +177,12 @@ public class Autenticazione {
             else {
                 JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
                 long id_utente = jobj.get("id_utente").getAsLong();
+                String idsessione = jobj.get("idsessione").getAsString();
                 //new registrazioneTokenTask(token, id_utente).execute();
                 utente.setId_utente(id_utente);
                 utente.setIs_autenticato(true);
-                //utente.registrazioneLocale(ctx);
+                utente.setIdsessione(idsessione);
+                utente.registrazioneLocale(ctx);
 
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");
@@ -385,6 +388,7 @@ public class Autenticazione {
                     String beaconId = "1"; //jobj.get("beaconId").getAsString();
                     String nome = jobj.get("nome").getAsString();
                     String cognome = jobj.get("cognome").getAsString();
+                    String idsessione = jobj.get("idsessione").getAsString();
 
                 /*if (token != null) {
                     new registrazioneTokenTask(token, id_utente).execute();
@@ -396,7 +400,9 @@ public class Autenticazione {
                     utente.setBeaconid(beaconId);
                     utente.setNome(nome);
                     utente.setCognome(cognome);
+                    utente.setIdsessione(idsessione);
                     utente.setIs_autenticato(true);
+
                     utente.registrazioneLocale(ctx);
                     //utente.loginLocale(ctx, true);
 
@@ -454,13 +460,16 @@ public class Autenticazione {
                 String dati_reg = gson.toJson(utente);
 
                 try {
-                    URL url = new URL(PATH + "/gestionemappe/utente/modifica");
+                    byte[] data = utente.getIdsessione().getBytes("UTF-8");
+                    String base64 = Base64.encodeToString(data,Base64.DEFAULT);
+                    URL url = new URL(PATH + "/gestionemappe/utente/secured/modifica");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/json");
                     connection.setRequestProperty("Accept", "application/json");
+                    connection.setRequestProperty("Authorization", "basic " + base64);
                     connection.connect();
 
                     OutputStream os = connection.getOutputStream();
@@ -591,12 +600,15 @@ public class Autenticazione {
                 String dati_utente = gson.toJson(utente);
 
                 try {
-                    URL url = new URL(PATH+ "/gestionemappe/utente/logout");
+                    byte[] data = utente.getIdsessione().getBytes("UTF-8");
+                    String base64 = Base64.encodeToString(data,Base64.DEFAULT);
+                    URL url = new URL(PATH+ "/gestionemappe/utente/secured/logout");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
                     conn.setRequestProperty("Content-Type", "application/json");
                     conn.setRequestProperty("Accept", "application/json");
+                    connection.setRequestProperty("Authorization", "basic " + base64);
                     conn.setInstanceFollowRedirects(true);
                     conn.connect();
 
