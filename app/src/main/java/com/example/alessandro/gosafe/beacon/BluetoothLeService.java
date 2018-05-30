@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -146,7 +147,7 @@ public class BluetoothLeService extends Service {
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
                         System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
-                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey()); //TODO:aggiornamento posizione su DB locale
+                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey(), getApplicationContext());
                         AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
                         ai.aggiornamentoPosizione(utente_attivo);
                     }
@@ -166,11 +167,11 @@ public class BluetoothLeService extends Service {
             super.onScanResult(callbackType, result);
             BluetoothDevice device = result.getDevice();
             final String deviceName = device.getName();
-            Log.d("RSSI", String.valueOf(result.getRssi()) + " " + deviceName);
+            Log.d("RSSI", String.valueOf(result.getRssi()) + " " + device.getName());
             mBluetoothDeviceAddress=device.getAddress();
 
             if (deviceName != null && deviceName.length() > 0) {
-                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X")) {
+                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) {
                     if(beaconsDetected.containsKey(mBluetoothDeviceAddress)) {
                         if (beaconsDetected.get(mBluetoothDeviceAddress) < result.getRssi())
                             beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
@@ -179,11 +180,11 @@ public class BluetoothLeService extends Service {
                             beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
                     connect();
                     //scanLeDevice(false);
-                    //final Intent intent = new Intent("univpm.iot_for_emergency.View.Funzionali.Trovato");
+                    final Intent intent = new Intent("updatepositionmap");
                     //Sessione sessione = new Sessione(getBaseContext());
                     //intent.putExtra("user", sessione.user());
-                    //intent.putExtra("device", mBluetoothDeviceAddress);
-                    //sendBroadcast(intent);
+                    intent.putExtra("device", mBluetoothDeviceAddress);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                     Log.d("dispositivo", mBluetoothDeviceAddress);
 
                 }

@@ -3,6 +3,8 @@ package com.example.alessandro.gosafe.server;
 import android.app.Service;
 import android.content.Intent;
 import java.text.SimpleDateFormat;
+
+import android.content.SharedPreferences;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.IBinder;
@@ -66,7 +68,6 @@ public class CheckForDbUpdatesService extends Service {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void checkForUpdates(){
 
         CheckConnessione checkConnessione = new CheckConnessione();
@@ -76,8 +77,10 @@ public class CheckForDbUpdatesService extends Service {
 
             String result = null;
             File dbpath = getApplicationContext().getDatabasePath("gosafe.db");
-            long lastModified = dbpath.lastModified();
-            String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
+            SharedPreferences prefs = getSharedPreferences("dblastupdate", MODE_PRIVATE);
+            if (prefs != null) {
+                long lastModified = prefs.getLong("last_update", 0);
+                String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
             try {
                 DAOUtente daoUtente = new DAOUtente(this);
@@ -95,37 +98,38 @@ public class CheckForDbUpdatesService extends Service {
                 connection.setRequestProperty("Authorization", "basic " + base64);
                 connection.connect();
 
-                StringBuilder sb = new StringBuilder();
-            /*StringBuilder sbe = new StringBuilder();
-            BufferedReader bre = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
-            String inputeLine;
-            while ((inputeLine = bre.readLine()) != null) {
-                sbe.append(inputeLine + "\n");
-            }
-            System.out.println(sbe.toString());
-            bre.close();*/
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                String inputLine;
+                    StringBuilder sb = new StringBuilder();
+                    /*StringBuilder sbe = new StringBuilder();
+                    BufferedReader bre = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+                    String inputeLine;
+                    while ((inputeLine = bre.readLine()) != null) {
+                        sbe.append(inputeLine + "\n");
+                    }
+                    System.out.println(sbe.toString());
+                    bre.close();*/
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                    String inputLine;
 
-                while ((inputLine = br.readLine()) != null) {
-                    sb.append(inputLine + "\n");
-                }
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+                    }
 
-                br.close();
-                result = sb.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    try {
-                        connection.disconnect();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    br.close();
+                    result = sb.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        try {
+                            connection.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-            if (result != null) {
-                updateDB(result);
+                if (!result.equals("")) {
+                    updateDB(result);
+                }
             }
         }
     }
@@ -240,6 +244,11 @@ public class CheckForDbUpdatesService extends Service {
             daoGeneric.ricreaDb(jsonResponse);
             daoGeneric.close();
         }
+
+        SharedPreferences.Editor editor = getSharedPreferences("dblastupdate", MODE_PRIVATE).edit();
+        editor.putLong("last_update", System.currentTimeMillis());
+        editor.apply();
+
     }
 
 
