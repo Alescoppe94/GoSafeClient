@@ -8,12 +8,14 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.alessandro.gosafe.database.*;
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 import com.example.alessandro.gosafe.entity.Tronco;
+import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -78,12 +80,19 @@ public class CheckForDbUpdatesService extends Service {
             String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
             try {
-                String request = "http://192.168.1.60:8080/gestionemappe/db/aggiornadb/" + formattedDate;
+                DAOUtente daoUtente = new DAOUtente(this);
+                daoUtente.open();
+                Utente utente = daoUtente.findUtente();
+                daoUtente.close();
+                byte[] data = utente.getIdsessione().getBytes("UTF-8");
+                String base64 = Base64.encodeToString(data,Base64.DEFAULT);
+                String request = "http://10.0.2.2:8080/gestionemappe/db/secured/aggiornadb/" + formattedDate;
                 URL url = new URL(request);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestProperty("Authorization", "basic " + base64);
                 connection.connect();
 
                 StringBuilder sb = new StringBuilder();

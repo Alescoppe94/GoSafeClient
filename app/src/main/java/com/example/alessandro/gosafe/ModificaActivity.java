@@ -132,10 +132,13 @@ public class ModificaActivity extends DefaultActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            Utente utente = new Utente(id ,username, password, nome, cognome, "", 0, false, "ciao");
+            DAOUtente daoUtente = new DAOUtente(this);
+            daoUtente.open();
+            Utente utente_old = daoUtente.findUtente();
+            daoUtente.close();
+            Utente utente = new Utente(id ,username, password, nome, cognome,utente_old.getBeaconid(),utente_old.getPercorsoid(),utente_old.getIs_autenticato(),utente_old.getToken(),utente_old.getIdsessione());
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.updateUtente(this);
-
         }
 
     }

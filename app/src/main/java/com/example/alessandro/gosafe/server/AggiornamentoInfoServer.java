@@ -2,6 +2,7 @@ package com.example.alessandro.gosafe.server;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.alessandro.gosafe.entity.Utente;
@@ -54,12 +55,15 @@ public class AggiornamentoInfoServer {
                 String dati_pos = gson.toJson(utente);
 
                 try {
-                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/utente/updateposition");
+                    byte[] data = utente.getIdsessione().getBytes("UTF-8");
+                    String base64 = Base64.encodeToString(data,Base64.DEFAULT);
+                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/secured/updateposition");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
                     conn.setRequestProperty("Content-Type", "application/json");
                     conn.setRequestProperty("Accept", "application/json");
+                    conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.setInstanceFollowRedirects(true);
                     conn.connect();
 

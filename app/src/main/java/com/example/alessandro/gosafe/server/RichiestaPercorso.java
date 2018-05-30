@@ -2,6 +2,7 @@ package com.example.alessandro.gosafe.server;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.widget.Toast;
 
 import com.example.alessandro.gosafe.EmergenzaActivity;
@@ -23,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://192.168.1.60:8080";
+    private final String PATH = "http://10.0.2.2:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
@@ -69,11 +70,14 @@ public class RichiestaPercorso {
                 return null;
             } else {
                 try {
+                    byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
+                    String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
                     System.out.println("BEACON DI ARRIVO IN RICH PERC: " +beaconArr);
-                    URL url = new URL(PATH + "/gestionemappe/mappe/calcolapercorso/"+utente_attivo.getBeaconid()+"/"+beaconArr+""); //Gli devo passare il beacon d'arrivo
+                    URL url = new URL(PATH + "/gestionemappe/mappe/secured/calcolapercorso/"+utente_attivo.getBeaconid()+"/"+beaconArr+""); //Gli devo passare il beacon d'arrivo
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoInput(true);
                     conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
 
                     StringBuilder sb = new StringBuilder();
@@ -167,10 +171,13 @@ public class RichiestaPercorso {
                 return null;
             } else {
                 try {
-                    URL url = new URL(PATH + "/gestionemappe/mappe/visualizzapercorso/" + utente_attivo.getId_utente() + "/" + utente_attivo.getBeaconid());
+                    byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
+                    String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
+                    URL url = new URL(PATH + "/gestionemappe/mappe/secured/visualizzapercorso/" + utente_attivo.getId_utente() + "/" + utente_attivo.getBeaconid());
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoInput(true);
                     conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
 
                     StringBuilder sb = new StringBuilder();

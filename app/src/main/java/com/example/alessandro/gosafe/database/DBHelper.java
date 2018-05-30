@@ -26,7 +26,8 @@ class DBHelper extends SQLiteOpenHelper {
             DAOUtente.FIELD_BEACONID + " TEXT NULL, " +
             DAOUtente.FIELD_PERCORSOID + " TEXT NULL, " +
             DAOUtente.FIELD_ISAUTENTICATO + " TEXT NOT NULL, " +
-            DAOUtente.FIELD_TOKEN + " TEXT NULL)";
+            DAOUtente.FIELD_TOKEN + " TEXT NULL, " +
+            DAOUtente.FIELD_IDSESSIONE + " TEXT NULL)";
 
     private static final String TABLE_TRONCO = "CREATE TABLE " + DAOTronco.TBL_NAME + " (" +
             DAOTronco.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
