@@ -16,6 +16,7 @@ import com.example.alessandro.gosafe.LoginActivity;
 import com.example.alessandro.gosafe.ProfiloActivity;
 import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.VaiActivity;
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
@@ -471,17 +472,18 @@ public class Autenticazione {
                     connection.setRequestProperty("Accept", "application/json");
                     connection.setRequestProperty("Authorization", "basic " + base64);
                     connection.connect();
-                    int responseCode = connection.getResponseCode();
-                    if(400 <= responseCode && responseCode <= 499){
-                        update_in_corso.dismiss();
-                        this.cancel(true);
-                    }
 
                     OutputStream os = connection.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
                     osw.write(dati_reg);
                     osw.flush();
                     osw.close();
+
+                    int responseCode = connection.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        update_in_corso.dismiss();
+                        this.cancel(true);
+                    }
 
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
@@ -613,13 +615,9 @@ public class Autenticazione {
                     conn.setRequestMethod("PUT");
                     conn.setRequestProperty("Content-Type", "application/json");
                     conn.setRequestProperty("Accept", "application/json");
-                    connection.setRequestProperty("Authorization", "basic " + base64);
+                    conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.setInstanceFollowRedirects(true);
                     conn.connect();
-                    int responseCode = conn.getResponseCode();
-                    if(400 <= responseCode && responseCode <= 499){
-                        this.cancel(true);
-                    }
 
                     OutputStream os = conn.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
@@ -627,17 +625,21 @@ public class Autenticazione {
                     osw.flush();
                     osw.close();
 
-                /*StringBuilder sbe = new StringBuilder();
-                BufferedReader bre = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
-                String inputeLine;
-                while ((inputeLine = bre.readLine()) != null) {
-                    sbe.append(inputeLine + "\n");
-                }
-                System.out.println(sbe.toString());
-                bre.close();*/
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                    br.close();
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
 
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    String inputLine;
+
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+                    }
+
+                    br.close();
+                    return sb.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -669,6 +671,12 @@ public class Autenticazione {
                         });
                 logout_impossibile.show();
             } else {
+                ctx.stopService(new Intent(ctx, CheckForDbUpdatesService.class));
+                ctx.stopService(new Intent(ctx, BluetoothLeService.class));
+                DAOUtente daoUtente = new DAOUtente(ctx);
+                daoUtente.open();
+                daoUtente.deleteAll();
+                daoUtente.close();
                 Intent i;
                 i = new Intent(ctx, LoginActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

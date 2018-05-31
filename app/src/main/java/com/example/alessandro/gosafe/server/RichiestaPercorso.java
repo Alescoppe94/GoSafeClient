@@ -94,12 +94,12 @@ public class RichiestaPercorso {
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
+
                     int responseCode = conn.getResponseCode();
                     if(400 <= responseCode && responseCode <= 499){
                         calcolopercorso_in_corso.dismiss();
                         this.cancel(true);
                     }
-
 
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
@@ -204,6 +204,7 @@ public class RichiestaPercorso {
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
+
                     int responseCode = conn.getResponseCode();
                     if(400 <= responseCode && responseCode <= 499){
                         this.cancel(true);

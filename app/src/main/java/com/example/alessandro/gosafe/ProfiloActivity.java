@@ -132,11 +132,9 @@ public class ProfiloActivity extends DefaultActivity  {
         DAOUtente daoutente = new DAOUtente(this);
         daoutente.open();
         Utente utente = daoutente.findUtente();
+        daoutente.close();
         Autenticazione autenticazione = new Autenticazione(utente);
         autenticazione.logoutUtente(ProfiloActivity.this);
-        daoutente.deleteAll();
-        daoutente.close();
-
     }
 
     /*public void indietro(View view){

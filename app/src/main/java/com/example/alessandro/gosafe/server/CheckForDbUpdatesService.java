@@ -42,6 +42,7 @@ import java.util.TimerTask;
 public class CheckForDbUpdatesService extends Service {
 
     private HttpURLConnection connection;
+    private Timer timer;
 
     @Override
     public void onCreate(){
@@ -51,7 +52,8 @@ public class CheckForDbUpdatesService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
 
-        new Timer().schedule(new TimerTask() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void run() {
@@ -66,6 +68,14 @@ public class CheckForDbUpdatesService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+        timer = null;
+        stopSelf();
     }
 
     private void checkForUpdates(){
@@ -177,9 +187,7 @@ public class CheckForDbUpdatesService extends Service {
 
                 for (JsonElement jsonBeacon : beaconArray) {
                     JsonObject jsonObject = jsonBeacon.getAsJsonObject();
-                    Piano piano = new Piano();
-                    piano.setId(jsonObject.get("pianoId").getAsInt());
-                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano, jsonObject.get("coordx").getAsFloat(), jsonObject.get("coordy").getAsFloat());
+                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), jsonObject.get("pianoId").getAsInt(), jsonObject.get("coordx").getAsFloat(), jsonObject.get("coordy").getAsFloat());
                     boolean notInDb = beacondao.save(beacon);
                     if (!notInDb) {
                         beacondao.update(beacon);

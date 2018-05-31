@@ -74,6 +74,7 @@ public class DbDownloadFirstBoot {
                     connection.setRequestProperty("Accept", "application/json");
                     connection.setRequestProperty("Authorization", "basic " + base64);
                     connection.connect();
+
                     int responseCode = connection.getResponseCode();
                     if(400 <= responseCode && responseCode <= 499){
                         this.cancel(true);
