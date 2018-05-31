@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
+   // private UserSessionManager session;
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
@@ -62,6 +63,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+      /*  session = new UserSessionManager(getApplicationContext());
+        if(!session.checkLogin()){
+            Intent i = new Intent(getApplicationContext(), VaiActivity.class);
+            startActivity(i);
+        }*/
+
         // Set up the login form.
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){

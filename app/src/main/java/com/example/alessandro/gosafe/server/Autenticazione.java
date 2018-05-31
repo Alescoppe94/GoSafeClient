@@ -15,6 +15,7 @@ import android.view.View;
 import com.example.alessandro.gosafe.LoginActivity;
 import com.example.alessandro.gosafe.ProfiloActivity;
 import com.example.alessandro.gosafe.R;
+import com.example.alessandro.gosafe.UserSessionManager;
 import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
@@ -42,9 +43,10 @@ import java.util.concurrent.ExecutionException;
 
 public class Autenticazione {
 
+    private UserSessionManager session;
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.197:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -204,6 +206,7 @@ public class Autenticazione {
 
 
     public void autenticazioneUtente(Context ctx/*, String token*/) {
+        session = new UserSessionManager(ctx);
         new autenticazioneUtenteTask(utente_attivo, ctx/*, token*/).execute();
     }
 
@@ -326,6 +329,7 @@ public class Autenticazione {
                         utente.setNome(utentedb.getNome());
                         utente.setCognome(utentedb.getCognome());
                         utente.setIs_autenticato(true);
+                        session.createUserLoginSession("User Session", utente.getUsername());
                         Intent i = new Intent(ctx, VaiActivity.class);
                         ctx.startActivity(i);
                     } else {
@@ -402,9 +406,9 @@ public class Autenticazione {
                     utente.setCognome(cognome);
                     utente.setIdsessione(idsessione);
                     utente.setIs_autenticato(true);
-
                     utente.registrazioneLocale(ctx);
                     //utente.loginLocale(ctx, true);
+                    session.createUserLoginSession("User Session", utente.getUsername());
 
                     Intent i = new Intent(ctx, VaiActivity.class);
 
@@ -628,7 +632,7 @@ public class Autenticazione {
                 bre.close();*/
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
                     br.close();
-
+                    return "true";
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

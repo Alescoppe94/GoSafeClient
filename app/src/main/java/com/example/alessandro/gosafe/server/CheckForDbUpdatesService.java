@@ -89,7 +89,7 @@ public class CheckForDbUpdatesService extends Service {
                 daoUtente.close();
                 byte[] data = utente.getIdsessione().getBytes("UTF-8");
                 String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                String request = "http://10.0.2.2:8080/gestionemappe/db/secured/aggiornadb/" + formattedDate;
+                String request = "http://192.168.1.197:8080/gestionemappe/db/secured/aggiornadb/" + formattedDate;
                 URL url = new URL(request);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -174,9 +174,9 @@ public class CheckForDbUpdatesService extends Service {
 
                 for (JsonElement jsonBeacon : beaconArray) {
                     JsonObject jsonObject = jsonBeacon.getAsJsonObject();
-                    Piano piano = new Piano();
-                    piano.setId(jsonObject.get("pianoId").getAsInt());
-                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano, jsonObject.get("coordx").getAsFloat(), jsonObject.get("coordy").getAsFloat());
+                    int piano;
+                    piano = jsonObject.get("pianoId").getAsInt();
+                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano, jsonObject.get("coordx").getAsInt(), jsonObject.get("coordy").getAsInt());
                     boolean notInDb = beacondao.save(beacon);
                     if (!notInDb) {
                         beacondao.update(beacon);

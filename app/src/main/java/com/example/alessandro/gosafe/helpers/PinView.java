@@ -98,30 +98,9 @@ public class PinView extends SubsamplingScaleImageView {
                 canvas.drawLine(nPin.x, nPin.y, vPin.x, vPin.y, paint); //Disegna la linea
 
             }
-            canvas.drawBitmap(pin, vX, vY, paint);
-
-
-            /*sourceToViewCoord(sPin, vPin);
-            sourceToViewCoord(inizioPin, nPin);
-            float vX = vPin.x - (pin.getWidth()/2);
-            float vY = vPin.y - pin.getHeight();*/
-            //canvas.drawBitmap(pin, vX, vY, paint);
-
-            /*Disegna linea*/
-            /*paint.setColor(Color.RED);
-            paint.setStrokeWidth(10);
-            canvas.drawLine(nPin.x, nPin.y, vPin.x, vPin.y, paint);
-            canvas.drawBitmap(pin, vX, vY, paint);*/
-        }
-
-        if (pin != null && sPin != null) {
-
-            sourceToViewCoord(sPin,vPin);
-            vX = vPin.x - (pin.getWidth()/2);
-            vY = vPin.y - pin.getHeight();
-            canvas.drawBitmap(pin, vX, vY, paint);
-            //invalidate();
-
+            if(percorso.size()!=0) {
+                canvas.drawBitmap(pin, vX, vY, paint);
+            }
         }
 
     }
