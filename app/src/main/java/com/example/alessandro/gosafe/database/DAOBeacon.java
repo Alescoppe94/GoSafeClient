@@ -142,25 +142,23 @@ public class DAOBeacon {
         {
             crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
             Log.v("Cursor Object DAOBEACON", DatabaseUtils.dumpCursorToString(crs));
+            crs.moveToFirst();
             Boolean ispuntodiraccolta = (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false;
             DAOPiano pianoDAO = new DAOPiano(ctx);
             pianoDAO.open();
             Piano piano = pianoDAO.getPianoById(crs.getInt(crs.getColumnIndex(FIELD_PIANOID)));
             pianoDAO.close();
-            while(crs.moveToNext())
-            {
-                beacon = new Beacon(
-                        crs.getString(crs.getColumnIndex(FIELD_ID)),
-                        ispuntodiraccolta,
-                        piano,
-                        crs.getFloat(crs.getColumnIndex(FIELD_COORDX)),
-                        crs.getFloat(crs.getColumnIndex(FIELD_COORDY)));
-            }
+            beacon = new Beacon(
+                    crs.getString(crs.getColumnIndex(FIELD_ID)),
+                    ispuntodiraccolta,
+                    piano,
+                    crs.getFloat(crs.getColumnIndex(FIELD_COORDX)),
+                    crs.getFloat(crs.getColumnIndex(FIELD_COORDY)));
             crs.close();
         }
         catch(SQLiteException sqle)
         {
-            return null;
+            sqle.printStackTrace();
         }
 
         return beacon;

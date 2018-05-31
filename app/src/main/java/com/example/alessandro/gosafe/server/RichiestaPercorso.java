@@ -1,11 +1,12 @@
 package com.example.alessandro.gosafe.server;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Toast;
 
-import com.example.alessandro.gosafe.EmergenzaActivity;
+import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOPesiTronco;
 import com.example.alessandro.gosafe.database.DAOTronco;
@@ -34,6 +35,7 @@ public class RichiestaPercorso {
     private ArrayList<Integer> coordEmergenza = new ArrayList<>();
 
 
+
     public RichiestaPercorso(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
     }
@@ -49,6 +51,7 @@ public class RichiestaPercorso {
         private PinView imageViewPiano;
         private AsyncTask<Void, Void, Boolean> execute;
         private boolean connesso;
+        private ProgressDialog calcolopercorso_in_corso;
 
         public OttieniPercorsoNoEmergenzaTask(Context ctx, String beaconArr, PinView imageViewPiano){
             this.ctx = ctx;
@@ -59,8 +62,15 @@ public class RichiestaPercorso {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            calcolopercorso_in_corso = new ProgressDialog(ctx);
+            calcolopercorso_in_corso.setIndeterminate(true);
+            calcolopercorso_in_corso.setCancelable(true);
+            //calcolopercorso_in_corso.setCanceledOnTouchOutside(false);
+            calcolopercorso_in_corso.setMessage(ctx.getString(R.string.calcolopercorsoincorso));
+            calcolopercorso_in_corso.show();
             CheckConnessione checkConnessione = new CheckConnessione();
             connesso = checkConnessione.checkConnessione();
+
         }
 
         @Override
@@ -69,6 +79,11 @@ public class RichiestaPercorso {
             if (!connesso) {
                 return null;
             } else {
+                try {
+                    Thread.sleep(1500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 try {
                     byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
                     String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
@@ -79,6 +94,12 @@ public class RichiestaPercorso {
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        calcolopercorso_in_corso.dismiss();
+                        this.cancel(true);
+                    }
+
 
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
@@ -106,9 +127,13 @@ public class RichiestaPercorso {
         }
 
         @Override
+        protected void onProgressUpdate(Void... arg0){
+
+        }
+
+        @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
             //Percorso percorso;
             if(result==null){ //Se il server è giù...
                 percorsoPost = calcolaPercorsoNoEmergenza(ctx, beaconArr);
@@ -118,7 +143,6 @@ public class RichiestaPercorso {
                 System.out.println("Percorso finale: "+percorsoPost.getTappe());/*Ritorna una lista vuota, male male*/
 
             }
-
             // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
             percorso.add(Integer.parseInt(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
@@ -141,6 +165,7 @@ public class RichiestaPercorso {
             imageViewPiano.play(coorddelpercorso);
             //Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
             daoBeacon.close();
+            calcolopercorso_in_corso.dismiss();
         }
     }
 
@@ -179,6 +204,10 @@ public class RichiestaPercorso {
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
 
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));

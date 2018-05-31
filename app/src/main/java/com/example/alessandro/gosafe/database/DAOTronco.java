@@ -181,15 +181,13 @@ public class DAOTronco {
         try
         {
             crs=db.query(TBL_NAME, FIELD_ALL, FIELD_BEACONAID+"=" + beaconA.getId() + " AND " + FIELD_BEACONBID+"=" + beaconB.getId() + " OR " + FIELD_BEACONAID+"=" + beaconB.getId() + " AND " + FIELD_BEACONBID+"=" + beaconA.getId(),null,null,null,null);
+            crs.moveToFirst();
             Boolean agibile = (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false;
-            while(crs.moveToNext())
-            {
-                tronco = new Tronco(
-                        crs.getInt(crs.getColumnIndex(FIELD_ID)),
-                        agibile,
-                        estremiTronco,
-                        crs.getInt(crs.getColumnIndex(FIELD_AREA)));
-            }
+            tronco = new Tronco(
+                    crs.getInt(crs.getColumnIndex(FIELD_ID)),
+                    agibile,
+                    estremiTronco,
+                    crs.getInt(crs.getColumnIndex(FIELD_AREA)));
             crs.close();
         }
         catch(SQLiteException sqle)

@@ -147,6 +147,8 @@ public class BluetoothLeService extends Service {
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
                         System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
+                        //TODO: controllare se il beacon a cui mi sto agganciando è lo stesso o è nuovo.
+                        //TODO: se c'è emergenza far partire il task visualizzapercorso
                         utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey(), getApplicationContext());
                         AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
                         ai.aggiornamentoPosizione(utente_attivo);

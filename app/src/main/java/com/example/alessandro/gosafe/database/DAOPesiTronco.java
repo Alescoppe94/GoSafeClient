@@ -162,7 +162,7 @@ public class DAOPesiTronco {
         Cursor crs;
         try
         {
-            crs=db.rawQuery("select valore from " +TBL_NAME + " INNER JOIN Peso on Peso.id = pesoId WHERE troncoId ="+ troncoId + " AND Peso.nome = " + peso,null);
+            crs=db.rawQuery("select valore from " +TBL_NAME + " INNER JOIN Peso on Peso.ID_peso = pesoId WHERE troncoId ="+ troncoId + " AND Peso.nome = '" + peso + "'",null);
             while(crs.moveToNext())
             {
                 valore = crs.getFloat(crs.getColumnIndex(FIELD_VALORE));
