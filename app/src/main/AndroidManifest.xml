@@ -53,6 +53,9 @@
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+            android:name=".CheckLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

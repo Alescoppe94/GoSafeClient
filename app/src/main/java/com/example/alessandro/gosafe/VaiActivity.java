@@ -79,26 +79,24 @@ public class VaiActivity extends DefaultActivity {
     private PinView imageViewPiano;
     Utente user;
 
+    //private UserSessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
+
+        /*session = new UserSessionManager(getApplicationContext());
+        if(session.checkLogin()){
+            finish();
+        }*/
 
         ctx = this;
         DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
         dbDownload.dbdownloadFirstBootAsyncTask(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
-        percorso = new ArrayList<Integer>(); //Questo percorso è fornito in modo statico -> Dobbiamo prendere i beacon da CalcolaPercorso
-        /*percorso.add(0,1);
-        percorso.add(1,8);
-        percorso.add(2, 3);
-        percorso.add(3, 2);
-        percorso.add(4, 6);
-        percorso.add(5, 10);
-        percorso.add(6, 11);
-        percorso.add(7, 24);
-        System.out.println(percorso);*/
+        percorso = new ArrayList<Integer>();
 
        /*BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
