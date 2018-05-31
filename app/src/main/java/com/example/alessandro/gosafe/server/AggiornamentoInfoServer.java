@@ -66,6 +66,10 @@ public class AggiornamentoInfoServer {
                     conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.setInstanceFollowRedirects(true);
                     conn.connect();
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
 
                     OutputStream os = conn.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");

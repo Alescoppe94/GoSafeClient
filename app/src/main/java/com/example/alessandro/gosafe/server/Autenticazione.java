@@ -471,6 +471,11 @@ public class Autenticazione {
                     connection.setRequestProperty("Accept", "application/json");
                     connection.setRequestProperty("Authorization", "basic " + base64);
                     connection.connect();
+                    int responseCode = connection.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        update_in_corso.dismiss();
+                        this.cancel(true);
+                    }
 
                     OutputStream os = connection.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
@@ -611,6 +616,10 @@ public class Autenticazione {
                     connection.setRequestProperty("Authorization", "basic " + base64);
                     conn.setInstanceFollowRedirects(true);
                     conn.connect();
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
 
                     OutputStream os = conn.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
