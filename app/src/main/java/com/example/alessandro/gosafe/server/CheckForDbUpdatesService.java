@@ -89,7 +89,7 @@ public class CheckForDbUpdatesService extends Service {
                 daoUtente.close();
                 byte[] data = utente.getIdsessione().getBytes("UTF-8");
                 String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                String request = "http://192.168.1.197:8080/gestionemappe/db/secured/aggiornadb/" + formattedDate;
+                String request = "http://192.168.1.60:8080/gestionemappe/db/secured/aggiornadb/" + formattedDate;
                 URL url = new URL(request);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");

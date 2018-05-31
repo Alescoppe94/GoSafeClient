@@ -68,30 +68,22 @@ public class BluetoothLeService extends Service {
     private BluetoothLeScanner mBluetoothLeScanner;
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
+    private boolean mScanning;
     // Stops scanning after 10 seconds.
-    private static int SCAN_PERIOD = 10000;
+    private static int SCAN_PERIOD = 5000;
     private static int PAUSE_PERIOD = 5000;
 
-    private int mConnectionState = STATE_DISCONNECTED;
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
     private String mBluetoothDeviceAddress;
-    private BluetoothGatt mBluetoothGatt;
-    private String finaladdress;
-    private static BluetoothGatt finalgatt;
 
     private Utente utente_attivo;
 
     private LinkedHashMap<String, Integer> beaconsDetected;
 
-    private static final byte[] ENABLE_SENSOR = {0x01};
 
     @Override
     public void onCreate() {
         super.onCreate();
         getBluetoothAdapterAndLeScanner();
-        LetturaPeriodo();
         mHandler = new Handler();
         mBluetoothDeviceAddress="";
         beaconsDetected = new LinkedHashMap<>();
@@ -132,9 +124,6 @@ public class BluetoothLeService extends Service {
                 @Override
                 public void run() {
                     mBluetoothLeScanner.stopScan(scanCallback);
-                    //final Intent intent1 = new Intent("univpm.iot_for_emergency.View.Funzionali.Scaduto");
-                    //intent1.putExtra("stopperiod",PAUSE_PERIOD);
-                    //sendBroadcast(intent1);
                     Log.d("fermato", "stop");
                     orderByValue(beaconsDetected, new Comparator<Integer>() {
                         @Override
@@ -153,8 +142,12 @@ public class BluetoothLeService extends Service {
                     }
                 }
             }, SCAN_PERIOD);
+            Log.d("fermato", "stop1");
             mBluetoothLeScanner.startScan(scanCallback);
         } else {
+            Log.d("fermato", "stop2");
+            beaconsDetected = null;
+            beaconsDetected = new LinkedHashMap<>();
             mBluetoothLeScanner.stopScan(scanCallback);
         }
     }
@@ -178,8 +171,8 @@ public class BluetoothLeService extends Service {
                     }
                     else if(!beaconsDetected.containsKey(mBluetoothDeviceAddress))
                             beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
-                    connect();
-                    //scanLeDevice(false);
+                    //connect();
+                    scanLeDevice(false);
                     final Intent intent = new Intent("updatepositionmap");
                     //Sessione sessione = new Sessione(getBaseContext());
                     //intent.putExtra("user", sessione.user());
@@ -194,174 +187,6 @@ public class BluetoothLeService extends Service {
 
         }
     };
-
-    /* Connessione a dispositivo*/
-    public boolean connect() {
-        if (mBluetoothAdapter == null || mBluetoothDeviceAddress == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
-            return false;
-        }
-
-        final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
-        if (device == null) {
-            Log.w(TAG, "Device not found.  Unable to connect.");
-            return false;
-        }
-
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
-        finalgatt=mBluetoothGatt;
-        Log.d(TAG, "Trying to create a new connection.");
-        mConnectionState = STATE_CONNECTING;
-        return true;
-    }
-
-
-    /*Messaggio di risposta ottenuto dopo le interazioni col dispositivo*/
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-
-        /*Metodo che viene richiamato quando cambia lo stato della connessione (da non connesso passo a connesso e viceversa) */
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                mConnectionState = STATE_CONNECTED;
-                mBluetoothDeviceAddress=gatt.getDevice().getAddress();
-                finaladdress=gatt.getDevice().getAddress();
-                broadcasUpdate("univpm.iot_for_emergency.View.Funzionali.Connesso",mBluetoothDeviceAddress);
-
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                mConnectionState = STATE_DISCONNECTED;
-            }
-            gatt.discoverServices();
-        }
-
-
-        /*Metodo che viene richiamato una volta che sono stati scoperti i servizi offerti dal dispositivo */
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-
-        /* Mi associo al service che mi interessa*/
-            BluetoothGattService humidityService = gatt.getService(SensorTagGatt.UUID_HUM_SERV);
-
-        /* Mi associo ala caratteristica che mi interessa*/
-            BluetoothGattCharacteristic enableHum = humidityService.getCharacteristic(SensorTagGatt.UUID_HUM_CONF);
-
-        /*Assegno alla caratteristica desiderata il valore che accende il sensore*/
-            enableHum.setValue(ENABLE_SENSOR);
-
-        /*Invio il dato al sensore*/
-            gatt.writeCharacteristic(enableHum);
-
-
-        }
-
-        /*Metodo che viene richiamato una volta che sono stati iviati dati al dispositivo */
-        @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status){
-
-            BluetoothGattService humidityService = gatt.getService(SensorTagGatt.UUID_HUM_SERV);
-
-            BluetoothGattCharacteristic humidityCharacteristic = humidityService.getCharacteristic(SensorTagGatt.UUID_HUM_DATA);
-
-        /*richiedo di leggere il valore della caratteristica*/
-            gatt.readCharacteristic(humidityCharacteristic);
-
-
-        }
-        /*Metodo che viene richiamato una volta che sono stati richiesti i dati al dispositivo*/
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
-        /*Controllo se il valore è uguale a 0, se è così vuol dire che abbiamo preso il valore prima che il sensore si accendesse quindi provo a leggere di nuovo */
-            byte []value=characteristic.getValue();
-            int t = shortUnsignedAtOffset(value, 0);
-            if (t==0)
-            {
-                gatt.readCharacteristic(characteristic);
-            }else {
-            /*se il valore ricevuto è diverso da 0 abbiamo letto i dati e li inviamo alla home */
-                //broadcastUpdate("univpm.iot_for_emergency.View.Funzionali.Ricevuti",characteristic);
-            }
-
-        }
-
-    };
-
-    private static Integer shortUnsignedAtOffset(byte[] c, int offset) {
-        Integer lowerByte = (int) c[offset] & 0xFF;
-        Integer upperByte = (int) c[offset+1] & 0xFF;
-        return (upperByte << 8) + lowerByte;
-    }
-
-
-    /*Tutte le funzioni broadcast inviano un intent caratterizzato da un'azione e da dati dati, il receiver si comporta in modo diverso in base all'azione dell'intent */
-    private void broadcastUpdate(final String action,BluetoothGattCharacteristic characteristic) {
-        //final Intent intent = new Intent(action);
-        double humidity = SensorTagData.extractHumidity(characteristic);
-        //double temperature = SensorTagData.extractHumAmbientTemperature(characteristic);
-        //intent.putExtra("device",finaladdress);
-        //intent.putExtra("hum",humidity);
-        //intent.putExtra("temp",temperature);
-        //sendBroadcast(intent);
-        Log.d("humidity", String.valueOf(humidity));
-        //Log.d("temp", String.valueOf(temperature));
-        if(!disconnect()){
-            disconnect();
-        }
-        close();
-        stopSelf();
-
-    }
-
-    private void broadcasUpdate(final String action,String device){
-        //final Intent intent =new Intent(action);
-        //intent.putExtra("device",device);
-        //sendBroadcast(intent);
-        Log.d("device", device);
-    }
-
-    public void broadcastUpdate(final String action){
-        //Intent intent=new Intent(action);
-        //sendBroadcast(intent);
-        Log.d("action", action);
-    }
-
-    public boolean disconnect() {
-        if (mBluetoothAdapter == null || finalgatt == null) {
-            mBluetoothGatt=finalgatt;
-            Log.w(TAG, "BluetoothAdapter not initialized");
-            return false;
-        }
-        finalgatt.disconnect();
-        return true;
-    }
-
-    /**
-     * After using a given BLE device, the app must call this method to ensure resources are
-     * released properly.
-     */
-    public void close() {
-        if (mBluetoothGatt == null) {
-            return;
-        }
-        mBluetoothGatt.close();
-        mBluetoothGatt = null;
-    }
-
-
-
-    private void LetturaPeriodo() {
-
-        SCAN_PERIOD = 10000;
-        PAUSE_PERIOD = 2000;
-
-    }
-
-
-
-    public void displayToast(String message){
-        Toast.makeText(BluetoothLeService.this, message, Toast.LENGTH_SHORT).show();
-    }
 
     static <K, V> void orderByValue(LinkedHashMap<K, V> m, final Comparator<? super V> c) {
         List<Map.Entry<K, V>> entries = new ArrayList<>(m.entrySet());

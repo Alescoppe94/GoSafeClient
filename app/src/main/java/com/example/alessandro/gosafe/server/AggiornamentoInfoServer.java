@@ -57,7 +57,7 @@ public class AggiornamentoInfoServer {
                 try {
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL("http://192.168.1.197:8080/gestionemappe/utente/secured/updateposition");
+                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/utente/secured/updateposition");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
