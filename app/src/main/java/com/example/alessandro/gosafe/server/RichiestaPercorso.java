@@ -40,8 +40,8 @@ public class RichiestaPercorso {
         this.utente_attivo = utente_attivo;
     }
 
-    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano) {
-        new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano).execute();
+    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione) {
+        new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano, posizione).execute();
     }
 
     private class OttieniPercorsoNoEmergenzaTask extends AsyncTask<Void, Void, String>{
@@ -51,12 +51,14 @@ public class RichiestaPercorso {
         private PinView imageViewPiano;
         private AsyncTask<Void, Void, Boolean> execute;
         private boolean connesso;
+        private int posizione;
         private ProgressDialog calcolopercorso_in_corso;
 
-        public OttieniPercorsoNoEmergenzaTask(Context ctx, String beaconArr, PinView imageViewPiano){
+        public OttieniPercorsoNoEmergenzaTask(Context ctx, String beaconArr, PinView imageViewPiano, int posizione){
             this.ctx = ctx;
             this.beaconArr = beaconArr;
             this.imageViewPiano = imageViewPiano;
+            this.posizione = posizione;
         }
 
         @Override
@@ -140,31 +142,36 @@ public class RichiestaPercorso {
                 System.out.println("Percorso finale: "+percorsoPost);
             } else { //Se il server risponde...
                 percorsoPost = new Gson().fromJson(result, Percorso.class);
-                System.out.println("Percorso finale: "+percorsoPost.getTappe());/*Ritorna una lista vuota, male male*/
+                System.out.println("Percorso finale: "+percorsoPost.getTappe());
 
             }
             // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
-            percorso.add(Integer.parseInt(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
+            percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getCoordx());
+            percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getCoordy());
+            percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getPiano());
             for(int i = 1 ; i< percorsoPost.getTappe().size()-1;i++){ //1 8 8 4 4
                 Tappa tappa = percorsoPost.getTappe().get(i);
-                percorso.add(Integer.parseInt(tappa.getTronco().getBeaconEstremi().get(0).getId()));
+                percorso.add(tappa.getTronco().getBeaconEstremi().get(0).getCoordx());
+                percorso.add(tappa.getTronco().getBeaconEstremi().get(0).getCoordy());
+                percorso.add(tappa.getTronco().getBeaconEstremi().get(0).getPiano());
 
             }
-            percorso.add(Integer.parseInt(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getId()));            //1 8 8 4 4 5 ->
-            percorso.add(Integer.parseInt(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getId()));            //1 8 8 4 4 5 ->
-            // 8 8 4 4
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getCoordx());            //1 8 8 4 4 5 ->
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getCoordy());
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getPiano());
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordx());            //1 8 8 4 4 5 ->
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordy());
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getPiano());
 
-            //1 | 8 4 | 5
-
-            System.out.println("Percorso in Rich Perc: " +percorso);
-
-            DAOBeacon daoBeacon = new DAOBeacon(ctx);
-            daoBeacon.open();
-            coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
+            for(int j=0; j<percorso.size(); j+=3 ){
+                if(posizione == percorso.get(j+2)){
+                    coorddelpercorso.add(percorso.get(j));
+                    coorddelpercorso.add(percorso.get(j+1));
+                }
+            }
+            //coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.play(coorddelpercorso);
-            //Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-            daoBeacon.close();
             calcolopercorso_in_corso.dismiss();
         }
     }

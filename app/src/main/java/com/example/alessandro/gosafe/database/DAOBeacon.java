@@ -73,7 +73,7 @@ public class DAOBeacon {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, beacon.getId());
         cv.put(FIELD_ISPUNTODIRACCOLTA, beacon.is_puntodiraccola());
-        cv.put(FIELD_PIANOID, String.valueOf(beacon.getPiano()));
+        cv.put(FIELD_PIANOID, beacon.getPiano());
         cv.put(FIELD_COORDX, beacon.getCoordx());
         cv.put(FIELD_COORDY, beacon.getCoordy());// qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
         return cv;
@@ -148,8 +148,8 @@ public class DAOBeacon {
                     crs.getString(crs.getColumnIndex(FIELD_ID)),
                     ispuntodiraccolta,
                     crs.getInt(crs.getColumnIndex(FIELD_PIANOID)),
-                    crs.getFloat(crs.getColumnIndex(FIELD_COORDX)),
-                    crs.getFloat(crs.getColumnIndex(FIELD_COORDY)));
+                    crs.getInt(crs.getColumnIndex(FIELD_COORDX)),
+                    crs.getInt(crs.getColumnIndex(FIELD_COORDY)));
             crs.close();
         }
         catch(SQLiteException sqle)
@@ -189,8 +189,8 @@ public class DAOBeacon {
                         crs.getString(crs.getColumnIndex(FIELD_ID)),
                         (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false,
                         crs.getInt(crs.getColumnIndex(FIELD_PIANOID)),
-                        crs.getFloat(crs.getColumnIndex(FIELD_COORDX)),
-                        crs.getFloat(crs.getColumnIndex(FIELD_COORDY)));
+                        crs.getInt(crs.getColumnIndex(FIELD_COORDX)),
+                        crs.getInt(crs.getColumnIndex(FIELD_COORDY)));
                 allPuntiDiRaccolta.add(beaconDiRaccolta);
             }
             crs.close();
