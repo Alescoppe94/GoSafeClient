@@ -70,7 +70,7 @@ public class DAOGeneric{
             db.execSQL(DBHelper.getTableBeacon());
             for (JsonElement jsonBeacon : beaconArray) {
                 JsonObject jsonObject = jsonBeacon.getAsJsonObject();
-                Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), jsonObject.get("pianoId").getAsInt(), jsonObject.get("coordx").getAsFloat(), jsonObject.get("coordy").getAsFloat());
+                Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), jsonObject.get("pianoId").getAsInt(), jsonObject.get("coordx").getAsInt(), jsonObject.get("coordy").getAsInt());
                 DAOBeacon daoBeacon = new DAOBeacon(ctx);
                 ContentValues cv = daoBeacon.createContentValues(beacon);
                 db.insert("Beacon", null, cv);

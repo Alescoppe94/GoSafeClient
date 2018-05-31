@@ -187,7 +187,7 @@ public class CheckForDbUpdatesService extends Service {
 
                 for (JsonElement jsonBeacon : beaconArray) {
                     JsonObject jsonObject = jsonBeacon.getAsJsonObject();
-                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), jsonObject.get("pianoId").getAsInt(), jsonObject.get("coordx").getAsFloat(), jsonObject.get("coordy").getAsFloat());
+                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), jsonObject.get("pianoId").getAsInt(), jsonObject.get("coordx").getAsInt(), jsonObject.get("coordy").getAsInt());
                     boolean notInDb = beacondao.save(beacon);
                     if (!notInDb) {
                         beacondao.update(beacon);
