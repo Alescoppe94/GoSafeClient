@@ -140,7 +140,7 @@ public class DAOBeacon {
         Beacon beacon=null;
         try
         {
-            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
+            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"='"+id_beacon+"'",null,null,null,null);
             Log.v("Cursor Object DAOBEACON", DatabaseUtils.dumpCursorToString(crs));
             crs.moveToFirst();
             Boolean ispuntodiraccolta = (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false;

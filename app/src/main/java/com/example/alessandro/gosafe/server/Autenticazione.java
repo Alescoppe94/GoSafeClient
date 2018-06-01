@@ -2,6 +2,7 @@ package com.example.alessandro.gosafe.server;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.UserSessionManager;
 import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
@@ -411,6 +413,8 @@ public class Autenticazione {
                     //utente.loginLocale(ctx, true);
                     session.createUserLoginSession("User Session", utente.getUsername());
 
+                    startUpServices(ctx);
+
                     Intent i = new Intent(ctx, VaiActivity.class);
 
                     ctx.startActivity(i);
@@ -690,6 +694,33 @@ public class Autenticazione {
         }
 
 
+    }
+
+    private void startUpServices(Context ctx){
+        Utente user;
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+            DAOUtente daoUtente = new DAOUtente(ctx);
+            daoUtente.open();
+            user = daoUtente.findUtente();
+            daoUtente.close();
+            Intent s = new Intent(ctx, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+            bundle.putLong("periodo", 15000);
+            s.putExtras(bundle);
+            ctx.startService(s);
+        }
+        DAOBeacon daoBeacon = new DAOBeacon(ctx);
+        daoBeacon.open();
+        DAOUtente daoUtente = new DAOUtente(ctx);
+        daoUtente.open();
+
+        user = daoUtente.findUtente();
+
+
+        Intent u = new Intent(ctx, CheckForDbUpdatesService.class);
+        ctx.startService(u);
     }
 
 }

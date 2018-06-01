@@ -519,7 +519,9 @@ public class RichiestaPercorso {
 
         boolean contenuto = false;
 
+        System.out.println(beacon.getId());
         for(Beacon b : beacons){
+            System.out.println(b.getId());
             if(b.getId().equals(beacon.getId())){
                 contenuto = true;
             }
