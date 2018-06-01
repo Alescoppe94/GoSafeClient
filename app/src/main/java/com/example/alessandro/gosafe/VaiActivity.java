@@ -107,7 +107,7 @@ public class VaiActivity extends DefaultActivity {
             Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
             Bundle bundle = new Bundle();
             bundle.putSerializable("user", user);
-            bundle.putLong("periodo", 10000);
+            bundle.putLong("periodo", 15000);
             s.putExtras(bundle);
             startService(s);
         }

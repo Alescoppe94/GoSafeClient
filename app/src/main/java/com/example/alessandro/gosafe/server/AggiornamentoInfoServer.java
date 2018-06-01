@@ -76,18 +76,26 @@ public class AggiornamentoInfoServer {
                     int responseCode = conn.getResponseCode();
                     if(400 <= responseCode && responseCode <= 499){
                         this.cancel(true);
+                        StringBuilder sbe = new StringBuilder();
+                        BufferedReader bre = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+                        String inputeLine;
+                        while ((inputeLine = bre.readLine()) != null) {
+                            sbe.append(inputeLine + "\n");
+                        }
+                        System.out.println(sbe.toString());
+                        bre.close();
+                    }else{
+                        StringBuilder sb = new StringBuilder();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                        String inputLine;
+
+                        while ((inputLine = br.readLine()) != null) {
+                            sb.append(inputLine + "\n");
+                        }
+
+                        br.close();
+                        return sb.toString();
                     }
-
-                    StringBuilder sb = new StringBuilder();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                    String inputLine;
-
-                    while ((inputLine = br.readLine()) != null) {
-                        sb.append(inputLine + "\n");
-                    }
-
-                    br.close();
-                    return sb.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

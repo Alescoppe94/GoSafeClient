@@ -122,6 +122,12 @@ public class BluetoothLeService extends Service {
             @Override
             public void run() {
                 if (!isScanning()){
+                    System.out.println("pigiaaaa");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     scanLeDevice(true);
                     Log.d("partito", "started");
                 }
