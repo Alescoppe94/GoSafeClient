@@ -64,7 +64,7 @@ import static android.content.ContentValues.TAG;
 /*Service che si occupa di connettere e leggere i dati dal Beacon.*/
 
 public class BluetoothLeService extends Service {
-    private static String LOG_TAG = "BluetoothLeService";
+    /*private static String LOG_TAG = "BluetoothLeService";
     private BluetoothLeScanner mBluetoothLeScanner;
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
@@ -77,23 +77,38 @@ public class BluetoothLeService extends Service {
 
     private Utente utente_attivo;
 
-    private LinkedHashMap<String, Integer> beaconsDetected;
+    private LinkedHashMap<String, Integer> beaconsDetected;*/
 
+    private BluetoothAdapter mBluetoothAdapter;
+
+    private Utente utente_attivo;
+
+    private boolean mScanning;
+    private Handler mHandler;
+    private Timer mTimer;
+
+    private long scanPeriod;
+    private int signalStrength;
+
+    private BluetoothLeScanner mBluetoothLeScanner;
+
+    private LinkedHashMap<String, Integer> beaconsDetected;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        getBluetoothAdapterAndLeScanner();
-        mHandler = new Handler();
-        mBluetoothDeviceAddress="";
-        beaconsDetected = new LinkedHashMap<>();
-        //sessione=new Sessione(this);
-    }
 
-    private void getBluetoothAdapterAndLeScanner() {
+        mHandler = new Handler();
+
+        this.scanPeriod = 3000;
+        //this.signalStrength = signalStrength;
+
+        beaconsDetected = new LinkedHashMap<>();
+
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        mScanning = false;
     }
 
     @Override
@@ -102,11 +117,14 @@ public class BluetoothLeService extends Service {
         //sendBroadcast(intent1);
         utente_attivo = (Utente) intent.getExtras().getSerializable("user");
         final long period = (Long) intent.getExtras().getLong("periodo");
-        new Timer().schedule(new TimerTask() {
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                scanLeDevice(true);
-                Log.d("partito", "started");
+                if (!isScanning()){
+                    scanLeDevice(true);
+                    Log.d("partito", "started");
+                }
             }
         }, 5000, period);
         return Service.START_NOT_STICKY;
@@ -117,14 +135,37 @@ public class BluetoothLeService extends Service {
         return null;
     }
 
+    public boolean isScanning() {
+        return mScanning;
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mTimer.cancel();
+        mTimer = null;
+
+    }
+
+
+    // If you want to scan for only specific types of peripherals,
+    // you can instead call startLeScan(UUID[], BluetoothAdapter.LeScanCallback),
+    // providing an array of UUID objects that specify the GATT services your app supports.
     private void scanLeDevice(final boolean enable) {
         if (enable) {
-            // Lo scan si ferma dopo un tempo predefinito.
+            //Utils.toast(ma.getApplicationContext(), "Starting BLE scan...");
+
+            // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mBluetoothLeScanner.stopScan(scanCallback);
-                    Log.d("fermato", "stop");
+                    //Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");
+
+                    Log.d("partito2", "started");
+
+                    mScanning = false;
+                    mBluetoothLeScanner.stopScan(mLeScanCallback);
+
                     orderByValue(beaconsDetected, new Comparator<Integer>() {
                         @Override
                         public int compare(Integer integer, Integer t1) {
@@ -135,58 +176,65 @@ public class BluetoothLeService extends Service {
                         }
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
-                        System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
                         utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey(), getApplicationContext());
                         AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
                         ai.aggiornamentoPosizione(utente_attivo);
+                        final Intent intent = new Intent("updatepositionmap");
+                        intent.putExtra("device", beaconsDetected.entrySet().iterator().next().getKey());
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        Log.d("dispositivo", beaconsDetected.entrySet().iterator().next().getKey());
                     }
+                    scanLeDevice(false);
+
                 }
-            }, SCAN_PERIOD);
-            Log.d("fermato", "stop1");
-            mBluetoothLeScanner.startScan(scanCallback);
-        } else {
-            Log.d("fermato", "stop2");
+            }, scanPeriod);
+
+            mScanning = true;
+            mBluetoothLeScanner.startScan(mLeScanCallback);
+            Log.d("partito1", "started");
+//            mBluetoothAdapter.startLeScan(uuids, mLeScanCallback);
+        }
+        else {
+            mScanning = false;
             beaconsDetected = null;
             beaconsDetected = new LinkedHashMap<>();
-            mBluetoothLeScanner.stopScan(scanCallback);
+            Log.d("partito3", "started");
         }
     }
 
+    // Device scan callback.
+    private ScanCallback mLeScanCallback = new ScanCallback() {
 
+                @Override
+                public void onScanResult(final int callbackType, final ScanResult result) {
+                    super.onScanResult(callbackType, result);
+                    BluetoothDevice device = result.getDevice();
+                    final String deviceName = device.getName();
+                    Log.d("RSSI", String.valueOf(result.getRssi()) + " " + device.getName());
+                    final String mBluetoothDeviceAddress=device.getAddress();
 
-    private ScanCallback scanCallback = new ScanCallback() {
-        @Override
-        public synchronized void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
-            BluetoothDevice device = result.getDevice();
-            final String deviceName = device.getName();
-            Log.d("RSSI", String.valueOf(result.getRssi()) + " " + device.getName());
-            mBluetoothDeviceAddress=device.getAddress();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-            if (deviceName != null && deviceName.length() > 0) {
-                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) {
-                    if(beaconsDetected.containsKey(mBluetoothDeviceAddress)) {
-                        if (beaconsDetected.get(mBluetoothDeviceAddress) < result.getRssi())
-                            beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
-                    }
-                    else if(!beaconsDetected.containsKey(mBluetoothDeviceAddress))
-                            beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
-                    //connect();
-                    scanLeDevice(false);
-                    final Intent intent = new Intent("updatepositionmap");
-                    //Sessione sessione = new Sessione(getBaseContext());
-                    //intent.putExtra("user", sessione.user());
-                    intent.putExtra("device", mBluetoothDeviceAddress);
-                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                    Log.d("dispositivo", mBluetoothDeviceAddress);
+                            if (deviceName != null && deviceName.length() > 0) {
+                                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) {
+                                    if(beaconsDetected.containsKey(mBluetoothDeviceAddress)) {
+                                        if (beaconsDetected.get(mBluetoothDeviceAddress) < result.getRssi())
+                                            beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
+                                    }
+                                    else if(!beaconsDetected.containsKey(mBluetoothDeviceAddress))
+                                        beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
 
+                                }
+                            } else {
+                                Log.e("Errore", String.valueOf(callbackType));
+                            }
+
+                        }
+                    });
                 }
-            } else {
-                Log.e("Errore", String.valueOf(callbackType));
-            }
-
-        }
-    };
+            };
 
     static <K, V> void orderByValue(LinkedHashMap<K, V> m, final Comparator<? super V> c) {
         List<Map.Entry<K, V>> entries = new ArrayList<>(m.entrySet());
@@ -203,6 +251,4 @@ public class BluetoothLeService extends Service {
             m.put(e.getKey(), e.getValue());
         }
     }
-
-
 }
