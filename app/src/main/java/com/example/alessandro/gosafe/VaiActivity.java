@@ -87,19 +87,6 @@ public class VaiActivity extends DefaultActivity {
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
 
 
-        /*BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter != null) {
-            DAOUtente daoUtente = new DAOUtente(this);
-            daoUtente.open();
-            user = daoUtente.findUtente();
-            daoUtente.close();
-            Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("user", user);
-            bundle.putLong("periodo", 15000);
-            s.putExtras(bundle);
-            startService(s);
-        }*/
 
         daoBeacon = new DAOBeacon(this);
         daoBeacon.open();
@@ -108,10 +95,7 @@ public class VaiActivity extends DefaultActivity {
 
         user = daoUtente.findUtente();
         richiestaPercorso = new RichiestaPercorso(user);
-
-
-        /*Intent u = new Intent(this, CheckForDbUpdatesService.class);
-        startService(u);*/
+        
 
         //Spinner
         spinner= (Spinner) findViewById(R.id.spinner);
