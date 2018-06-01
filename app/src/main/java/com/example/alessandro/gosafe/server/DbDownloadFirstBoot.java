@@ -75,6 +75,11 @@ public class DbDownloadFirstBoot {
                     connection.setRequestProperty("Authorization", "basic " + base64);
                     connection.connect();
 
+                    int responseCode = connection.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
+
                     StringBuilder sb = new StringBuilder();
 
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));

@@ -73,6 +73,11 @@ public class AggiornamentoInfoServer {
                     osw.flush();
                     osw.close();
 
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
+
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
                     String inputLine;
