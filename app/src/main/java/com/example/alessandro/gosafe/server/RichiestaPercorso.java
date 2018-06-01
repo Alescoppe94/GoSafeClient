@@ -4,8 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOPesiTronco;
@@ -35,13 +38,48 @@ public class RichiestaPercorso {
     private ArrayList<Integer> coordEmergenza = new ArrayList<>();
 
 
-
     public RichiestaPercorso(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
     }
 
-    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione) {
-        new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano, posizione).execute();
+
+    public void cambiaPiano(PinView imageViewPiano, int posizione) {
+        new CambiaPianoTask(imageViewPiano, posizione);
+    }
+
+    private class CambiaPianoTask {
+
+
+        private PinView imageViewPiano;
+        private int posizione;
+
+        public CambiaPianoTask(PinView imageViewPiano, int posizione){
+            this.imageViewPiano = imageViewPiano;
+            this.posizione = posizione;
+            disegnaPercorso();
+        }
+
+
+
+        protected void disegnaPercorso() {
+
+            //imageViewPiano.play(new ArrayList<Integer>());
+            coorddelpercorso.clear();
+
+           for(int j=0; j<percorso.size(); j+=3 ){
+                if(posizione == percorso.get(j+2)){
+                    coorddelpercorso.add(percorso.get(j));
+                    coorddelpercorso.add(percorso.get(j+1));
+                }
+            }
+            //coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
+            imageViewPiano.play(coorddelpercorso);
+
+        }
+    }
+
+    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner) {
+        new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano, posizione, spinner).execute();
     }
 
     private class OttieniPercorsoNoEmergenzaTask extends AsyncTask<Void, Void, String>{
@@ -52,13 +90,15 @@ public class RichiestaPercorso {
         private AsyncTask<Void, Void, Boolean> execute;
         private boolean connesso;
         private int posizione;
+        private Spinner spinner;
         private ProgressDialog calcolopercorso_in_corso;
 
-        public OttieniPercorsoNoEmergenzaTask(Context ctx, String beaconArr, PinView imageViewPiano, int posizione){
+        public OttieniPercorsoNoEmergenzaTask(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner){
             this.ctx = ctx;
             this.beaconArr = beaconArr;
             this.imageViewPiano = imageViewPiano;
             this.posizione = posizione;
+            this.spinner = spinner;
         }
 
         @Override
@@ -136,7 +176,7 @@ public class RichiestaPercorso {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            //Percorso percorso;
+
             if(result==null){ //Se il server è giù...
                 percorsoPost = calcolaPercorsoNoEmergenza(ctx, beaconArr);
                 System.out.println("Percorso finale: "+percorsoPost);
@@ -145,6 +185,7 @@ public class RichiestaPercorso {
                 System.out.println("Percorso finale: "+percorsoPost.getTappe());
 
             }
+
             // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
             percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getCoordx());
@@ -163,6 +204,17 @@ public class RichiestaPercorso {
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordx());            //1 8 8 4 4 5 ->
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordy());
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getPiano());
+
+            if(percorso.get(2)==0) {
+                imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
+                posizione = 0;
+                spinner.setSelection(percorso.get(2), true);
+            }
+            else{
+                imageViewPiano.setImage(ImageSource.resource(R.drawable.q145));
+                posizione = 1;
+                spinner.setSelection(percorso.get(2), true);
+            }
 
             for(int j=0; j<percorso.size(); j+=3 ){
                 if(posizione == percorso.get(j+2)){

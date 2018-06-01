@@ -87,42 +87,6 @@ public class ProfiloActivity extends DefaultActivity  {
         }
     }
 
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profilo);
-
-        //Setta la Bottom Nav
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        //Evidenzia pagina selezionata in bottom Nav
-        Menu menu = navigation.getMenu();
-        MenuItem menuItem = menu.getItem(2);
-        menuItem.setChecked(true);
-
-
-        ImageView mIcon = findViewById(R.id.Profile);
-        TextView name = (TextView)findViewById(R.id.Name);
-        TextView username = (TextView) findViewById(R.id.usernameTextView);
-
-        //imageView=(ImageView)findViewById(R.id.Profile);
-
-        Button mFollow = findViewById(R.id.modificaButton);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.homer);
-        RoundedBitmapDrawable mDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-        mDrawable.setCircular(true);
-        mIcon.setImageDrawable(mDrawable);
-
-        DAOUtente daoUtente = new DAOUtente(this);
-        daoUtente.open();
-        Utente utente;
-        utente = daoUtente.findUtente();
-        daoUtente.close();
-
-        name.setText(utente.getNome()+" "+utente.getCognome().toString());
-        username.setText(utente.getUsername());
-    }*/
 
     public void goToModificaProfilo(View view){
         Intent i;
@@ -141,17 +105,5 @@ public class ProfiloActivity extends DefaultActivity  {
         autenticazione.logoutUtente(ProfiloActivity.this);
     }
 
-    /*public void indietro(View view){
-        setContentView(R.layout.content_profilo);
-    }
-
-    public void chooseImmagineProfilo(View view){
-
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
-        startActivity(intent);
-    }
-   */
 
 }

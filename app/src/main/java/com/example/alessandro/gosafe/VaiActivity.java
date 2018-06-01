@@ -24,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -52,18 +53,12 @@ import java.util.Arrays;
 
 public class VaiActivity extends DefaultActivity {
 
-    private ScaleGestureDetector SGD;
-    private Matrix matrix = new Matrix();
-    private ImageView imageView;
-    private Float scale =1f;
     private PointF newCoord;
     private boolean load = true;
     private boolean drawn = false;
     float distance;
     float temp=10000000;
     int idbeacondestinazione;
-    ArrayList<Integer> percorso;
-    ArrayList<Integer> coorddelpercorso;
     DAOUtente daoUtente;
 
     /*roba per menu a tendina*/
@@ -78,25 +73,19 @@ public class VaiActivity extends DefaultActivity {
     ArrayAdapter<CharSequence> adapter;
     private PinView imageViewPiano;
     Utente user;
-
-    //private UserSessionManager session;
+    private RichiestaPercorso richiestaPercorso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mappe);
-
-        /*session = new UserSessionManager(getApplicationContext());
-        if(session.checkLogin()){
-            finish();
-        }*/
+        setContentView(R.layout.activity_vai);
 
         ctx = this;
         DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
         dbDownload.dbdownloadFirstBootAsyncTask(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
-        percorso = new ArrayList<Integer>();
+
 
        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
@@ -115,6 +104,10 @@ public class VaiActivity extends DefaultActivity {
         daoBeacon.open();
         daoUtente = new DAOUtente(this);
         daoUtente.open();
+
+        user = daoUtente.findUtente();
+        richiestaPercorso = new RichiestaPercorso(user);
+
 
         Intent u = new Intent(this, CheckForDbUpdatesService.class);
         startService(u);
@@ -139,8 +132,7 @@ public class VaiActivity extends DefaultActivity {
                         if(drawn){
                             //cancella vecchio percorso
                             //chiama richiestapercorso
-                            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(user);
-                            richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position);
+                            richiestaPercorso.cambiaPiano(imageViewPiano, position);
                         }
                         break;
                     case 1:
@@ -149,8 +141,7 @@ public class VaiActivity extends DefaultActivity {
                         if(drawn){
                             //cancella vecchio percorso
                             //chiama richiestapercorso
-                            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(user);
-                            richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position);
+                            richiestaPercorso.cambiaPiano(imageViewPiano, position);
                         }
                         break;
                 }
@@ -169,6 +160,7 @@ public class VaiActivity extends DefaultActivity {
 
             @Override
             public void onLongPress(MotionEvent e) {
+
                 if (imageViewPiano.isReady()) {
                     PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
                     if(load) {
@@ -176,9 +168,6 @@ public class VaiActivity extends DefaultActivity {
 
                         //BEACON DI PARTENZA
                         //Definisco le 2 coordinate di partenza che prendo da beaconId dell'utente loggato
-                        daoUtente.open();
-                        user = daoUtente.findUtente();
-                        daoUtente.close();
                         String idbeacondipartenza = user.getBeaconid();
                         ArrayList<Integer> xcoordandycoord= daoBeacon.getCoordsByIdBeacon(idbeacondipartenza);
                         int coordxpartenza = xcoordandycoord.get(0);
@@ -206,17 +195,6 @@ public class VaiActivity extends DefaultActivity {
                     }
 
                     temp=10000000;
-
-
-                    //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopo
-                    RichiestaPercorso richiestaPercorso = new RichiestaPercorso(user);
-                    richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position);
-                    drawn = true;
-                    try {
-                        Thread.sleep(4000);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
@@ -250,15 +228,9 @@ public class VaiActivity extends DefaultActivity {
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
 
-        /*Button avviaPercorsoButton = (Button) findViewById(R.id.avvia_percorso_button);
-        avviaPercorsoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calcolaPercorso();
-            }
-        });*/
     }
 
+    //TODO Chiedere ad Ale se e a cosa serve
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
@@ -275,21 +247,18 @@ public class VaiActivity extends DefaultActivity {
         }
     };
 
-    /*private void calcolaPercorso() {
-        DAOUtente daoUtente = new DAOUtente(this);
-        daoUtente.open();
-        Utente utente_attivo = daoUtente.findUtente();
-        daoUtente.close();
-        RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
-        richiestaPercorso.ottieniPercorsoNoEmergenza(this);
-    }*/
-
     @Override
     public void onDestroy(){
         daoBeacon.close();
         daoUtente.close();
         super.onDestroy();
 
+    }
+
+    public void avviaPercorso(View view){
+        //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopo
+        richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner);
+        drawn = true;
     }
 
 }
