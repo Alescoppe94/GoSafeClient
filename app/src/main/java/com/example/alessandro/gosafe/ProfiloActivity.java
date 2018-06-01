@@ -21,9 +21,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.Autenticazione;
+import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 
 public class ProfiloActivity extends DefaultActivity  {
 
@@ -133,6 +135,8 @@ public class ProfiloActivity extends DefaultActivity  {
         daoutente.open();
         Utente utente = daoutente.findUtente();
         daoutente.close();
+        stopService(new Intent(this, CheckForDbUpdatesService.class));
+        stopService(new Intent(this, BluetoothLeService.class));
         Autenticazione autenticazione = new Autenticazione(utente);
         autenticazione.logoutUtente(ProfiloActivity.this);
     }

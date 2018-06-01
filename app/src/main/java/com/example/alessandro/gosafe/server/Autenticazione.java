@@ -577,6 +577,8 @@ public class Autenticazione {
     }
 
     public void logoutUtente(Context ctx) {
+
+        session = new UserSessionManager(ctx);
         new LogoutUtenteTask(utente_attivo, ctx).execute();
     }
 
@@ -675,16 +677,15 @@ public class Autenticazione {
                         });
                 logout_impossibile.show();
             } else {
-                ctx.stopService(new Intent(ctx, CheckForDbUpdatesService.class));
-                ctx.stopService(new Intent(ctx, BluetoothLeService.class));
                 DAOUtente daoUtente = new DAOUtente(ctx);
                 daoUtente.open();
                 daoUtente.deleteAll();
                 daoUtente.close();
-                Intent i;
+                /*Intent i;
                 i = new Intent(ctx, LoginActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                ctx.startActivity(i);
+                ctx.startActivity(i); */
+                session.logOutUser();
             }
         }
 
