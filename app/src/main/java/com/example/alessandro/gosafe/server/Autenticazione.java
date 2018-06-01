@@ -17,6 +17,7 @@ import com.example.alessandro.gosafe.ProfiloActivity;
 import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.UserSessionManager;
 import com.example.alessandro.gosafe.VaiActivity;
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
@@ -46,7 +47,7 @@ public class Autenticazione {
     private UserSessionManager session;
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://192.168.1.197:8080";
+    private final String PATH = "http://10.0.2.2:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -482,6 +483,12 @@ public class Autenticazione {
                     osw.flush();
                     osw.close();
 
+                    int responseCode = connection.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        update_in_corso.dismiss();
+                        this.cancel(true);
+                    }
+
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                     String inputLine;
@@ -570,6 +577,8 @@ public class Autenticazione {
     }
 
     public void logoutUtente(Context ctx) {
+
+        session = new UserSessionManager(ctx);
         new LogoutUtenteTask(utente_attivo, ctx).execute();
     }
 
@@ -612,7 +621,7 @@ public class Autenticazione {
                     conn.setRequestMethod("PUT");
                     conn.setRequestProperty("Content-Type", "application/json");
                     conn.setRequestProperty("Accept", "application/json");
-                    connection.setRequestProperty("Authorization", "basic " + base64);
+                    conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.setInstanceFollowRedirects(true);
                     conn.connect();
 
@@ -622,17 +631,21 @@ public class Autenticazione {
                     osw.flush();
                     osw.close();
 
-                /*StringBuilder sbe = new StringBuilder();
-                BufferedReader bre = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
-                String inputeLine;
-                while ((inputeLine = bre.readLine()) != null) {
-                    sbe.append(inputeLine + "\n");
-                }
-                System.out.println(sbe.toString());
-                bre.close();*/
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
+
+                    StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    String inputLine;
+
+                    while ((inputLine = br.readLine()) != null) {
+                        sb.append(inputLine + "\n");
+                    }
+
                     br.close();
-                    return "true";
+                    return sb.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -664,10 +677,15 @@ public class Autenticazione {
                         });
                 logout_impossibile.show();
             } else {
-                Intent i;
+                DAOUtente daoUtente = new DAOUtente(ctx);
+                daoUtente.open();
+                daoUtente.deleteAll();
+                daoUtente.close();
+                /*Intent i;
                 i = new Intent(ctx, LoginActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                ctx.startActivity(i);
+                ctx.startActivity(i); */
+                session.logOutUser();
             }
         }
 

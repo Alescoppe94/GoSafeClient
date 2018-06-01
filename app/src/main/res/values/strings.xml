@@ -37,6 +37,9 @@
     <!-- Strings related to login -->
     <string name="server_not_respond_logout">Non è stato possibile effettuare il logout in quanto il server non è al momento disponibile. Riprova più tardi.</string>
 
+    <!-- Strings related to calcola percorso -->
+    <string name="calcolopercorsoincorso">Stiamo calcolando il percorso che ti porterà alla destinazione desiderata. Attendere prego...</string>
+
     <!-- Strings related to Mappe-->
     <string name="seleziona_piano">Seleziona un piano</string>
     <string-array name="piani">

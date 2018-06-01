@@ -1,5 +1,6 @@
 package com.example.alessandro.gosafe.server;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -35,7 +36,6 @@ public class RichiestaPercorso {
     private ArrayList<Integer> percorso = new ArrayList<Integer>();
     private ArrayList<Integer> percorsoEmer = new ArrayList<>();
     private ArrayList<Integer> coordEmergenza = new ArrayList<>();
-
 
 
     public RichiestaPercorso(Utente utente_attivo) {
@@ -91,6 +91,7 @@ public class RichiestaPercorso {
         private boolean connesso;
         private int posizione;
         private Spinner spinner;
+        private ProgressDialog calcolopercorso_in_corso;
 
         public OttieniPercorsoNoEmergenzaTask(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner){
             this.ctx = ctx;
@@ -103,8 +104,15 @@ public class RichiestaPercorso {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            calcolopercorso_in_corso = new ProgressDialog(ctx);
+            calcolopercorso_in_corso.setIndeterminate(true);
+            calcolopercorso_in_corso.setCancelable(true);
+            //calcolopercorso_in_corso.setCanceledOnTouchOutside(false);
+            calcolopercorso_in_corso.setMessage(ctx.getString(R.string.calcolopercorsoincorso));
+            calcolopercorso_in_corso.show();
             CheckConnessione checkConnessione = new CheckConnessione();
             connesso = checkConnessione.checkConnessione();
+
         }
 
         @Override
@@ -113,6 +121,11 @@ public class RichiestaPercorso {
             if (!connesso) {
                 return null;
             } else {
+                try {
+                    Thread.sleep(1500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 try {
                     byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
                     String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
@@ -123,6 +136,12 @@ public class RichiestaPercorso {
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
+
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        calcolopercorso_in_corso.dismiss();
+                        this.cancel(true);
+                    }
 
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
@@ -147,6 +166,11 @@ public class RichiestaPercorso {
                 }
             }
             return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... arg0){
+
         }
 
         @Override
@@ -200,7 +224,7 @@ public class RichiestaPercorso {
             }
             //coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.play(coorddelpercorso);
-
+            calcolopercorso_in_corso.dismiss();
         }
     }
 
@@ -239,6 +263,11 @@ public class RichiestaPercorso {
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Authorization", "basic " + base64);
                     conn.connect();
+
+                    int responseCode = conn.getResponseCode();
+                    if(400 <= responseCode && responseCode <= 499){
+                        this.cancel(true);
+                    }
 
                     StringBuilder sb = new StringBuilder();
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
@@ -511,7 +540,4 @@ public class RichiestaPercorso {
         return uguali;
 
     }
-
-
-
 }

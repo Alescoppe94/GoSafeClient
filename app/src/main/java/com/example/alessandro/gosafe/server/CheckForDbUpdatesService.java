@@ -42,6 +42,8 @@ import java.util.TimerTask;
 public class CheckForDbUpdatesService extends Service {
 
     private HttpURLConnection connection;
+    private Timer timer;
+    private TimerTask timertask;
 
     @Override
     public void onCreate(){
@@ -51,13 +53,15 @@ public class CheckForDbUpdatesService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
 
-        new Timer().schedule(new TimerTask() {
+        timer = new Timer();
+        timertask = new TimerTask() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void run() {
                 checkForUpdates();
             }
-        }, 5000, 15000); //gli aggiornamenti vengono controllati ogni 15 secondi si può cambiare
+        }; //gli aggiornamenti vengono controllati ogni 15 secondi si può cambiare
+        timer.scheduleAtFixedRate(timertask,0,15000);
         return super.onStartCommand(intent, flags, startId);
 
     }
@@ -66,6 +70,16 @@ public class CheckForDbUpdatesService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        //stopSelf();
+        super.onDestroy();
+        timertask.cancel();
+        timer.cancel();
+        timertask = null;
+        timer = null;
     }
 
     private void checkForUpdates(){
@@ -82,23 +96,26 @@ public class CheckForDbUpdatesService extends Service {
                 long lastModified = prefs.getLong("last_update", 0);
                 String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
-            try {
-                DAOUtente daoUtente = new DAOUtente(this);
-                daoUtente.open();
-                Utente utente = daoUtente.findUtente();
-                daoUtente.close();
-                byte[] data = utente.getIdsessione().getBytes("UTF-8");
-                String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                String request = "http://192.168.1.197:8080/gestionemappe/db/secured/aggiornadb/" + formattedDate;
-                URL url = new URL(request);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setRequestProperty("Authorization", "basic " + base64);
-                connection.connect();
+                try {
+                    DAOUtente daoUtente = new DAOUtente(this);
+                    daoUtente.open();
+                    Utente utente = daoUtente.findUtente();
+                    daoUtente.close();
+                    if(utente != null) {
+                        byte[] data = utente.getIdsessione().getBytes("UTF-8");
+                        String base64 = Base64.encodeToString(data, Base64.DEFAULT);
+                        String request = "http://10.0.2.2:8080/gestionemappe/db/secured/aggiornadb/" + formattedDate;
+                        URL url = new URL(request);
+                        connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("GET");
+                        connection.setRequestProperty("Content-Type", "application/json");
+                        connection.setRequestProperty("Accept", "application/json");
+                        connection.setRequestProperty("Authorization", "basic " + base64);
+                        connection.connect();
+                        int responseCode = connection.getResponseCode();
+                        if (400 > responseCode || responseCode >= 500) {
 
-                    StringBuilder sb = new StringBuilder();
+                            StringBuilder sb = new StringBuilder();
                     /*StringBuilder sbe = new StringBuilder();
                     BufferedReader bre = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
                     String inputeLine;
@@ -107,15 +124,17 @@ public class CheckForDbUpdatesService extends Service {
                     }
                     System.out.println(sbe.toString());
                     bre.close();*/
-                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                    String inputLine;
+                            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                            String inputLine;
 
-                    while ((inputLine = br.readLine()) != null) {
-                        sb.append(inputLine + "\n");
+                            while ((inputLine = br.readLine()) != null) {
+                                sb.append(inputLine + "\n");
+                            }
+
+                            br.close();
+                            result = sb.toString();
+                        }
                     }
-
-                    br.close();
-                    result = sb.toString();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -174,9 +193,7 @@ public class CheckForDbUpdatesService extends Service {
 
                 for (JsonElement jsonBeacon : beaconArray) {
                     JsonObject jsonObject = jsonBeacon.getAsJsonObject();
-                    int piano;
-                    piano = jsonObject.get("pianoId").getAsInt();
-                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), piano, jsonObject.get("coordx").getAsInt(), jsonObject.get("coordy").getAsInt());
+                    Beacon beacon = new Beacon(jsonObject.get("id").getAsString(), jsonObject.get("is_puntodiraccolta").getAsBoolean(), jsonObject.get("pianoId").getAsInt(), jsonObject.get("coordx").getAsInt(), jsonObject.get("coordy").getAsInt());
                     boolean notInDb = beacondao.save(beacon);
                     if (!notInDb) {
                         beacondao.update(beacon);

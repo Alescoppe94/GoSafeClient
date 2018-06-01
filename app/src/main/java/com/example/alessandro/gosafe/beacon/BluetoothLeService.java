@@ -87,6 +87,8 @@ public class BluetoothLeService extends Service {
 
     private static final byte[] ENABLE_SENSOR = {0x01};
 
+    private Timer timer;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -110,7 +112,8 @@ public class BluetoothLeService extends Service {
         //sendBroadcast(intent1);
         utente_attivo = (Utente) intent.getExtras().getSerializable("user");
         final long period = (Long) intent.getExtras().getLong("periodo");
-        new Timer().schedule(new TimerTask() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 scanLeDevice(true);
@@ -123,6 +126,14 @@ public class BluetoothLeService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+        timer = null;
+        stopSelf();
     }
 
     private void scanLeDevice(final boolean enable) {
@@ -147,6 +158,8 @@ public class BluetoothLeService extends Service {
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
                         System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
+                        //TODO: controllare se il beacon a cui mi sto agganciando è lo stesso o è nuovo.
+                        //TODO: se c'è emergenza far partire il task visualizzapercorso
                         utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey(), getApplicationContext());
                         AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
                         ai.aggiornamentoPosizione(utente_attivo);
