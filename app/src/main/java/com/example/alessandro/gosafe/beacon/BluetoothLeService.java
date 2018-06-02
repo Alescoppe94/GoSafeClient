@@ -176,16 +176,17 @@ public class BluetoothLeService extends Service {
                         }
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
-                        System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
-                        //TODO: controllare se il beacon a cui mi sto agganciando è lo stesso o è nuovo.
-                        //TODO: se c'è emergenza far partire il task visualizzapercorso
-                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey(), getApplicationContext());
-                        AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
-                        ai.aggiornamentoPosizione(utente_attivo);
-                        final Intent intent = new Intent("updatepositionmap");
-                        intent.putExtra("device", beaconsDetected.entrySet().iterator().next().getKey());
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                        Log.d("dispositivo", beaconsDetected.entrySet().iterator().next().getKey());
+                        String posizione = beaconsDetected.entrySet().iterator().next().getKey();
+                        if(!utente_attivo.getBeaconid().equals(posizione)) {
+                            //TODO: se c'è emergenza far partire il task visualizzapercorso
+                            utente_attivo.setPosition(posizione, getApplicationContext());
+                            AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
+                            ai.aggiornamentoPosizione(utente_attivo);
+                            final Intent intent = new Intent("updatepositionmap");
+                            intent.putExtra("device", posizione);
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                            Log.d("dispositivo", posizione);
+                        }
                     }
                     scanLeDevice(false);
 

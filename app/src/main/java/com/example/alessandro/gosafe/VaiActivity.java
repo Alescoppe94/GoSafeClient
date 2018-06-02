@@ -221,7 +221,7 @@ public class VaiActivity extends DefaultActivity {
         public void onReceive(final Context context, Intent intent) {
             final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
-            Toast.makeText(getApplicationContext(), idBeacon, Toast.LENGTH_LONG).show();             //vedere di seguito perchè non funziona
+            Toast.makeText(getApplicationContext(), idBeacon, Toast.LENGTH_LONG).show();
             ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);
             int coordxpartenza = newPosition.get(0);
             int coordypartenza = newPosition.get(1);

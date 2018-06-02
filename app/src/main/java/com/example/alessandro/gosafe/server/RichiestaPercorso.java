@@ -34,7 +34,7 @@ public class RichiestaPercorso {
     public Percorso percorsoEmergenza;
     private ArrayList<Integer> coorddelpercorso = new ArrayList<Integer>();
     private ArrayList<Integer> percorso = new ArrayList<Integer>();
-    private ArrayList<Integer> percorsoEmer = new ArrayList<>();
+    private ArrayList<String> percorsoEmer = new ArrayList<>();
     private ArrayList<Integer> coordEmergenza = new ArrayList<>();
 
 
@@ -307,14 +307,14 @@ public class RichiestaPercorso {
             }
             // Devo tradurre il Percorso percorsoEmergenza in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
-            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
+            percorsoEmer.add(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId());
             for (int i = 1; i < percorsoEmergenza.getTappe().size() - 1; i++) { //1 8 8 4 4
                 Tappa tappa = percorsoEmergenza.getTappe().get(i);
-                percorsoEmer.add(Integer.parseInt(tappa.getTronco().getBeaconEstremi().get(0).getId()));
+                percorsoEmer.add(tappa.getTronco().getBeaconEstremi().get(0).getId());
 
             }
-            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0).getId()));            //1 8 8 4 4 5 ->
-            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1).getId()));            //1 8 8 4 4 5 ->
+            percorsoEmer.add(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0).getId());            //1 8 8 4 4 5 ->
+            percorsoEmer.add(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1).getId());            //1 8 8 4 4 5 ->
             // 8 8 4 4
 
             //1 | 8 4 | 5

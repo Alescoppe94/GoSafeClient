@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -188,6 +189,10 @@ public class Autenticazione {
                 utente.setIs_autenticato(true);
                 utente.setIdsessione(idsessione);
                 utente.registrazioneLocale(ctx);
+
+                startUpServices(ctx);
+
+                session.createUserLoginSession("User Session", utente.getUsername());
 
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");
@@ -721,6 +726,11 @@ public class Autenticazione {
 
         Intent u = new Intent(ctx, CheckForDbUpdatesService.class);
         ctx.startService(u);
+
+        SharedPreferences.Editor editor = ctx.getSharedPreferences("isEmergenza", ctx.MODE_PRIVATE).edit();
+        editor.putBoolean("emergenza", false);
+        editor.apply();
+
     }
 
 }

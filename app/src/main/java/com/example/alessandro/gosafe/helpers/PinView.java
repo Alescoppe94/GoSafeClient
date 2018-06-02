@@ -105,7 +105,7 @@ public class PinView extends SubsamplingScaleImageView {
 
         if (pin != null && sPin != null) {
             initialise();
-            this.invalidate();
+            invalidate();
             sourceToViewCoord(sPin,vPin);
             vX = vPin.x - (pin.getWidth()/2);
             vY = vPin.y - pin.getHeight();
