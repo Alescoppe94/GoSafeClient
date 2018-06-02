@@ -78,7 +78,8 @@ public class RichiestaPercorso {
         }
     }
 
-    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner) {
+    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner, Utente user) {
+        this.utente_attivo = user;
         new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano, posizione, spinner).execute();
     }
 

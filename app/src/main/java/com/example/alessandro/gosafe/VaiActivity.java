@@ -53,7 +53,7 @@ import java.util.Arrays;
 
 public class VaiActivity extends DefaultActivity {
 
-    private PointF newCoord;
+    //private PointF newCoord;
     private boolean load = true;
     private boolean drawn = false;
     float distance;
@@ -158,7 +158,7 @@ public class VaiActivity extends DefaultActivity {
                         int coordxpartenza = xcoordandycoord.get(0);
                         int coordypartenza = xcoordandycoord.get(1);
                         PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
-                        newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
+                        PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
                         load = false;
                     }
 
@@ -220,13 +220,13 @@ public class VaiActivity extends DefaultActivity {
         @Override
         public void onReceive(final Context context, Intent intent) {
             final String action = intent.getAction();
-            String prova = intent.getStringExtra("device");
-            Toast.makeText(getApplicationContext(), prova, Toast.LENGTH_LONG).show();             //vedere di seguito perchè non funziona
-            ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(prova);
+            String idBeacon = intent.getStringExtra("device");
+            Toast.makeText(getApplicationContext(), idBeacon, Toast.LENGTH_LONG).show();             //vedere di seguito perchè non funziona
+            ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);
             int coordxpartenza = newPosition.get(0);
             int coordypartenza = newPosition.get(1);
             PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
-            newCoord = imageViewPiano.viewToSourceCoord(mCoord.x,mCoord.y);
+            PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
             imageViewPiano.setPin(newCoord);
 
         }
@@ -242,7 +242,8 @@ public class VaiActivity extends DefaultActivity {
 
     public void avviaPercorso(View view){
         //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopo
-        richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner);
+        user = daoUtente.findUtente();
+        richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
         drawn = true;
     }
 
