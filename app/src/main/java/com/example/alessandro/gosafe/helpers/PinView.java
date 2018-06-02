@@ -103,6 +103,16 @@ public class PinView extends SubsamplingScaleImageView {
             }
         }
 
+        if (pin != null && sPin != null) {
+
+            sourceToViewCoord(sPin,vPin);
+            vX = vPin.x - (pin.getWidth()/2);
+            vY = vPin.y - pin.getHeight();
+            canvas.drawBitmap(pin, vX, vY, paint);
+            //invalidate();
+
+        }
+
     }
 
     public void play(PointF punto) {
