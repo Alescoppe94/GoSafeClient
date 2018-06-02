@@ -64,20 +64,6 @@ import static android.content.ContentValues.TAG;
 /*Service che si occupa di connettere e leggere i dati dal Beacon.*/
 
 public class BluetoothLeService extends Service {
-    /*private static String LOG_TAG = "BluetoothLeService";
-    private BluetoothLeScanner mBluetoothLeScanner;
-    private BluetoothAdapter mBluetoothAdapter;
-    private Handler mHandler;
-    private boolean mScanning;
-    // Stops scanning after 10 seconds.
-    private static int SCAN_PERIOD = 5000;
-    private static int PAUSE_PERIOD = 5000;
-
-    private String mBluetoothDeviceAddress;
-
-    private Utente utente_attivo;
-
-    private LinkedHashMap<String, Integer> beaconsDetected;*/
 
     private BluetoothAdapter mBluetoothAdapter;
 
@@ -126,7 +112,7 @@ public class BluetoothLeService extends Service {
                     Log.d("partito", "started");
                 }
             }
-        }, 5000, period);
+        }, 10000, period);
         return Service.START_NOT_STICKY;
     }
 
@@ -178,7 +164,6 @@ public class BluetoothLeService extends Service {
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
                         String posizione = beaconsDetected.entrySet().iterator().next().getKey();
                         if(!utente_attivo.getBeaconid().equals(posizione)) {
-                            //TODO: se c'è emergenza far partire il task visualizzapercorso
                             utente_attivo.setPosition(posizione, getApplicationContext());
                             AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
                             ai.aggiornamentoPosizione(utente_attivo);
