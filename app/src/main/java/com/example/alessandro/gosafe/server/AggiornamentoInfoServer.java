@@ -57,7 +57,7 @@ public class AggiornamentoInfoServer {
                 try {
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/secured/updateposition");
+                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/utente/secured/updateposition");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
@@ -76,18 +76,26 @@ public class AggiornamentoInfoServer {
                     int responseCode = conn.getResponseCode();
                     if(400 <= responseCode && responseCode <= 499){
                         this.cancel(true);
+                        StringBuilder sbe = new StringBuilder();
+                        BufferedReader bre = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+                        String inputeLine;
+                        while ((inputeLine = bre.readLine()) != null) {
+                            sbe.append(inputeLine + "\n");
+                        }
+                        System.out.println(sbe.toString());
+                        bre.close();
+                    }else{
+                        StringBuilder sb = new StringBuilder();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                        String inputLine;
+
+                        while ((inputLine = br.readLine()) != null) {
+                            sb.append(inputLine + "\n");
+                        }
+
+                        br.close();
+                        return sb.toString();
                     }
-
-                    StringBuilder sb = new StringBuilder();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                    String inputLine;
-
-                    while ((inputLine = br.readLine()) != null) {
-                        sb.append(inputLine + "\n");
-                    }
-
-                    br.close();
-                    return sb.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

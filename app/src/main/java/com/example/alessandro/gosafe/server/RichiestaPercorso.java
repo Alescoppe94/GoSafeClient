@@ -28,13 +28,13 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://192.168.1.197:8080";
+    private final String PATH = "http://192.168.1.60:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
     private ArrayList<Integer> coorddelpercorso = new ArrayList<Integer>();
     private ArrayList<Integer> percorso = new ArrayList<Integer>();
-    private ArrayList<Integer> percorsoEmer = new ArrayList<>();
+    private ArrayList<String> percorsoEmer = new ArrayList<>();
     private ArrayList<Integer> coordEmergenza = new ArrayList<>();
 
 
@@ -78,7 +78,8 @@ public class RichiestaPercorso {
         }
     }
 
-    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner) {
+    public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner, Utente user) {
+        this.utente_attivo = user;
         new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano, posizione, spinner).execute();
     }
 
@@ -306,14 +307,14 @@ public class RichiestaPercorso {
             }
             // Devo tradurre il Percorso percorsoEmergenza in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
-            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId()));
+            percorsoEmer.add(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId());
             for (int i = 1; i < percorsoEmergenza.getTappe().size() - 1; i++) { //1 8 8 4 4
                 Tappa tappa = percorsoEmergenza.getTappe().get(i);
-                percorsoEmer.add(Integer.parseInt(tappa.getTronco().getBeaconEstremi().get(0).getId()));
+                percorsoEmer.add(tappa.getTronco().getBeaconEstremi().get(0).getId());
 
             }
-            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0).getId()));            //1 8 8 4 4 5 ->
-            percorsoEmer.add(Integer.parseInt(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1).getId()));            //1 8 8 4 4 5 ->
+            percorsoEmer.add(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0).getId());            //1 8 8 4 4 5 ->
+            percorsoEmer.add(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1).getId());            //1 8 8 4 4 5 ->
             // 8 8 4 4
 
             //1 | 8 4 | 5
@@ -519,7 +520,9 @@ public class RichiestaPercorso {
 
         boolean contenuto = false;
 
+        System.out.println(beacon.getId());
         for(Beacon b : beacons){
+            System.out.println(b.getId());
             if(b.getId().equals(beacon.getId())){
                 contenuto = true;
             }

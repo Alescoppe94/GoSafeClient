@@ -36,7 +36,6 @@ public class DAOBeacon {
     public static final String FIELD_COORDX="coordx";
     public static final String FIELD_COORDY="coordy";
     public ArrayList<Integer> coorddelpunto = new ArrayList<Integer>() ;
-    public ArrayList<Integer> xcoordandycoord = new ArrayList<>();
 
     private static final String[] FIELD_ALL = new String[]
             {
@@ -140,7 +139,7 @@ public class DAOBeacon {
         Beacon beacon=null;
         try
         {
-            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
+            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"='"+id_beacon+"'",null,null,null,null);
             Log.v("Cursor Object DAOBEACON", DatabaseUtils.dumpCursorToString(crs));
             crs.moveToFirst();
             Boolean ispuntodiraccolta = (crs.getInt(crs.getColumnIndex(FIELD_ISPUNTODIRACCOLTA)) == 1)? true : false;
@@ -208,10 +207,10 @@ public class DAOBeacon {
         return crs;
     }
 
-    public ArrayList<Integer> getCoords(ArrayList<Integer> percorso) { // Prende un insieme di id_beacon in input {1,8,4,5}
+    public ArrayList<Integer> getCoords(ArrayList<String> percorso) { // Prende un insieme di id_beacon in input {1,8,4,5}
         for(int i = 0; i<percorso.size(); i++){
             Cursor crs;
-            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "=" +percorso.get(i) ,null,null,null,null);
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "='" +percorso.get(i)+ "'" ,null,null,null,null);
             System.out.println("GETI: " +percorso.get(i));
             if(crs!= null && crs.moveToFirst()){
                 int xcoord = crs.getInt(crs.getColumnIndex(FIELD_COORDX));
@@ -227,6 +226,7 @@ public class DAOBeacon {
     public ArrayList<Integer> getCoordsByIdBeacon(String idBeacon){
         Cursor crs;
         crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "='" +idBeacon+"'" ,null,null,null,null);
+        ArrayList<Integer> xcoordandycoord = new ArrayList<>();
         if(crs!= null && crs.moveToFirst()){
             int xcoord = crs.getInt(crs.getColumnIndex(FIELD_COORDX));
             int ycoord = crs.getInt(crs.getColumnIndex(FIELD_COORDY));

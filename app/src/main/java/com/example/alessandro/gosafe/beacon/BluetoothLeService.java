@@ -64,46 +64,37 @@ import static android.content.ContentValues.TAG;
 /*Service che si occupa di connettere e leggere i dati dal Beacon.*/
 
 public class BluetoothLeService extends Service {
-    private static String LOG_TAG = "BluetoothLeService";
-    private BluetoothLeScanner mBluetoothLeScanner;
-    private BluetoothAdapter mBluetoothAdapter;
-    private Handler mHandler;
-    // Stops scanning after 10 seconds.
-    private static int SCAN_PERIOD = 10000;
-    private static int PAUSE_PERIOD = 5000;
 
-    private int mConnectionState = STATE_DISCONNECTED;
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
-    private String mBluetoothDeviceAddress;
-    private BluetoothGatt mBluetoothGatt;
-    private String finaladdress;
-    private static BluetoothGatt finalgatt;
+    private BluetoothAdapter mBluetoothAdapter;
 
     private Utente utente_attivo;
 
+    private boolean mScanning;
+    private Handler mHandler;
+    private Timer mTimer;
+
+    private long scanPeriod;
+    private int signalStrength;
+
+    private BluetoothLeScanner mBluetoothLeScanner;
+
     private LinkedHashMap<String, Integer> beaconsDetected;
-
-    private static final byte[] ENABLE_SENSOR = {0x01};
-
-    private Timer timer;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        getBluetoothAdapterAndLeScanner();
-        LetturaPeriodo();
-        mHandler = new Handler();
-        mBluetoothDeviceAddress="";
-        beaconsDetected = new LinkedHashMap<>();
-        //sessione=new Sessione(this);
-    }
 
-    private void getBluetoothAdapterAndLeScanner() {
+        mHandler = new Handler();
+
+        this.scanPeriod = 3000;
+        //this.signalStrength = signalStrength;
+
+        beaconsDetected = new LinkedHashMap<>();
+
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        mScanning = false;
     }
 
     @Override
@@ -112,14 +103,16 @@ public class BluetoothLeService extends Service {
         //sendBroadcast(intent1);
         utente_attivo = (Utente) intent.getExtras().getSerializable("user");
         final long period = (Long) intent.getExtras().getLong("periodo");
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                scanLeDevice(true);
-                Log.d("partito", "started");
+                if (!isScanning()){
+                    scanLeDevice(true);
+                    Log.d("partito", "started");
+                }
             }
-        }, 5000, period);
+        }, 10000, period);
         return Service.START_NOT_STICKY;
     }
 
@@ -128,25 +121,37 @@ public class BluetoothLeService extends Service {
         return null;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        timer.cancel();
-        timer = null;
-        stopSelf();
+    public boolean isScanning() {
+        return mScanning;
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mTimer.cancel();
+        mTimer = null;
+
+    }
+
+
+    // If you want to scan for only specific types of peripherals,
+    // you can instead call startLeScan(UUID[], BluetoothAdapter.LeScanCallback),
+    // providing an array of UUID objects that specify the GATT services your app supports.
     private void scanLeDevice(final boolean enable) {
         if (enable) {
-            // Lo scan si ferma dopo un tempo predefinito.
+            //Utils.toast(ma.getApplicationContext(), "Starting BLE scan...");
+
+            // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mBluetoothLeScanner.stopScan(scanCallback);
-                    //final Intent intent1 = new Intent("univpm.iot_for_emergency.View.Funzionali.Scaduto");
-                    //intent1.putExtra("stopperiod",PAUSE_PERIOD);
-                    //sendBroadcast(intent1);
-                    Log.d("fermato", "stop");
+                    //Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");
+
+                    Log.d("partito2", "started");
+
+                    mScanning = false;
+                    mBluetoothLeScanner.stopScan(mLeScanCallback);
+
                     orderByValue(beaconsDetected, new Comparator<Integer>() {
                         @Override
                         public int compare(Integer integer, Integer t1) {
@@ -157,224 +162,68 @@ public class BluetoothLeService extends Service {
                         }
                     });
                     if(beaconsDetected.entrySet().iterator().hasNext()) {
-                        System.out.println(beaconsDetected.entrySet().iterator().next().getKey());
-                        //TODO: controllare se il beacon a cui mi sto agganciando è lo stesso o è nuovo.
-                        //TODO: se c'è emergenza far partire il task visualizzapercorso
-                        utente_attivo.setPosition(beaconsDetected.entrySet().iterator().next().getKey(), getApplicationContext());
-                        AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
-                        ai.aggiornamentoPosizione(utente_attivo);
+                        String posizione = beaconsDetected.entrySet().iterator().next().getKey();
+                        if(!utente_attivo.getBeaconid().equals(posizione)) {
+                            utente_attivo.setPosition(posizione, getApplicationContext());
+                            AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
+                            ai.aggiornamentoPosizione(utente_attivo);
+                            final Intent intent = new Intent("updatepositionmap");
+                            intent.putExtra("device", posizione);
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                            Log.d("dispositivo", posizione);
+                        }
                     }
-                }
-            }, SCAN_PERIOD);
-            mBluetoothLeScanner.startScan(scanCallback);
-        } else {
-            mBluetoothLeScanner.stopScan(scanCallback);
-        }
-    }
-
-
-
-    private ScanCallback scanCallback = new ScanCallback() {
-        @Override
-        public synchronized void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
-            BluetoothDevice device = result.getDevice();
-            final String deviceName = device.getName();
-            Log.d("RSSI", String.valueOf(result.getRssi()) + " " + device.getName());
-            mBluetoothDeviceAddress=device.getAddress();
-
-            if (deviceName != null && deviceName.length() > 0) {
-                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) {
-                    if(beaconsDetected.containsKey(mBluetoothDeviceAddress)) {
-                        if (beaconsDetected.get(mBluetoothDeviceAddress) < result.getRssi())
-                            beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
-                    }
-                    else if(!beaconsDetected.containsKey(mBluetoothDeviceAddress))
-                            beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
-                    connect();
-                    //scanLeDevice(false);
-                    final Intent intent = new Intent("updatepositionmap");
-                    //Sessione sessione = new Sessione(getBaseContext());
-                    //intent.putExtra("user", sessione.user());
-                    intent.putExtra("device", mBluetoothDeviceAddress);
-                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                    Log.d("dispositivo", mBluetoothDeviceAddress);
+                    scanLeDevice(false);
 
                 }
-            } else {
-                Log.e("Errore", String.valueOf(callbackType));
-            }
+            }, scanPeriod);
 
+            mScanning = true;
+            mBluetoothLeScanner.startScan(mLeScanCallback);
+            Log.d("partito1", "started");
+//            mBluetoothAdapter.startLeScan(uuids, mLeScanCallback);
         }
-    };
-
-    /* Connessione a dispositivo*/
-    public boolean connect() {
-        if (mBluetoothAdapter == null || mBluetoothDeviceAddress == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
-            return false;
+        else {
+            mScanning = false;
+            beaconsDetected = null;
+            beaconsDetected = new LinkedHashMap<>();
+            Log.d("partito3", "started");
         }
-
-        final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
-        if (device == null) {
-            Log.w(TAG, "Device not found.  Unable to connect.");
-            return false;
-        }
-
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
-        finalgatt=mBluetoothGatt;
-        Log.d(TAG, "Trying to create a new connection.");
-        mConnectionState = STATE_CONNECTING;
-        return true;
     }
 
+    // Device scan callback.
+    private ScanCallback mLeScanCallback = new ScanCallback() {
 
-    /*Messaggio di risposta ottenuto dopo le interazioni col dispositivo*/
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+                @Override
+                public void onScanResult(final int callbackType, final ScanResult result) {
+                    super.onScanResult(callbackType, result);
+                    BluetoothDevice device = result.getDevice();
+                    final String deviceName = device.getName();
+                    Log.d("RSSI", String.valueOf(result.getRssi()) + " " + device.getName());
+                    final String mBluetoothDeviceAddress=device.getAddress();
 
-        /*Metodo che viene richiamato quando cambia lo stato della connessione (da non connesso passo a connesso e viceversa) */
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                mConnectionState = STATE_CONNECTED;
-                mBluetoothDeviceAddress=gatt.getDevice().getAddress();
-                finaladdress=gatt.getDevice().getAddress();
-                broadcasUpdate("univpm.iot_for_emergency.View.Funzionali.Connesso",mBluetoothDeviceAddress);
+                            if (deviceName != null && deviceName.length() > 0) {
+                                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) {
+                                    if(beaconsDetected.containsKey(mBluetoothDeviceAddress)) {
+                                        if (beaconsDetected.get(mBluetoothDeviceAddress) < result.getRssi())
+                                            beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
+                                    }
+                                    else if(!beaconsDetected.containsKey(mBluetoothDeviceAddress))
+                                        beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
 
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                mConnectionState = STATE_DISCONNECTED;
-            }
-            gatt.discoverServices();
-        }
+                                }
+                            } else {
+                                Log.e("Errore", String.valueOf(callbackType));
+                            }
 
-
-        /*Metodo che viene richiamato una volta che sono stati scoperti i servizi offerti dal dispositivo */
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-
-        /* Mi associo al service che mi interessa*/
-            BluetoothGattService humidityService = gatt.getService(SensorTagGatt.UUID_HUM_SERV);
-
-        /* Mi associo ala caratteristica che mi interessa*/
-            BluetoothGattCharacteristic enableHum = humidityService.getCharacteristic(SensorTagGatt.UUID_HUM_CONF);
-
-        /*Assegno alla caratteristica desiderata il valore che accende il sensore*/
-            enableHum.setValue(ENABLE_SENSOR);
-
-        /*Invio il dato al sensore*/
-            gatt.writeCharacteristic(enableHum);
-
-
-        }
-
-        /*Metodo che viene richiamato una volta che sono stati iviati dati al dispositivo */
-        @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status){
-
-            BluetoothGattService humidityService = gatt.getService(SensorTagGatt.UUID_HUM_SERV);
-
-            BluetoothGattCharacteristic humidityCharacteristic = humidityService.getCharacteristic(SensorTagGatt.UUID_HUM_DATA);
-
-        /*richiedo di leggere il valore della caratteristica*/
-            gatt.readCharacteristic(humidityCharacteristic);
-
-
-        }
-        /*Metodo che viene richiamato una volta che sono stati richiesti i dati al dispositivo*/
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
-        /*Controllo se il valore è uguale a 0, se è così vuol dire che abbiamo preso il valore prima che il sensore si accendesse quindi provo a leggere di nuovo */
-            byte []value=characteristic.getValue();
-            int t = shortUnsignedAtOffset(value, 0);
-            if (t==0)
-            {
-                gatt.readCharacteristic(characteristic);
-            }else {
-            /*se il valore ricevuto è diverso da 0 abbiamo letto i dati e li inviamo alla home */
-                //broadcastUpdate("univpm.iot_for_emergency.View.Funzionali.Ricevuti",characteristic);
-            }
-
-        }
-
-    };
-
-    private static Integer shortUnsignedAtOffset(byte[] c, int offset) {
-        Integer lowerByte = (int) c[offset] & 0xFF;
-        Integer upperByte = (int) c[offset+1] & 0xFF;
-        return (upperByte << 8) + lowerByte;
-    }
-
-
-    /*Tutte le funzioni broadcast inviano un intent caratterizzato da un'azione e da dati dati, il receiver si comporta in modo diverso in base all'azione dell'intent */
-    private void broadcastUpdate(final String action,BluetoothGattCharacteristic characteristic) {
-        //final Intent intent = new Intent(action);
-        double humidity = SensorTagData.extractHumidity(characteristic);
-        //double temperature = SensorTagData.extractHumAmbientTemperature(characteristic);
-        //intent.putExtra("device",finaladdress);
-        //intent.putExtra("hum",humidity);
-        //intent.putExtra("temp",temperature);
-        //sendBroadcast(intent);
-        Log.d("humidity", String.valueOf(humidity));
-        //Log.d("temp", String.valueOf(temperature));
-        if(!disconnect()){
-            disconnect();
-        }
-        close();
-        stopSelf();
-
-    }
-
-    private void broadcasUpdate(final String action,String device){
-        //final Intent intent =new Intent(action);
-        //intent.putExtra("device",device);
-        //sendBroadcast(intent);
-        Log.d("device", device);
-    }
-
-    public void broadcastUpdate(final String action){
-        //Intent intent=new Intent(action);
-        //sendBroadcast(intent);
-        Log.d("action", action);
-    }
-
-    public boolean disconnect() {
-        if (mBluetoothAdapter == null || finalgatt == null) {
-            mBluetoothGatt=finalgatt;
-            Log.w(TAG, "BluetoothAdapter not initialized");
-            return false;
-        }
-        finalgatt.disconnect();
-        return true;
-    }
-
-    /**
-     * After using a given BLE device, the app must call this method to ensure resources are
-     * released properly.
-     */
-    public void close() {
-        if (mBluetoothGatt == null) {
-            return;
-        }
-        mBluetoothGatt.close();
-        mBluetoothGatt = null;
-    }
-
-
-
-    private void LetturaPeriodo() {
-
-        SCAN_PERIOD = 10000;
-        PAUSE_PERIOD = 2000;
-
-    }
-
-
-
-    public void displayToast(String message){
-        Toast.makeText(BluetoothLeService.this, message, Toast.LENGTH_SHORT).show();
-    }
+                        }
+                    });
+                }
+            };
 
     static <K, V> void orderByValue(LinkedHashMap<K, V> m, final Comparator<? super V> c) {
         List<Map.Entry<K, V>> entries = new ArrayList<>(m.entrySet());
@@ -391,6 +240,4 @@ public class BluetoothLeService extends Service {
             m.put(e.getKey(), e.getValue());
         }
     }
-
-
 }

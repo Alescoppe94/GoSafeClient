@@ -6,6 +6,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -55,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
+    private final static int REQUEST_ENABLE_BT=1;
    // private UserSessionManager session;
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
@@ -71,6 +73,14 @@ public class LoginActivity extends AppCompatActivity {
         }*/
 
         // Set up the login form.
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(mBluetoothAdapter != null) {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+        }
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){

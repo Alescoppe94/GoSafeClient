@@ -180,7 +180,7 @@ public class DAOTronco {
         estremiTronco.add(beaconB);
         try
         {
-            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_BEACONAID+"=" + beaconA.getId() + " AND " + FIELD_BEACONBID+"=" + beaconB.getId() + " OR " + FIELD_BEACONAID+"=" + beaconB.getId() + " AND " + FIELD_BEACONBID+"=" + beaconA.getId(),null,null,null,null);
+            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_BEACONAID+"='" + beaconA.getId() + "' AND " + FIELD_BEACONBID+"='" + beaconB.getId() + "' OR " + FIELD_BEACONAID+"='" + beaconB.getId() + "' AND " + FIELD_BEACONBID+"='" + beaconA.getId() +"'",null,null,null,null);
             crs.moveToFirst();
             Boolean agibile = (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false;
             tronco = new Tronco(
@@ -204,7 +204,7 @@ public class DAOTronco {
         boolean success = false;
         try
         {
-            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"=" + troncoOttimo.getId() + " AND " + FIELD_BEACONAID+"=" + troncoOttimo.getBeaconEstremi().get(0).getId() + " AND " + FIELD_BEACONBID+"=" + troncoOttimo.getBeaconEstremi().get(1).getId(),null,null,null,null);
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"=" + troncoOttimo.getId() + " AND " + FIELD_BEACONAID+"='" + troncoOttimo.getBeaconEstremi().get(0).getId() + "' AND " + FIELD_BEACONBID+"='" + troncoOttimo.getBeaconEstremi().get(1).getId()+"'",null,null,null,null);
             if(crs.getCount()==1)
                 success = true;
             crs.close();

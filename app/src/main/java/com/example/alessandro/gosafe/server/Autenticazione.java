@@ -2,10 +2,13 @@ package com.example.alessandro.gosafe.server;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
@@ -18,6 +21,7 @@ import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.UserSessionManager;
 import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
+import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
@@ -47,7 +51,7 @@ public class Autenticazione {
     private UserSessionManager session;
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.60:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -186,6 +190,10 @@ public class Autenticazione {
                 utente.setIs_autenticato(true);
                 utente.setIdsessione(idsessione);
                 utente.registrazioneLocale(ctx);
+
+                startUpServices(ctx);
+
+                session.createUserLoginSession("User Session", utente.getUsername());
 
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");
@@ -410,6 +418,8 @@ public class Autenticazione {
                     utente.registrazioneLocale(ctx);
                     //utente.loginLocale(ctx, true);
                     session.createUserLoginSession("User Session", utente.getUsername());
+
+                    startUpServices(ctx);
 
                     Intent i = new Intent(ctx, VaiActivity.class);
 
@@ -689,6 +699,38 @@ public class Autenticazione {
             }
         }
 
+
+    }
+
+    private void startUpServices(Context ctx){
+        Utente user;
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
+            DAOUtente daoUtente = new DAOUtente(ctx);
+            daoUtente.open();
+            user = daoUtente.findUtente();
+            daoUtente.close();
+            Intent s = new Intent(ctx, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+            bundle.putLong("periodo", 15000);
+            s.putExtras(bundle);
+            ctx.startService(s);
+        }
+        DAOBeacon daoBeacon = new DAOBeacon(ctx);
+        daoBeacon.open();
+        DAOUtente daoUtente = new DAOUtente(ctx);
+        daoUtente.open();
+
+        user = daoUtente.findUtente();
+
+
+        Intent u = new Intent(ctx, CheckForDbUpdatesService.class);
+        ctx.startService(u);
+
+        SharedPreferences.Editor editor = ctx.getSharedPreferences("isEmergenza", ctx.MODE_PRIVATE).edit();
+        editor.putBoolean("emergenza", false);
+        editor.apply();
 
     }
 
