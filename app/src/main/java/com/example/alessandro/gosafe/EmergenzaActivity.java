@@ -11,6 +11,8 @@ import android.graphics.PointF;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -50,7 +52,7 @@ public class EmergenzaActivity extends DefaultActivity {
         //image.setImageResource(R.drawable.q140);
     }
 
-    public void salvo(){
+    public boolean salvo(MenuItem item){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Sei salvo?");
@@ -74,6 +76,7 @@ public class EmergenzaActivity extends DefaultActivity {
         AlertDialog alert = builder.create();
         alert.show();
 
+        return true;
     }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
