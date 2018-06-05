@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
@@ -29,8 +30,11 @@ public class PinView extends SubsamplingScaleImageView {
     private Bitmap pin;
     float vX;
     float vY;
+    private boolean bool = true;
 
-
+    public void setBool(boolean bool){
+        this.bool = bool;
+    }
 
 
     public PinView(Context context) {
@@ -73,6 +77,7 @@ public class PinView extends SubsamplingScaleImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.drawColor(Color.TRANSPARENT);
 
         // Don't draw pin before image is ready so it doesn't move around during setup.
         if (!isReady()) {
@@ -82,7 +87,6 @@ public class PinView extends SubsamplingScaleImageView {
         paint.setAntiAlias(true);
 
         if (percorso!=null && pin != null) {
-            /*A vPin vengono dati i valori x e y di sPin*/
 
             for(int i=0; i<=percorso.size()-4;i=i+2){ //Prende i beacon a 2 a 2 e disegna la linea
 
@@ -98,12 +102,15 @@ public class PinView extends SubsamplingScaleImageView {
                 canvas.drawLine(nPin.x, nPin.y, vPin.x, vPin.y, paint); //Disegna la linea
 
             }
-            if(percorso.size()!=0) {
-                canvas.drawBitmap(pin, vX, vY, paint);
+            //serve a impedire il disegno del pin d'arrivo su piani diversi in presenza del percorso,
+            // ma disegna il pin di partenza
+         if(percorso.size()!=0) {
+               canvas.drawBitmap(pin, vX, vY, paint);
             }
         }
 
-        if (pin != null && sPin != null) {
+        //Disegna il pin di arrivo prima di avviare il percorso
+       if (bool && pin != null && sPin != null) {
             initialise();
             invalidate();
             sourceToViewCoord(sPin,vPin);
@@ -111,8 +118,11 @@ public class PinView extends SubsamplingScaleImageView {
             vY = vPin.y - pin.getHeight();
             canvas.drawBitmap(pin, vX, vY, paint);
             //invalidate();
-
         }
+        else{
+            this.sPin = null;
+            bool = true;
+       }
 
     }
 

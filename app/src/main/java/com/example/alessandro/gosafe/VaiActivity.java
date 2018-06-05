@@ -178,22 +178,14 @@ public class VaiActivity extends DefaultActivity {
                             idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
                         }
                     }
-
+                    Beacon beaconD = daoBeacon.getBeaconById(String.valueOf(idbeacondestinazione));
+                    PointF pin = new PointF(beaconD.getCoordx(), beaconD.getCoordy());
+                    imageViewPiano.setPin(pin);
                     temp=10000000;
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
                 }
-            }
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Double tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Double tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
             }
         });
 
@@ -241,7 +233,9 @@ public class VaiActivity extends DefaultActivity {
     }
 
     public void avviaPercorso(View view){
-        //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopo
+        //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopox
+        imageViewPiano.setBool(false);
+        richiestaPercorso = new RichiestaPercorso(user);
         user = daoUtente.findUtente();
         richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
         drawn = true;
