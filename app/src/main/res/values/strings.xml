@@ -39,6 +39,8 @@
 
     <!-- Strings related to calcola percorso -->
     <string name="calcolopercorsoincorso">Stiamo calcolando il percorso che ti porterà alla destinazione desiderata. Attendere prego...</string>
+    <string name="nessunadestinazioneselezionata">Non hai selezionato nessuna destinazione. Per favore selezionane una.</string>
+    <string name="posizionecoincideconposizione">Per favore selezionare destinazione diversa da posizione attuale.</string>
 
     <!-- Strings related to Mappe-->
     <string name="seleziona_piano">Seleziona un piano</string>

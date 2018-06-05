@@ -3,6 +3,7 @@ package com.example.alessandro.gosafe;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -178,7 +180,7 @@ public class VaiActivity extends DefaultActivity {
                         System.out.println("Distanza: " +distance);
                         if (distance < temp){
                             temp=distance;
-                            idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
+                            idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));  //da sostituire int con string
                         }
                     }
                     beaconD = daoBeacon.getBeaconById(String.valueOf(idbeacondestinazione));
@@ -237,12 +239,36 @@ public class VaiActivity extends DefaultActivity {
 
     public void avviaPercorso(View view){
         //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopox
-        imageViewPiano.setBool(false);
-        imageViewPiano.setPianoArrivo(beaconD.getPiano());
-        richiestaPercorso = new RichiestaPercorso(user);
-        user = daoUtente.findUtente();
-        richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
-        drawn = true;
+        if(beaconD != null && !user.getPosition().equals(beaconD.getId())) {
+            imageViewPiano.setBool(false);
+            imageViewPiano.setPianoArrivo(beaconD.getPiano());
+            richiestaPercorso = new RichiestaPercorso(user);
+            user = daoUtente.findUtente();
+            richiestaPercorso.ottieniPercorsoNoEmergenza(ctx, String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
+            drawn = true;
+        }else if(beaconD == null){
+            AlertDialog posnotselected = new AlertDialog.Builder(ctx).create();
+            posnotselected.setTitle("Nessuna destinazione selezionata");
+            posnotselected.setMessage(ctx.getString(R.string.nessunadestinazioneselezionata));
+            posnotselected.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            posnotselected.show();
+        }else{
+            AlertDialog sameDestination = new AlertDialog.Builder(ctx).create();
+            sameDestination.setTitle("Destinazione Coincide con Posizione Attuale");
+            sameDestination.setMessage(ctx.getString(R.string.posizionecoincideconposizione));
+            sameDestination.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            sameDestination.show();
+        }
     }
 
 }

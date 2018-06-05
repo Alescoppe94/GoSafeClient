@@ -1,7 +1,9 @@
 package com.example.alessandro.gosafe;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -46,6 +48,32 @@ public class EmergenzaActivity extends DefaultActivity {
 
         //ImageView image = (ImageView) findViewById(R.id.imageViewProva);
         //image.setImageResource(R.drawable.q140);
+    }
+
+    public void salvo(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Sei salvo?");
+        builder.setMessage("Una volta cliccato si non riceverai più informazioni sulla via di fuga. Continuare?");
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                startActivity(new Intent(getApplicationContext(), VaiActivity.class));
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
     }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
