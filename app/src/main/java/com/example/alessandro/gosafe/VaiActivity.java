@@ -67,6 +67,7 @@ public class VaiActivity extends DefaultActivity {
     int x;
     int y;
     DAOBeacon daoBeacon;
+    Beacon beaconD;
     int position;
 
     Context ctx;
@@ -118,6 +119,7 @@ public class VaiActivity extends DefaultActivity {
                             //cancella vecchio percorso
                             //chiama richiestapercorso
                             richiestaPercorso.cambiaPiano(imageViewPiano, position);
+                            imageViewPiano.setPianoSpinner(position);
                         }
                         break;
                     case 1:
@@ -127,6 +129,7 @@ public class VaiActivity extends DefaultActivity {
                             //cancella vecchio percorso
                             //chiama richiestapercorso
                             richiestaPercorso.cambiaPiano(imageViewPiano, position);
+                            imageViewPiano.setPianoSpinner(position);
                         }
                         break;
                 }
@@ -178,7 +181,7 @@ public class VaiActivity extends DefaultActivity {
                             idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
                         }
                     }
-                    Beacon beaconD = daoBeacon.getBeaconById(String.valueOf(idbeacondestinazione));
+                    beaconD = daoBeacon.getBeaconById(String.valueOf(idbeacondestinazione));
                     PointF pin = new PointF(beaconD.getCoordx(), beaconD.getCoordy());
                     imageViewPiano.setPin(pin);
                     temp=10000000;
@@ -235,6 +238,7 @@ public class VaiActivity extends DefaultActivity {
     public void avviaPercorso(View view){
         //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopox
         imageViewPiano.setBool(false);
+        imageViewPiano.setPianoArrivo(beaconD.getPiano());
         richiestaPercorso = new RichiestaPercorso(user);
         user = daoUtente.findUtente();
         richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);

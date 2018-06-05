@@ -223,8 +223,10 @@ public class RichiestaPercorso {
                     coorddelpercorso.add(percorso.get(j+1));
                 }
             }
+
             //coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.play(coorddelpercorso);
+            imageViewPiano.setPianoSpinner(posizione);
             calcolopercorso_in_corso.dismiss();
         }
     }
@@ -325,7 +327,6 @@ public class RichiestaPercorso {
             daoBeacon.open();
             coordEmergenza = daoBeacon.getCoords(percorsoEmer);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.play(coordEmergenza);
-            //Toast.makeText(getApplicationContext(), "Long press: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
             daoBeacon.close();
         }
     }

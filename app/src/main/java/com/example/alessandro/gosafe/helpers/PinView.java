@@ -31,11 +31,20 @@ public class PinView extends SubsamplingScaleImageView {
     float vX;
     float vY;
     private boolean bool = true;
+    private int pianoArrivo;
+    private int pianoSpinner;
+
+    public void setPianoSpinner(int pianoSpinner){
+        this.pianoSpinner = pianoSpinner;
+    }
 
     public void setBool(boolean bool){
         this.bool = bool;
     }
 
+    public void setPianoArrivo(int pianoArrivo){
+        this.pianoArrivo = pianoArrivo;
+    }
 
     public PinView(Context context) {
         this(context, null);
@@ -104,7 +113,7 @@ public class PinView extends SubsamplingScaleImageView {
             }
             //serve a impedire il disegno del pin d'arrivo su piani diversi in presenza del percorso,
             // ma disegna il pin di partenza
-         if(percorso.size()!=0) {
+         if(percorso.size()!=0 && pianoArrivo == pianoSpinner) {
                canvas.drawBitmap(pin, vX, vY, paint);
             }
         }
