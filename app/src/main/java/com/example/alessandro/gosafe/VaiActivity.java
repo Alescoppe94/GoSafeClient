@@ -60,7 +60,7 @@ public class VaiActivity extends DefaultActivity {
     private boolean drawn = false;
     float distance;
     float temp=10000000;
-    int idbeacondestinazione;
+    String idbeacondestinazione;
     DAOUtente daoUtente;
 
     /*roba per menu a tendina*/
@@ -180,10 +180,10 @@ public class VaiActivity extends DefaultActivity {
                         System.out.println("Distanza: " +distance);
                         if (distance < temp){
                             temp=distance;
-                            idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));  //da sostituire int con string
+                            idbeacondestinazione=cursor.getString(cursor.getColumnIndex("ID_beacon"));  //da sostituire int con string
                         }
                     }
-                    beaconD = daoBeacon.getBeaconById(String.valueOf(idbeacondestinazione));
+                    beaconD = daoBeacon.getBeaconById(idbeacondestinazione);
                     PointF pin = new PointF(beaconD.getCoordx(), beaconD.getCoordy());
                     imageViewPiano.setPin(pin);
                     temp=10000000;
