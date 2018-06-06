@@ -4,6 +4,7 @@
     <item
         android:id="@+id/menu_emergenza"
         android:icon="@drawable/baseline_sentiment_satisfied_alt_24"
+        android:onClick="salvo"
         android:title="@string/title_emergenza" />
 
 </menu>

@@ -3,6 +3,7 @@ package com.example.alessandro.gosafe;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -67,6 +69,7 @@ public class VaiActivity extends DefaultActivity {
     int x;
     int y;
     DAOBeacon daoBeacon;
+    Beacon beaconD;
     int position;
 
     Context ctx;
@@ -118,6 +121,7 @@ public class VaiActivity extends DefaultActivity {
                             //cancella vecchio percorso
                             //chiama richiestapercorso
                             richiestaPercorso.cambiaPiano(imageViewPiano, position);
+                            imageViewPiano.setPianoSpinner(position);
                         }
                         break;
                     case 1:
@@ -127,6 +131,7 @@ public class VaiActivity extends DefaultActivity {
                             //cancella vecchio percorso
                             //chiama richiestapercorso
                             richiestaPercorso.cambiaPiano(imageViewPiano, position);
+                            imageViewPiano.setPianoSpinner(position);
                         }
                         break;
                 }
@@ -175,25 +180,17 @@ public class VaiActivity extends DefaultActivity {
                         System.out.println("Distanza: " +distance);
                         if (distance < temp){
                             temp=distance;
-                            idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));
+                            idbeacondestinazione=cursor.getInt(cursor.getColumnIndex("ID_beacon"));  //da sostituire int con string
                         }
                     }
-
+                    beaconD = daoBeacon.getBeaconById(String.valueOf(idbeacondestinazione));
+                    PointF pin = new PointF(beaconD.getCoordx(), beaconD.getCoordy());
+                    imageViewPiano.setPin(pin);
                     temp=10000000;
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
                 }
-            }
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if (imageViewPiano.isReady()) {
-                    PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
-                    Toast.makeText(getApplicationContext(), "Double tap: " + ((int)sCoord.x) + ", " + ((int)sCoord.y), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Double tap: Image not ready", Toast.LENGTH_SHORT).show();
-                }
-                return true;
             }
         });
 
@@ -241,10 +238,37 @@ public class VaiActivity extends DefaultActivity {
     }
 
     public void avviaPercorso(View view){
-        //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopo
-        user = daoUtente.findUtente();
-        richiestaPercorso.ottieniPercorsoNoEmergenza(ctx,String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
-        drawn = true;
+        //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopox
+        if(beaconD != null && !user.getPosition().equals(beaconD.getId())) {
+            imageViewPiano.setBool(false);
+            imageViewPiano.setPianoArrivo(beaconD.getPiano());
+            richiestaPercorso = new RichiestaPercorso(user);
+            user = daoUtente.findUtente();
+            richiestaPercorso.ottieniPercorsoNoEmergenza(ctx, String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
+            drawn = true;
+        }else if(beaconD == null){
+            AlertDialog posnotselected = new AlertDialog.Builder(ctx).create();
+            posnotselected.setTitle("Nessuna destinazione selezionata");
+            posnotselected.setMessage(ctx.getString(R.string.nessunadestinazioneselezionata));
+            posnotselected.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            posnotselected.show();
+        }else{
+            AlertDialog sameDestination = new AlertDialog.Builder(ctx).create();
+            sameDestination.setTitle("Destinazione Coincide con Posizione Attuale");
+            sameDestination.setMessage(ctx.getString(R.string.posizionecoincideconposizione));
+            sameDestination.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            sameDestination.show();
+        }
     }
 
 }
