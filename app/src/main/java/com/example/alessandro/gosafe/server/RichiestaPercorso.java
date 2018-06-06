@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://192.168.1.60:8080";
+    private final String PATH = "http://10.0.2.2:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
@@ -112,7 +112,7 @@ public class RichiestaPercorso {
             calcolopercorso_in_corso.setMessage(ctx.getString(R.string.calcolopercorsoincorso));
             calcolopercorso_in_corso.show();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
 
         }
 
@@ -246,7 +246,7 @@ public class RichiestaPercorso {
         protected void onPreExecute() {
             super.onPreExecute();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
         }
 
         @Override
@@ -520,9 +520,9 @@ public class RichiestaPercorso {
 
         boolean contenuto = false;
 
-        System.out.println(beacon.getId());
+        //System.out.println(beacon.getId());
         for(Beacon b : beacons){
-            System.out.println(b.getId());
+            //System.out.println(b.getId());
             if(b.getId().equals(beacon.getId())){
                 contenuto = true;
             }

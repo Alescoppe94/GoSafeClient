@@ -53,12 +53,16 @@ public class EmergenzaActivity extends DefaultActivity {
         public void onReceive(final Context context, Intent intent) {
             final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
-            DAOUtente daoUtente = new DAOUtente(context);
-            daoUtente.open();
-            utente_attivo = daoUtente.findUtente();
-            daoUtente.close();
-            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
-            richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
+            SharedPreferences sharedPreferences = context.getSharedPreferences("isConnesso", context.MODE_PRIVATE);
+            boolean connesso = sharedPreferences.getBoolean("connesso",false);
+            if(connesso) {
+                DAOUtente daoUtente = new DAOUtente(context);
+                daoUtente.open();
+                utente_attivo = daoUtente.findUtente();
+                daoUtente.close();
+                RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
+                richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
+            }
             DAOBeacon daoBeacon = new DAOBeacon(context);
             daoBeacon.open();
             ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);

@@ -142,7 +142,7 @@ public class DAOPesiTronco {
         Cursor crs;
         try
         {
-            crs=db.rawQuery("select valore,coefficiente from " +TBL_NAME + " INNER JOIN Peso on Peso.id = pesoId WHERE troncoId ="+ troncoId,null);
+            crs=db.rawQuery("select valore,coefficiente from " +TBL_NAME + " INNER JOIN Peso on Peso.ID_peso = pesoId WHERE troncoId ="+ troncoId,null);
             while(crs.moveToNext())
             {
                 coeffVal.put(crs.getFloat(crs.getColumnIndex("coefficiente")), crs.getFloat(crs.getColumnIndex(FIELD_VALORE)));

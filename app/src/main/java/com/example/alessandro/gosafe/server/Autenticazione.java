@@ -51,7 +51,7 @@ public class Autenticazione {
     private UserSessionManager session;
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://192.168.1.60:8080";
+    private final String PATH = "http://10.0.2.2:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -84,7 +84,7 @@ public class Autenticazione {
             registrazione_in_corso.setMessage(ctx.getString(R.string.registrazione_in_corso));
             registrazione_in_corso.show();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
         }
 
         @Override
@@ -244,7 +244,7 @@ public class Autenticazione {
                 login_in_corso.setMessage(ctx.getString(R.string.login_in_corso));
                 login_in_corso.show();
                 CheckConnessione checkConnessione = new CheckConnessione();
-                connesso = checkConnessione.checkConnessione();
+                connesso = checkConnessione.checkConnessione(ctx);
             }
         }
 
@@ -339,6 +339,7 @@ public class Autenticazione {
                         utente.setCognome(utentedb.getCognome());
                         utente.setIs_autenticato(true);
                         session.createUserLoginSession("User Session", utente.getUsername());
+                        //TODO: startUpService?
                         Intent i = new Intent(ctx, VaiActivity.class);
                         ctx.startActivity(i);
                     } else {
@@ -365,6 +366,7 @@ public class Autenticazione {
                             });
                     utente_non_trovato.show();
 
+                    //TODO: startUpService?
                     //TODO: vai all'interfaccia dell'utente anonimo
                 }
 
@@ -456,7 +458,7 @@ public class Autenticazione {
             update_in_corso.setMessage(ctx.getString(R.string.update_in_corso));
             update_in_corso.show();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
         }
 
         @Override
@@ -608,7 +610,7 @@ public class Autenticazione {
         protected void onPreExecute() {
             super.onPreExecute();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
         }
 
         @Override

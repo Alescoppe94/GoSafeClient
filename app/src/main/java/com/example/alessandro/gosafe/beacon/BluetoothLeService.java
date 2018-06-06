@@ -166,7 +166,7 @@ public class BluetoothLeService extends Service {
                         if(!utente_attivo.getBeaconid().equals(posizione)) {
                             utente_attivo.setPosition(posizione, getApplicationContext());
                             AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
-                            ai.aggiornamentoPosizione(utente_attivo);
+                            ai.aggiornamentoPosizione(utente_attivo, getApplicationContext());
                             final Intent intent = new Intent("updatepositionmap");
                             intent.putExtra("device", posizione);
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);

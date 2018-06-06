@@ -23,24 +23,26 @@ import java.net.URL;
 
 public class AggiornamentoInfoServer {
 
-    public void aggiornamentoPosizione(Utente utente) {
-        new AggiornamentoPosizioneTask(utente).execute();
+    public void aggiornamentoPosizione(Utente utente, Context ctx) {
+        new AggiornamentoPosizioneTask(utente, ctx).execute();
     }
 
     private class AggiornamentoPosizioneTask extends AsyncTask<Void, Void, String>{
 
         Utente utente;
         private boolean connesso;
+        private Context ctx;
 
-        public AggiornamentoPosizioneTask(Utente utente) {
+        public AggiornamentoPosizioneTask(Utente utente, Context ctx) {
             this.utente = utente;
+            this.ctx = ctx;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
         }
 
         @Override
@@ -57,7 +59,7 @@ public class AggiornamentoInfoServer {
                 try {
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL("http://192.168.1.60:8080/gestionemappe/utente/secured/updateposition");
+                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/utente/secured/updateposition");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
