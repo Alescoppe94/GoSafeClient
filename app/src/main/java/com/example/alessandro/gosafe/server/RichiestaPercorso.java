@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.197:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
@@ -105,6 +105,7 @@ public class RichiestaPercorso {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            imageViewPiano.setCalcoloInCorso(false);
             calcolopercorso_in_corso = new ProgressDialog(ctx);
             calcolopercorso_in_corso.setIndeterminate(true);
             calcolopercorso_in_corso.setCancelable(true);
@@ -228,6 +229,7 @@ public class RichiestaPercorso {
             imageViewPiano.play(coorddelpercorso);
             imageViewPiano.setPianoSpinner(posizione);
             calcolopercorso_in_corso.dismiss();
+            imageViewPiano.setCalcoloInCorso(true);
         }
     }
 
