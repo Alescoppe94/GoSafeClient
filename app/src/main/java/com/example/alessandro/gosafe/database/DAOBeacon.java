@@ -85,7 +85,7 @@ public class DAOBeacon {
         Cursor crs;
         try
         {
-            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_beacon,null,null,null,null);
+            crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"='"+id_beacon+"'",null,null,null,null);
             if(crs.getCount()==0){
                 ContentValues initialValues = createContentValues(beacon);
                 ins = db.insert(TBL_NAME, null, initialValues)>=0;
@@ -97,7 +97,7 @@ public class DAOBeacon {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
     }
@@ -106,12 +106,12 @@ public class DAOBeacon {
     {
         try
         {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + beacon.getId(), null)>0;
+            boolean del = db.delete(TBL_NAME, FIELD_ID + "='" + beacon.getId()+"'", null)>0;
             return del;
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
 
@@ -127,7 +127,7 @@ public class DAOBeacon {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
 
         }
@@ -196,6 +196,7 @@ public class DAOBeacon {
         }
         catch(SQLiteException sqle)
         {
+            sqle.printStackTrace();
             return null;
         }
         return allPuntiDiRaccolta;

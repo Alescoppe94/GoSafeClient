@@ -3,15 +3,20 @@ package com.example.alessandro.gosafe;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -41,14 +46,19 @@ import android.widget.Toast;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOBeacon;
+import com.example.alessandro.gosafe.database.DAOPiano;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Beacon;
+import com.example.alessandro.gosafe.entity.Piano;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,11 +79,12 @@ public class VaiActivity extends DefaultActivity {
     int x;
     int y;
     DAOBeacon daoBeacon;
+    DAOPiano daoPiano;
     Beacon beaconD;
     int position;
 
     Context ctx;
-    ArrayAdapter<CharSequence> adapter;
+    ArrayAdapter<String> adapter;
     private PinView imageViewPiano;
     Utente user;
     private RichiestaPercorso richiestaPercorso;
@@ -84,25 +95,25 @@ public class VaiActivity extends DefaultActivity {
         setContentView(R.layout.activity_vai);
 
         ctx = this;
-        DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
-        dbDownload.dbdownloadFirstBootAsyncTask(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
-
 
 
         daoBeacon = new DAOBeacon(this);
         daoBeacon.open();
         daoUtente = new DAOUtente(this);
         daoUtente.open();
+        daoPiano = new DAOPiano(this);
+        daoPiano.open();
 
         user = daoUtente.findUtente();
         richiestaPercorso = new RichiestaPercorso(user);
-        
+
+        ArrayList<String> piani = daoPiano.getAllPiani();
 
         //Spinner
         spinner= (Spinner) findViewById(R.id.spinner);
-        adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
+        adapter = new ArrayAdapter<String> (this,android.R.layout.simple_spinner_dropdown_item,piani);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -113,29 +124,19 @@ public class VaiActivity extends DefaultActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 position = spinner.getSelectedItemPosition();
                 Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
-                switch (position) {
-                    case 0:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
-                        load = true;
-                        if(drawn){
-                            //cancella vecchio percorso
-                            //chiama richiestapercorso
-                            richiestaPercorso.cambiaPiano(imageViewPiano, position);
-                            imageViewPiano.setPianoSpinner(position);
-                        }
-                        break;
-                    case 1:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.q145));
-                        load = true;
-                        if(drawn){
-                            //cancella vecchio percorso
-                            //chiama richiestapercorso
-                            richiestaPercorso.cambiaPiano(imageViewPiano, position);
-                            imageViewPiano.setPianoSpinner(position);
-                        }
-                        break;
+                String piano =(String) adapterView.getItemAtPosition(i);
+                String[] elems = piano.split(" ");
+                Bitmap bitmap = loadImageFromStorage(elems[1]);
+                imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+                load = true;
+                if(drawn){
+                    //cancella vecchio percorso
+                    //chiama richiestapercorso
+                    richiestaPercorso.cambiaPiano(imageViewPiano, position);
+                    imageViewPiano.setPianoSpinner(position);
                 }
-            }
+
+                }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -233,6 +234,7 @@ public class VaiActivity extends DefaultActivity {
     public void onDestroy(){
         daoBeacon.close();
         daoUtente.close();
+        daoPiano.close();
         super.onDestroy();
 
     }
@@ -269,6 +271,37 @@ public class VaiActivity extends DefaultActivity {
                     });
             sameDestination.show();
         }
+    }
+
+    private Bitmap loadImageFromStorage(String numpiano)
+    {
+        Bitmap b;
+        try {
+            ContextWrapper cw = new ContextWrapper(this);
+            // gets the files in the directory
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            // lists all the files into an array
+            //File[] dirFiles = directory.listFiles();
+
+            //if (dirFiles.length != 0) {
+                // loops through the array of files, outputing the name to console
+              //  for (int i = 0; i < dirFiles.length; i++) {
+            File f=new File(directory, "q"+numpiano+".png");
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+                //    ImageView img=(ImageView)findViewById(R.id.imgPicker);
+                  //  img.setImageBitmap(b);
+                //}
+            //}
+
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        return b;
+
     }
 
 }

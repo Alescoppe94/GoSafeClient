@@ -2,8 +2,13 @@ package com.example.alessandro.gosafe.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 import com.example.alessandro.gosafe.entity.Tronco;
@@ -13,6 +18,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.json.JSONArray;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -83,6 +91,9 @@ public class DAOGeneric{
                 DAOPiano daoPiano = new DAOPiano(ctx);
                 ContentValues cv = daoPiano.createContentValues(piano);
                 db.insert("Piano", null, cv);
+                byte[] decodedString = Base64.decode(jsonObject.get("immagine").getAsString(), Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                saveToInternalStorage(decodedByte, jsonObject.get("piano").getAsInt());
             }
             db.execSQL("DROP TABLE IF EXISTS " + DAOPeso.TBL_NAME);
             db.execSQL(DBHelper.getTablePeso());
@@ -107,4 +118,29 @@ public class DAOGeneric{
             db.endTransaction();
         }
     }
+
+    private String saveToInternalStorage(Bitmap bitmapImage, int numeroPiano){
+        ContextWrapper cw = new ContextWrapper(ctx);
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,"q"+ numeroPiano +".png");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 90, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
+    }
+
 }

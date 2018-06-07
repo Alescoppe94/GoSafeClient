@@ -421,9 +421,12 @@ public class Autenticazione {
                     //utente.loginLocale(ctx, true);
                     session.createUserLoginSession("User Session", utente.getUsername());
 
+                    DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
+                    dbDownload.dbdownloadFirstBootAsyncTask(ctx);
                     startUpServices(ctx);
 
                     Intent i = new Intent(ctx, VaiActivity.class);
+                    dbDownload.getResult();
 
                     ctx.startActivity(i);
                 }

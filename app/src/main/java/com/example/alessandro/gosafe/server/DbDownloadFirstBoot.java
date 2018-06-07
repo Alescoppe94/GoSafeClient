@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -29,9 +30,21 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class DbDownloadFirstBoot {
 
+    AsyncTask<Void, Void, String> task;
 
     public void dbdownloadFirstBootAsyncTask(Context ctx){
-        new DbDownloadFirstBootAsyncTask(ctx).execute();
+        task = new DbDownloadFirstBootAsyncTask(ctx).execute();
+    }
+
+    public String getResult(){
+        try {
+            return task.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private class DbDownloadFirstBootAsyncTask extends AsyncTask<Void, Void, String>{

@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteException;
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class DAOPiano {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
     }
@@ -97,7 +98,7 @@ public class DAOPiano {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
 
@@ -113,7 +114,7 @@ public class DAOPiano {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
 
         }
@@ -131,7 +132,7 @@ public class DAOPiano {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
     }
@@ -154,9 +155,30 @@ public class DAOPiano {
         }
         catch(SQLiteException sqle)
         {
-            return null;
+            sqle.printStackTrace();
         }
 
         return piano;
     }
+
+    public ArrayList<String> getAllPiani(){
+
+        Cursor crs;
+        ArrayList<String> piani = new ArrayList<>();
+        try{
+            crs = db.query(TBL_NAME, FIELD_ALL, null,null,null,null,null);
+            while(crs.moveToNext())
+            {
+               //new Piano(
+                 //       crs.getInt(crs.getColumnIndex(FIELD_ID)),
+               //piani.add(crs.getString(crs.getColumnIndex(FIELD_IMMAGINE)),
+                piani.add("Piano " + crs.getInt(crs.getColumnIndex(FIELD_PIANO)));
+            }
+            crs.close();
+        }catch(SQLiteException sqle){
+            sqle.printStackTrace();
+        }
+        return piani;
+    }
+
 }
