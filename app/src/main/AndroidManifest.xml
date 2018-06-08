@@ -32,6 +32,12 @@
         </service>
         <service android:name=".beacon.BluetoothLeService" ></service>
         <service android:name=".server.CheckForDbUpdatesService"></service>
+        <service android:name=".firebase.NLService"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".VaiActivity"

@@ -15,6 +15,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
+import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.LoginActivity;
 import com.example.alessandro.gosafe.ProfiloActivity;
 import com.example.alessandro.gosafe.R;
@@ -26,6 +27,7 @@ import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONException;
@@ -41,6 +43,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Alessandro on 16/03/2018.
@@ -58,6 +62,7 @@ public class Autenticazione {
     }
 
     public void registrazioneUtente(Context ctx/*, String token*/) {
+        session = new UserSessionManager(ctx);
         new registrazioneUtenteTask(utente_attivo, ctx/*, token*/).execute();
     }
 
@@ -186,6 +191,12 @@ public class Autenticazione {
                 long id_utente = jobj.get("id_utente").getAsLong();
                 String idsessione = jobj.get("idsessione").getAsString();
                 //new registrazioneTokenTask(token, id_utente).execute();
+
+                final boolean emergenza = jobj.get("emergenza").getAsBoolean();
+                SharedPreferences.Editor editor = ctx.getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
+                editor.putBoolean("emergenza", emergenza);
+                editor.apply();
+
                 utente.setId_utente(id_utente);
                 utente.setIs_autenticato(true);
                 utente.setIdsessione(idsessione);
@@ -203,8 +214,14 @@ public class Autenticazione {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 //utente.loginLocale(ctx, true);
-                                Intent i = new Intent(ctx, VaiActivity.class);
-                                ctx.startActivity(i);
+                                if(!emergenza) {
+                                    Intent i = new Intent(ctx, VaiActivity.class);
+                                    ctx.startActivity(i);
+                                } else {
+                                    Intent i = new Intent(ctx, EmergenzaActivity.class);
+                                    ctx.startActivity(i);
+                                }
+
                             }
                         });
                 accesso_dopo_registrazione.show();
@@ -397,14 +414,19 @@ public class Autenticazione {
                     }
                 } else {
                     JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
-                    long id_utente = jobj.get("id").getAsLong();
-                    String username = jobj.get("username").getAsString();
-                    String password = jobj.get("password").getAsString();
-                    String beaconId = "1"; //jobj.get("beaconId").getAsString();
-                    String nome = jobj.get("nome").getAsString();
-                    String cognome = jobj.get("cognome").getAsString();
-                    String idsessione = jobj.get("idsessione").getAsString();
+                    JsonObject utenteJson =(JsonObject) jobj.get("utente");
+                    long id_utente = utenteJson.get("id").getAsLong();
+                    String username = utenteJson.get("username").getAsString();
+                    String password = utenteJson.get("password").getAsString();
+                    String beaconId = "1"; //jobj.get("beaconId").getAsString(); //TODO: da sistemare
+                    String nome = utenteJson.get("nome").getAsString();
+                    String cognome = utenteJson.get("cognome").getAsString();
+                    String idsessione = utenteJson.get("idsessione").getAsString();
 
+                    boolean emergenza = jobj.get("emergenza").getAsBoolean();
+                    SharedPreferences.Editor editor = ctx.getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
+                    editor.putBoolean("emergenza", emergenza);
+                    editor.apply();
                 /*if (token != null) {
                     new registrazioneTokenTask(token, id_utente).execute();
                 }*/
@@ -423,9 +445,13 @@ public class Autenticazione {
 
                     startUpServices(ctx);
 
-                    Intent i = new Intent(ctx, VaiActivity.class);
-
-                    ctx.startActivity(i);
+                    if(!emergenza) {
+                        Intent i = new Intent(ctx, VaiActivity.class);
+                        ctx.startActivity(i);
+                    } else {
+                        Intent i = new Intent(ctx, EmergenzaActivity.class);
+                        ctx.startActivity(i);
+                    }
                 }
             }
         }
@@ -729,10 +755,6 @@ public class Autenticazione {
 
         Intent u = new Intent(ctx, CheckForDbUpdatesService.class);
         ctx.startService(u);
-
-        SharedPreferences.Editor editor = ctx.getSharedPreferences("isEmergenza", ctx.MODE_PRIVATE).edit();
-        editor.putBoolean("emergenza", false);
-        editor.apply();
 
     }
 
