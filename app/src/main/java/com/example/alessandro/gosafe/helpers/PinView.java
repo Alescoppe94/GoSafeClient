@@ -119,7 +119,12 @@ public class PinView extends SubsamplingScaleImageView {
             //serve a impedire il disegno del pin d'arrivo su piani diversi in presenza del percorso e a impedire
             //che si sposti il pin in caso in cui si rilanci calcoloPercorso
          if(percorso.size()!=0 && pianoArrivo == pianoSpinner && calcoloInCorso) {
-               canvas.drawBitmap(pin, vX, vY, paint);
+                initialise();
+                invalidate();
+                sourceToViewCoord(new PointF(percorso.get(percorso.size()-2), percorso.get(percorso.size()-1)),vPin);
+                vX = vPin.x - (pin.getWidth()/2);
+                vY = vPin.y - pin.getHeight();
+                canvas.drawBitmap(pin, vX, vY, paint);
             }
         }
 

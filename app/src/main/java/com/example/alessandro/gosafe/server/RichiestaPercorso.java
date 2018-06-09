@@ -2,8 +2,10 @@ package com.example.alessandro.gosafe.server;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -12,8 +14,10 @@ import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOPesiTronco;
+import com.example.alessandro.gosafe.database.DAOPiano;
 import com.example.alessandro.gosafe.database.DAOTronco;
 import com.example.alessandro.gosafe.entity.*;
+import com.example.alessandro.gosafe.helpers.ImageLoader;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.google.gson.Gson;
 
@@ -188,35 +192,40 @@ public class RichiestaPercorso {
 
             }
 
+            DAOPiano daoPiano = new DAOPiano(ctx);
+            daoPiano.open();
+
             // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
             percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getCoordx());
             percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getCoordy());
-            percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getPiano());
+            percorso.add(daoPiano.getNumeroPianoById(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getPiano()));
             for(int i = 1 ; i< percorsoPost.getTappe().size()-1;i++){ //1 8 8 4 4
                 Tappa tappa = percorsoPost.getTappe().get(i);
                 percorso.add(tappa.getTronco().getBeaconEstremi().get(0).getCoordx());
                 percorso.add(tappa.getTronco().getBeaconEstremi().get(0).getCoordy());
-                percorso.add(tappa.getTronco().getBeaconEstremi().get(0).getPiano());
+                percorso.add(daoPiano.getNumeroPianoById(tappa.getTronco().getBeaconEstremi().get(0).getPiano()));
 
             }
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getCoordx());            //1 8 8 4 4 5 ->
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getCoordy());
-            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getPiano());
+            percorso.add(daoPiano.getNumeroPianoById(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getPiano()));
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordx());            //1 8 8 4 4 5 ->
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordy());
-            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getPiano());
+            percorso.add(daoPiano.getNumeroPianoById(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getPiano()));
 
-            if(percorso.get(2)==0) {
-                imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
-                posizione = 0;
-                spinner.setSelection(percorso.get(2), true);
+            Bitmap bitmap = ImageLoader.loadImageFromStorage(String.valueOf(percorso.get(2)), ctx);
+            imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+            posizione = percorso.get(2);
+            ArrayAdapter<String> elements = (ArrayAdapter<String>) spinner.getAdapter();
+            int spinnerposition = 10000;
+            for(int i=0 ; i<elements.getCount() ; i++){
+                if(String.valueOf(posizione).equals(elements.getItem(i).split(" ")[1]))
+                    spinnerposition = i;
             }
-            else{
-                imageViewPiano.setImage(ImageSource.resource(R.drawable.q145));
-                posizione = 1;
-                spinner.setSelection(percorso.get(2), true);
-            }
+
+            spinner.setSelection(spinnerposition, true);
+
 
             for(int j=0; j<percorso.size(); j+=3 ){
                 if(posizione == percorso.get(j+2)){
