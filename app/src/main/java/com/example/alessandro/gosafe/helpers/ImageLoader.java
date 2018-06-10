@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,16 +34,21 @@ public class ImageLoader {
             // loops through the array of files, outputing the name to console
             //  for (int i = 0; i < dirFiles.length; i++) {
             File f=new File(directory, "q"+numpiano+".png");
-            b = BitmapFactory.decodeStream(new FileInputStream(f));
-            //    ImageView img=(ImageView)findViewById(R.id.imgPicker);
-            //  img.setImageBitmap(b);
-            //}
-            //}
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inPreferredConfig = Bitmap.Config.RGB_565;
+            opt.inPurgeable=true;
+            b = BitmapFactory.decodeStream(new FileInputStream(f), new Rect(), opt);
+
 
         }
-        catch (FileNotFoundException e)
+        catch (OutOfMemoryError e)
         {
             e.printStackTrace();
+            b= null;
+            Runtime.getRuntime().gc();
+            return null;
+        }
+        catch(FileNotFoundException n){
             return null;
         }
 

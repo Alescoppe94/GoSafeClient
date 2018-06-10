@@ -89,6 +89,7 @@ public class VaiActivity extends DefaultActivity {
     private PinView imageViewPiano;
     Utente user;
     private RichiestaPercorso richiestaPercorso;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +127,12 @@ public class VaiActivity extends DefaultActivity {
                 Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
                 String piano =(String) adapterView.getItemAtPosition(i);
                 String[] elems = piano.split(" ");
-                Bitmap bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
+                bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
                 position = Integer.parseInt(elems[1]);
+                while(bitmap == null){
+                    imageViewPiano.recycle();
+                    bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
+                }
                 imageViewPiano.setImage(ImageSource.bitmap(bitmap));
                 load = true;
                 if(drawn){
@@ -137,7 +142,7 @@ public class VaiActivity extends DefaultActivity {
                     imageViewPiano.setPianoSpinner(position);
                 }
 
-                }
+            }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -232,10 +237,30 @@ public class VaiActivity extends DefaultActivity {
     };
 
     @Override
+    public void onPause(){
+        imageViewPiano.recycle();
+        if(bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){
+        imageViewPiano.invalidate();
+        super.onResume();
+    }
+
+
+    @Override
     public void onDestroy(){
         daoBeacon.close();
         daoUtente.close();
         daoPiano.close();
+        bitmap.recycle();
+        bitmap = null;
+        finish();
         super.onDestroy();
 
     }
