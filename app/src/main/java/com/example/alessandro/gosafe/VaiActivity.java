@@ -72,15 +72,12 @@ public class VaiActivity extends DefaultActivity {
     float distance;
     float temp=10000000;
     String idbeacondestinazione;
-    DAOUtente daoUtente;
 
     /*roba per menu a tendina*/
     Spinner spinner;
     private PinView pinView;
     int x;
     int y;
-    DAOBeacon daoBeacon;
-    DAOPiano daoPiano;
     Beacon beaconD;
     int position;
 
@@ -95,23 +92,22 @@ public class VaiActivity extends DefaultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vai);
-
+        
         ctx = this;
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
 
 
-        daoBeacon = new DAOBeacon(this);
-        daoBeacon.open();
-        daoUtente = new DAOUtente(this);
+        DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
-        daoPiano = new DAOPiano(this);
-        daoPiano.open();
-
         user = daoUtente.findUtente();
+        daoUtente.close();
         richiestaPercorso = new RichiestaPercorso(user);
 
+        DAOPiano daoPiano = new DAOPiano(this);
+        daoPiano.open();
         ArrayList<String> piani = daoPiano.getAllPiani();
+        daoPiano.close();
 
         //Spinner
         spinner= (Spinner) findViewById(R.id.spinner);
@@ -129,10 +125,6 @@ public class VaiActivity extends DefaultActivity {
                 String[] elems = piano.split(" ");
                 bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
                 position = Integer.parseInt(elems[1]);
-                while(bitmap == null){
-                    imageViewPiano.recycle();
-                    bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
-                }
                 imageViewPiano.setImage(ImageSource.bitmap(bitmap));
                 load = true;
                 if(drawn){
@@ -158,6 +150,8 @@ public class VaiActivity extends DefaultActivity {
             @Override
             public void onLongPress(MotionEvent e) {
 
+                DAOBeacon daoBeacon = new DAOBeacon(ctx);
+                daoBeacon.open();
                 if (imageViewPiano.isReady()) {
                     PointF sCoord = imageViewPiano.viewToSourceCoord(e.getX(), e.getY());
                     if(load) {
@@ -198,6 +192,7 @@ public class VaiActivity extends DefaultActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
                 }
+                daoBeacon.close();
             }
         });
 
@@ -226,7 +221,10 @@ public class VaiActivity extends DefaultActivity {
             final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
             Toast.makeText(getApplicationContext(), idBeacon, Toast.LENGTH_LONG).show();
+            DAOBeacon daoBeacon = new DAOBeacon(ctx);
+            daoBeacon.open();
             ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);
+            daoBeacon.close();
             int coordxpartenza = newPosition.get(0);
             int coordypartenza = newPosition.get(1);
             PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
@@ -248,16 +246,12 @@ public class VaiActivity extends DefaultActivity {
 
     @Override
     public void onResume(){
-        imageViewPiano.invalidate();
         super.onResume();
     }
 
 
     @Override
     public void onDestroy(){
-        daoBeacon.close();
-        daoUtente.close();
-        daoPiano.close();
         bitmap.recycle();
         bitmap = null;
         finish();
@@ -269,9 +263,15 @@ public class VaiActivity extends DefaultActivity {
         //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopox
         if(beaconD != null && !user.getPosition().equals(beaconD.getId())) {
             imageViewPiano.setBool(false);
+            DAOPiano daoPiano = new DAOPiano(this);
+            daoPiano.open();
             imageViewPiano.setPianoArrivo(daoPiano.getNumeroPianoById(beaconD.getPiano()));
+            daoPiano.close();
             richiestaPercorso = new RichiestaPercorso(user);
+            DAOUtente daoUtente = new DAOUtente(this);
+            daoUtente.open();
             user = daoUtente.findUtente();
+            daoUtente.close();
             richiestaPercorso.ottieniPercorsoNoEmergenza(ctx, String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
             drawn = true;
         }else if(beaconD == null){

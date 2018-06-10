@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.media.Image;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.database.DAOBeacon;
+import com.example.alessandro.gosafe.database.DAOPiano;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
+import com.example.alessandro.gosafe.helpers.ImageLoader;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
@@ -28,7 +31,9 @@ import java.util.ArrayList;
 public class EmergenzaActivity extends DefaultActivity {
 
     private PinView imageViewPiano;
-    Utente utente_attivo;
+    private Utente utente_attivo;
+
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +44,22 @@ public class EmergenzaActivity extends DefaultActivity {
         SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
         editor.putBoolean("emergenza", true);
         editor.apply();
-        imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
-        imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         utente_attivo = daoUtente.findUtente();
         daoUtente.close();
+        DAOPiano daoPiano = new DAOPiano(this);
+        daoPiano.open();
+        DAOBeacon daoBeacon = new DAOBeacon(this);
+        daoBeacon.open();
+        bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano())), this);
+        imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
+        imageViewPiano.setImage(ImageSource.bitmap(bitmap));
         RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
         richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
 
+        daoPiano.close();
+        daoBeacon.close();
         //ImageView image = (ImageView) findViewById(R.id.imageViewProva);
         //image.setImageResource(R.drawable.q140);
     }
@@ -77,6 +89,33 @@ public class EmergenzaActivity extends DefaultActivity {
         alert.show();
 
         return true;
+    }
+
+
+    @Override
+    public void onPause(){
+        imageViewPiano.recycle();
+        if(bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){
+        imageViewPiano.invalidate();
+        super.onResume();
+    }
+
+
+    @Override
+    public void onDestroy(){
+        bitmap.recycle();
+        bitmap = null;
+        finish();
+        super.onDestroy();
+
     }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
