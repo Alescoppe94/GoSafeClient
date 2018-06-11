@@ -137,20 +137,16 @@ public class DAOPiano {
         }
     }
 
-    public Piano getPianoById(int idPiano) {
+    public int getNumeroPianoById(int idPiano) {
 
         Cursor crs;
-        Piano piano=null;
+        int numeropiano=0;
         try
         {
             crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+idPiano,null,null,null,null);
-            while(crs.moveToNext())
-            {
-                piano = new Piano(
-                        crs.getInt(crs.getColumnIndex(FIELD_ID)),
-                        crs.getString(crs.getColumnIndex(FIELD_IMMAGINE)),
-                        crs.getInt(crs.getColumnIndex(FIELD_PIANO)));
-            }
+
+            crs.moveToNext();
+            numeropiano = crs.getInt(crs.getColumnIndex(FIELD_PIANO));
             crs.close();
         }
         catch(SQLiteException sqle)
@@ -158,7 +154,7 @@ public class DAOPiano {
             sqle.printStackTrace();
         }
 
-        return piano;
+        return numeropiano;
     }
 
     public ArrayList<String> getAllPiani(){

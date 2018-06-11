@@ -30,7 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.example.alessandro.gosafe.database.DAOPiano;
+import com.example.alessandro.gosafe.helpers.ImageLoader;
 import com.example.alessandro.gosafe.helpers.PinView;
+
+import java.util.ArrayList;
 
 public class MappeActivity extends DefaultActivity{
 
@@ -47,17 +51,24 @@ public class MappeActivity extends DefaultActivity{
     int x;
     int y;
 
-    ArrayAdapter<CharSequence> adapter;
+    ArrayAdapter<String> adapter;
     private PinView imageViewPiano;
+
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mappe);
 
+        DAOPiano daoPiano = new DAOPiano(this);
+        daoPiano.open();
 
-        spinner=(Spinner)findViewById(R.id.spinner);
-        adapter=ArrayAdapter.createFromResource(this,R.array.piani,android.R.layout.simple_spinner_item);
+        ArrayList<String> piani = daoPiano.getAllPiani();
+        daoPiano.close();
+
+        spinner= (Spinner) findViewById(R.id.spinner);
+        adapter = new ArrayAdapter<String> (this,android.R.layout.simple_spinner_dropdown_item,piani);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -66,18 +77,16 @@ public class MappeActivity extends DefaultActivity{
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int position = spinner.getSelectedItemPosition();
                 Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
-                switch (position) {
-                    case 0:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
-                        load = true;
-                        break;
-                    case 1:
-                        imageViewPiano.setImage(ImageSource.resource(R.drawable.q145));
-                        load = true;
-                        break;
+                String piano =(String) adapterView.getItemAtPosition(i);
+                String[] elems = piano.split(" ");
+                bitmap = ImageLoader.loadImageFromStorage(elems[1], getApplicationContext());
+                while(bitmap == null){
+                    imageViewPiano.invalidate();
+                    bitmap = ImageLoader.loadImageFromStorage(elems[1], getApplicationContext());
                 }
+                imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+                load = true;
             }
 
             @Override
@@ -105,6 +114,31 @@ public class MappeActivity extends DefaultActivity{
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
+    }
+
+    @Override
+    public void onPause(){
+        imageViewPiano.recycle();
+        if(bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){
+        imageViewPiano.invalidate();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy(){
+        bitmap.recycle();
+        bitmap = null;
+        finish();
+        super.onDestroy();
+
     }
 
 }

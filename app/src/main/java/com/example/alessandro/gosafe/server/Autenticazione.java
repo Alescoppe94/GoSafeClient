@@ -55,7 +55,7 @@ public class Autenticazione {
     private UserSessionManager session;
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.60:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -450,9 +450,10 @@ public class Autenticazione {
 
                     DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
                     dbDownload.dbdownloadFirstBootAsyncTask(ctx);
-                    startUpServices(ctx);
 
                     dbDownload.getResult();
+
+                    startUpServices(ctx);
 
                     if(!emergenza) {
                         Intent i = new Intent(ctx, VaiActivity.class);
@@ -461,6 +462,7 @@ public class Autenticazione {
                         Intent i = new Intent(ctx, EmergenzaActivity.class);
                         ctx.startActivity(i);
                     }
+
                 }
             }
         }

@@ -204,7 +204,7 @@ public class DAOBeacon {
 
     public Cursor getAllBeaconInPiano(int position){
         Cursor crs;
-        crs = db.query(TBL_NAME, FIELD_ALL, FIELD_PIANOID+"="+position,null,null,null,null);
+        crs = db.query(TBL_NAME + " INNER JOIN Piano ON " + TBL_NAME + ".pianoId=Piano.ID_piano", FIELD_ALL, "Piano.piano="+position,null,null,null,null);
         return crs;
     }
 
