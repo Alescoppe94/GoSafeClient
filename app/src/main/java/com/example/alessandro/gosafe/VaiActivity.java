@@ -160,11 +160,13 @@ public class VaiActivity extends DefaultActivity {
                         //BEACON DI PARTENZA
                         //Definisco le 2 coordinate di partenza che prendo da beaconId dell'utente loggato
                         String idbeacondipartenza = user.getBeaconid();
-                        ArrayList<Integer> xcoordandycoord= daoBeacon.getCoordsByIdBeacon(idbeacondipartenza);
-                        int coordxpartenza = xcoordandycoord.get(0);
-                        int coordypartenza = xcoordandycoord.get(1);
-                        PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
-                        PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
+                        if(idbeacondipartenza!= null) {
+                            ArrayList<Integer> xcoordandycoord = daoBeacon.getCoordsByIdBeacon(idbeacondipartenza);
+                            int coordxpartenza = xcoordandycoord.get(0);
+                            int coordypartenza = xcoordandycoord.get(1);
+                            PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
+                            PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
+                        }
                         load = false;
                     }
 
@@ -261,7 +263,7 @@ public class VaiActivity extends DefaultActivity {
 
     public void avviaPercorso(View view){
         //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopox
-        if(beaconD != null && !user.getPosition().equals(beaconD.getId())) {
+        if(user.getPosition()!= null && beaconD != null && !user.getPosition().equals(beaconD.getId())) {
             imageViewPiano.setBool(false);
             DAOPiano daoPiano = new DAOPiano(this);
             daoPiano.open();
@@ -274,7 +276,18 @@ public class VaiActivity extends DefaultActivity {
             daoUtente.close();
             richiestaPercorso.ottieniPercorsoNoEmergenza(ctx, String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
             drawn = true;
-        }else if(beaconD == null){
+        }else if(user.getPosition() == null){
+            AlertDialog posnotselected = new AlertDialog.Builder(ctx).create();
+            posnotselected.setTitle("Attenzione!");
+            posnotselected.setMessage(ctx.getString(R.string.nessunbeaconconnesso));
+            posnotselected.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            posnotselected.show();
+        } else if(beaconD == null){
             AlertDialog posnotselected = new AlertDialog.Builder(ctx).create();
             posnotselected.setTitle("Nessuna destinazione selezionata");
             posnotselected.setMessage(ctx.getString(R.string.nessunadestinazioneselezionata));
