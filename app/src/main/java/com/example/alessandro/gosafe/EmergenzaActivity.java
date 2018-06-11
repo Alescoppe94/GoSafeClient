@@ -36,17 +36,42 @@ public class EmergenzaActivity extends DefaultActivity {
         setContentView(R.layout.activity_emergenza);
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
-        SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
-        editor.putBoolean("emergenza", true);
-        editor.apply();
         imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
         imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         utente_attivo = daoUtente.findUtente();
         daoUtente.close();
-        RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
-        richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
+        if(utente_attivo.getBeaconid() != null) {
+            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
+            richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Attenzione!");
+            builder.setMessage("Non sei connesso a nessun beacon.\nSei sicuro di trovarti nell'edificio?");
+
+            builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
+                    editor.putBoolean("emergenza", false);
+                    editor.apply();
+                    startActivity(new Intent(getApplicationContext(), VaiActivity.class));
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
 
         //ImageView image = (ImageView) findViewById(R.id.imageViewProva);
         //image.setImageResource(R.drawable.q140);
@@ -58,10 +83,13 @@ public class EmergenzaActivity extends DefaultActivity {
         builder.setTitle("Sei salvo?");
         builder.setMessage("Una volta cliccato si non riceverai più informazioni sulla via di fuga. Continuare?");
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
+                SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
+                editor.putBoolean("emergenza", false);
+                editor.apply();
                 startActivity(new Intent(getApplicationContext(), VaiActivity.class));
             }
         });

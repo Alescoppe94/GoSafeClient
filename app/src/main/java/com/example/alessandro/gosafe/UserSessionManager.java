@@ -35,14 +35,21 @@ public class UserSessionManager {
     }
 
     public void checkLogin(){
+        SharedPreferences sharedPreferences = _context.getSharedPreferences("isEmergenza", _context.MODE_PRIVATE);
+        boolean emergenza = sharedPreferences.getBoolean("emergenza",false);
         if(!this.isUserLoggedIn()){
             Intent i = new Intent(_context, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             _context.startActivity(i);
         }
-        else{
+        else if(!emergenza){
             Intent i = new Intent(_context, VaiActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            _context.startActivity(i);
+        } else {
+            Intent i = new Intent(_context, EmergenzaActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             _context.startActivity(i);
