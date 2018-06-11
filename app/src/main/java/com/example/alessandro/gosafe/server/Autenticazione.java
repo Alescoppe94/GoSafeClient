@@ -55,7 +55,7 @@ public class Autenticazione {
     private UserSessionManager session;
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    private final String PATH = "http://192.168.1.197:8080";
+    private final String PATH = "http://10.0.2.2:8080";
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
