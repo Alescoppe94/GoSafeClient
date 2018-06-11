@@ -144,8 +144,10 @@ public class EmergenzaActivity extends DefaultActivity {
 
     @Override
     public void onDestroy(){
-        bitmap.recycle();
-        bitmap = null;
+        if(bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
         finish();
         super.onDestroy();
 
