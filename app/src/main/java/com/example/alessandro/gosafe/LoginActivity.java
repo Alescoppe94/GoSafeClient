@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.nfc.Tag;
 import android.support.annotation.NonNull;
@@ -127,6 +128,11 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        SharedPreferences.Editor editor = this.getSharedPreferences("isConnesso", this.MODE_PRIVATE).edit();
+        editor.putBoolean("connesso", false);
+        editor.apply();
+
     }
 
     /**

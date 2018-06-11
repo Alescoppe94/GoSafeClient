@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.197:8080";
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
@@ -105,6 +105,7 @@ public class RichiestaPercorso {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            imageViewPiano.setCalcoloInCorso(false);
             calcolopercorso_in_corso = new ProgressDialog(ctx);
             calcolopercorso_in_corso.setIndeterminate(true);
             calcolopercorso_in_corso.setCancelable(true);
@@ -112,7 +113,7 @@ public class RichiestaPercorso {
             calcolopercorso_in_corso.setMessage(ctx.getString(R.string.calcolopercorsoincorso));
             calcolopercorso_in_corso.show();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
 
         }
 
@@ -228,6 +229,7 @@ public class RichiestaPercorso {
             imageViewPiano.play(coorddelpercorso);
             imageViewPiano.setPianoSpinner(posizione);
             calcolopercorso_in_corso.dismiss();
+            imageViewPiano.setCalcoloInCorso(true);
         }
     }
 
@@ -248,7 +250,7 @@ public class RichiestaPercorso {
         protected void onPreExecute() {
             super.onPreExecute();
             CheckConnessione checkConnessione = new CheckConnessione();
-            connesso = checkConnessione.checkConnessione();
+            connesso = checkConnessione.checkConnessione(ctx);
         }
 
         @Override
@@ -521,9 +523,9 @@ public class RichiestaPercorso {
 
         boolean contenuto = false;
 
-        System.out.println(beacon.getId());
+        //System.out.println(beacon.getId());
         for(Beacon b : beacons){
-            System.out.println(b.getId());
+            //System.out.println(b.getId());
             if(b.getId().equals(beacon.getId())){
                 contenuto = true;
             }

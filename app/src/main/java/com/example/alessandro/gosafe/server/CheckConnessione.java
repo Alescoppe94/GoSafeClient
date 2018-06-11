@@ -1,5 +1,7 @@
 package com.example.alessandro.gosafe.server;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -9,12 +11,12 @@ import java.util.concurrent.ExecutionException;
 
 public class CheckConnessione{
 
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = "http://192.168.1.197:8080";
 
     public CheckConnessione() {
     }
 
-    public boolean checkConnessione(){
+    public boolean checkConnessione(Context ctx){
         AsyncTask<Void, Void, Boolean> execute = new checkConnessioneTask().execute();
         boolean connesso = false;
         try {
@@ -23,6 +25,12 @@ public class CheckConnessione{
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }
+        SharedPreferences.Editor editor = ctx.getSharedPreferences("isConnesso", ctx.MODE_PRIVATE).edit();
+        if(connesso){
+            editor.putBoolean("connesso", true).apply();
+        } else {
+            editor.putBoolean("connesso", false).apply();
         }
         return connesso;
     }

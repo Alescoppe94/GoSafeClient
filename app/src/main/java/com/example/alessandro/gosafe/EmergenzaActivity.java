@@ -11,6 +11,8 @@ import android.graphics.PointF;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -34,32 +36,60 @@ public class EmergenzaActivity extends DefaultActivity {
         setContentView(R.layout.activity_emergenza);
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
-        SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
-        editor.putBoolean("emergenza", true);
-        editor.apply();
         imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
         imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         utente_attivo = daoUtente.findUtente();
         daoUtente.close();
-        RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
-        richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
+        if(utente_attivo.getBeaconid() != null) {
+            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
+            richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Attenzione!");
+            builder.setMessage("Non sei connesso a nessun beacon.\nSei sicuro di trovarti nell'edificio?");
+
+            builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
+                    editor.putBoolean("emergenza", false);
+                    editor.apply();
+                    startActivity(new Intent(getApplicationContext(), VaiActivity.class));
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
 
         //ImageView image = (ImageView) findViewById(R.id.imageViewProva);
         //image.setImageResource(R.drawable.q140);
     }
 
-    public void salvo(){
+    public boolean salvo(MenuItem item){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Sei salvo?");
         builder.setMessage("Una volta cliccato si non riceverai più informazioni sulla via di fuga. Continuare?");
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
+                SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
+                editor.putBoolean("emergenza", false);
+                editor.apply();
                 startActivity(new Intent(getApplicationContext(), VaiActivity.class));
             }
         });
@@ -74,6 +104,7 @@ public class EmergenzaActivity extends DefaultActivity {
         AlertDialog alert = builder.create();
         alert.show();
 
+        return true;
     }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
@@ -81,12 +112,16 @@ public class EmergenzaActivity extends DefaultActivity {
         public void onReceive(final Context context, Intent intent) {
             final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
-            DAOUtente daoUtente = new DAOUtente(context);
-            daoUtente.open();
-            utente_attivo = daoUtente.findUtente();
-            daoUtente.close();
-            RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
-            richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
+            SharedPreferences sharedPreferences = context.getSharedPreferences("isConnesso", context.MODE_PRIVATE);
+            boolean connesso = sharedPreferences.getBoolean("connesso",false);
+            if(connesso) {
+                DAOUtente daoUtente = new DAOUtente(context);
+                daoUtente.open();
+                utente_attivo = daoUtente.findUtente();
+                daoUtente.close();
+                RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
+                richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
+            }
             DAOBeacon daoBeacon = new DAOBeacon(context);
             daoBeacon.open();
             ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);

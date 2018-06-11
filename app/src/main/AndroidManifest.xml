@@ -13,8 +13,8 @@
 
     <application
         android:allowBackup="true"
+        android:label="GoSafe"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:largeHeap="true"
@@ -36,22 +36,27 @@
         <activity
             android:name=".VaiActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:label="GoSafe - Vai"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ModificaActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:label="GoSafe - Modifica"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".MappeActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:label="GoSafe - Mappe"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ProfiloActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:label="GoSafe - Profilo"
             android:screenOrientation="portrait"/>
         <activity
                 android:name=".EmergenzaActivity"
                 android:theme="@style/AppTheme.NoActionBar"
+            android:label="Emergenza!"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".LoginActivity"

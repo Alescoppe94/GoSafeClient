@@ -211,7 +211,7 @@ public class DAOBeacon {
         for(int i = 0; i<percorso.size(); i++){
             Cursor crs;
             crs = db.query(TBL_NAME, FIELD_ALL, FIELD_ID+ "='" +percorso.get(i)+ "'" ,null,null,null,null);
-            System.out.println("GETI: " +percorso.get(i));
+            //System.out.println("GETI: " +percorso.get(i));
             if(crs!= null && crs.moveToFirst()){
                 int xcoord = crs.getInt(crs.getColumnIndex(FIELD_COORDX));
                 int ycoord = crs.getInt(crs.getColumnIndex(FIELD_COORDY));
