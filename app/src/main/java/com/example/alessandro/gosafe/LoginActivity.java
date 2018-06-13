@@ -55,7 +55,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity {
 
     // UI references.
-    private AutoCompleteTextView mUsernameView;
+    private EditText mUsernameView;
     private EditText mPasswordView;
     private final static int REQUEST_ENABLE_BT=1;
    // private UserSessionManager session;
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        mUsernameView = (EditText) findViewById(R.id.username);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mSignUpButton = (Button) findViewById(R.id.signup);
+        TextView mSignUpButton = (TextView) findViewById(R.id.signup);
         mSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,14 +120,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button entra = (Button) findViewById(R.id.entraButton);  //bottone che bypassa il login
-        entra.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), VaiActivity.class);
-                startActivity(i);
-            }
-        });
 
         SharedPreferences.Editor editor = this.getSharedPreferences("isConnesso", this.MODE_PRIVATE).edit();
         editor.putBoolean("connesso", false);

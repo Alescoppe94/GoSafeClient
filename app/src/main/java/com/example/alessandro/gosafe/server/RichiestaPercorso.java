@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -16,6 +17,8 @@ import com.example.alessandro.gosafe.database.DAOTronco;
 import com.example.alessandro.gosafe.entity.*;
 import com.example.alessandro.gosafe.helpers.PinView;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
