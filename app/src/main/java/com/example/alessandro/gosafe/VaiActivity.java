@@ -127,6 +127,7 @@ public class VaiActivity extends DefaultActivity {
                 position = Integer.parseInt(elems[1]);
                 imageViewPiano.setImage(ImageSource.bitmap(bitmap));
                 load = true;
+                imageViewPiano.setBool(false);
                 if(drawn){
                     //cancella vecchio percorso
                     //chiama richiestapercorso
@@ -191,6 +192,7 @@ public class VaiActivity extends DefaultActivity {
                     imageViewPiano.setPin(pin);
                     temp=10000000;
 
+                    imageViewPiano.setBool(true);
                 } else {
                     Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
                 }
