@@ -321,22 +321,34 @@ public class RichiestaPercorso {
             // Devo tradurre il Percorso percorsoEmergenza in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
             //1 8 8 4 4 5
             percorsoEmer.add(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId());
+            DAOBeacon daoBeacon = new DAOBeacon(ctx);
+            daoBeacon.open();
+            int pianoId = daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano();
             for (int i = 1; i < percorsoEmergenza.getTappe().size() - 1; i++) { //1 8 8 4 4
                 Tappa tappa = percorsoEmergenza.getTappe().get(i);
-                percorsoEmer.add(tappa.getTronco().getBeaconEstremi().get(0).getId());
-
+                Beacon beacon = tappa.getTronco().getBeaconEstremi().get(0);
+                if(beacon.getPiano() == pianoId) {
+                    percorsoEmer.add(beacon.getId());
+                }
             }
-            percorsoEmer.add(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0).getId());            //1 8 8 4 4 5 ->
-            percorsoEmer.add(percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1).getId());            //1 8 8 4 4 5 ->
+            Beacon penultimoBeacon = percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0);
+            Beacon ultimoBeacon = percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1);
+            if(penultimoBeacon.getPiano() == pianoId) {
+                percorsoEmer.add(penultimoBeacon.getId());            //1 8 8 4 4 5 ->
+            }
+            boolean percorsoConPiuPiani = false;
+            if(ultimoBeacon.getPiano() == pianoId) {
+                percorsoEmer.add(ultimoBeacon.getId());            //1 8 8 4 4 5 ->
+            }
+            else percorsoConPiuPiani = true;
             // 8 8 4 4
 
             //1 | 8 4 | 5
 
             System.out.println("Percorso in Rich Perc: " + percorsoEmer);
 
-            DAOBeacon daoBeacon = new DAOBeacon(ctx);
-            daoBeacon.open();
             coordEmergenza = daoBeacon.getCoords(percorsoEmer);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
+            imageViewPiano.setPercorsoConPiuPiani(percorsoConPiuPiani);
             imageViewPiano.play(coordEmergenza);
             daoBeacon.close();
         }
