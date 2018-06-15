@@ -35,6 +35,8 @@ public class PinView extends SubsamplingScaleImageView {
     private int pianoArrivo;
     private int pianoSpinner;
 
+    private boolean percorsoConPiuPiani = false;
+
     public void setCalcoloInCorso(boolean calcoloInCorso){
         this.calcoloInCorso = calcoloInCorso;
     }
@@ -49,6 +51,10 @@ public class PinView extends SubsamplingScaleImageView {
 
     public void setPianoArrivo(int pianoArrivo){
         this.pianoArrivo = pianoArrivo;
+    }
+
+    public void setPercorsoConPiuPiani(boolean percorsoConPiuPiani) {
+        this.percorsoConPiuPiani = percorsoConPiuPiani;
     }
 
     public PinView(Context context) {
@@ -118,7 +124,7 @@ public class PinView extends SubsamplingScaleImageView {
             }
             //serve a impedire il disegno del pin d'arrivo su piani diversi in presenza del percorso e a impedire
             //che si sposti il pin in caso in cui si rilanci calcoloPercorso
-         if(percorso.size()!=0 && pianoArrivo == pianoSpinner && calcoloInCorso) {
+         if(percorso.size()!=0 && pianoArrivo == pianoSpinner && calcoloInCorso && !percorsoConPiuPiani) {
                 initialise();
                 invalidate();
                 sourceToViewCoord(new PointF(percorso.get(percorso.size()-2), percorso.get(percorso.size()-1)),vPin);
@@ -164,5 +170,4 @@ public class PinView extends SubsamplingScaleImageView {
         //SubsamplingScaleImageView.AnimationBuilder animationBuilder = pinView.animateScaleAndCenter(scale, punto);
 
     }
-
 }

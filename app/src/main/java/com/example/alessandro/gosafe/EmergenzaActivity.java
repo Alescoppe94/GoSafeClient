@@ -44,8 +44,8 @@ public class EmergenzaActivity extends DefaultActivity {
         SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
         editor.putBoolean("emergenza", true);
         editor.apply();
-        imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
-        imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
+        //imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
+        //imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         utente_attivo = daoUtente.findUtente();
@@ -89,7 +89,6 @@ public class EmergenzaActivity extends DefaultActivity {
             AlertDialog alert = builder.create();
             alert.show();
         }
-
 
         //ImageView image = (ImageView) findViewById(R.id.imageViewProva);
         //image.setImageResource(R.drawable.q140);
@@ -145,8 +144,10 @@ public class EmergenzaActivity extends DefaultActivity {
 
     @Override
     public void onDestroy(){
-        bitmap.recycle();
-        bitmap = null;
+        if(bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
         finish();
         super.onDestroy();
 
@@ -155,6 +156,7 @@ public class EmergenzaActivity extends DefaultActivity {
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
+            //TODO: settare immagine corretta del piano
             final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
             SharedPreferences sharedPreferences = context.getSharedPreferences("isConnesso", context.MODE_PRIVATE);
@@ -166,6 +168,9 @@ public class EmergenzaActivity extends DefaultActivity {
                 daoUtente.close();
                 RichiestaPercorso richiestaPercorso = new RichiestaPercorso(utente_attivo);
                 richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
+            }
+            else{
+                //TODO:pulire percorso da visualizzare
             }
             DAOBeacon daoBeacon = new DAOBeacon(context);
             daoBeacon.open();
@@ -179,5 +184,4 @@ public class EmergenzaActivity extends DefaultActivity {
 
         }
     };
-
 }
