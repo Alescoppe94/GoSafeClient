@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        TextView mSignUpButton = (TextView) findViewById(R.id.signup);
+        Button mSignUpButton = (Button) findViewById(R.id.signup);
         mSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
