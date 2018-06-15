@@ -169,7 +169,7 @@ public class DAOUtente {
         return utente;
     }
 
-    public Utente findUtente(){ //TODO: ??
+    public Utente findUtente(){
         Utente utente = null;
         Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));

@@ -347,7 +347,7 @@ public class Autenticazione {
                 login_in_corso.dismiss();
             }
 
-            if (result == null) {
+            if (result == null) { //TODO: sistemare login
                 DAOUtente daoUtente = new DAOUtente(ctx);
                 daoUtente.open();
                 Utente utentedb = daoUtente.getUserByUsername(utente.getUsername());
@@ -361,7 +361,6 @@ public class Autenticazione {
                         utente.setCognome(utentedb.getCognome());
                         utente.setIs_autenticato(true);
                         session.createUserLoginSession("User Session", utente.getUsername());
-                        //TODO: startUpService?
                         Intent i = new Intent(ctx, VaiActivity.class);
                         ctx.startActivity(i);
                     } else {
@@ -388,8 +387,7 @@ public class Autenticazione {
                             });
                     utente_non_trovato.show();
 
-                    //TODO: startUpService?
-                    //TODO: vai all'interfaccia dell'utente anonimo
+
                 }
 
             } else {

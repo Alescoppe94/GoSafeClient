@@ -219,7 +219,7 @@ public class VaiActivity extends DefaultActivity {
 
     }
 
-    //TODO Chiedere ad Ale se e a cosa serve
+
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
