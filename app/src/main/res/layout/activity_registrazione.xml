@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.luca.layoutfixed.RegistrazioneActivity">
+    tools:context="com.example.alessandro.gosafe.RegistrazioneActivity"
+    android:background="@drawable/bg">
 
     <RelativeLayout
         android:id="@+id/relativeLayout4"
@@ -14,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="#218E88">
+        >
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -44,7 +45,8 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="15dp"
                         android:layout_marginTop="50dp"
-                        android:text="Inserisci le tue credenziali"
+                        android:text="INSERISCI LE TUE CREDENZIALI"
+                        android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         android:textSize="20dp" />
 
@@ -53,7 +55,7 @@
                         android:layout_height="45dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="10dp"
-                        android:background="@drawable/textinput_format">
+                        android:background="@drawable/username_input">
 
                         <EditText
                             android:id="@+id/username_reg"
@@ -65,13 +67,12 @@
                             android:inputType="textPersonName" />
 
                     </android.support.design.widget.TextInputLayout>
-
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="280dp"
                         android:layout_height="45dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="10dp"
-                        android:background="@drawable/textinput_format">
+                        android:background="@drawable/username_input">
 
                         <EditText
                             android:id="@+id/nome"
@@ -89,7 +90,7 @@
                         android:layout_height="45dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="10dp"
-                        android:background="@drawable/textinput_format">
+                        android:background="@drawable/username_input">
 
                         <EditText
                             android:id="@+id/cognome"
@@ -107,7 +108,7 @@
                         android:layout_height="45dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="10dp"
-                        android:background="@drawable/textinput_format">
+                        android:background="@drawable/username_input">
 
                         <EditText
                             android:id="@+id/password_reg"
@@ -125,7 +126,7 @@
                         android:layout_height="45dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="10dp"
-                        android:background="@drawable/textinput_format">
+                        android:background="@drawable/username_input">
 
                         <EditText
                             android:id="@+id/confirmpassword_reg"
@@ -144,27 +145,27 @@
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/linearLayout"
             android:layout_marginStart="50dp"
             android:layout_marginTop="21dp"
-            android:background="@drawable/button_shape2"
+            android:background="@drawable/genericbuttonradius"
             android:onClick="registrazione"
             android:text="Registrati"
             android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/button3"
-            android:layout_alignBottom="@+id/button3"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="53dp"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+
+            android:layout_alignTop="@+id/button3"
+            android:layout_marginStart="39dp"
+            android:layout_toEndOf="@+id/button3"
+            android:background="@drawable/genericbuttonradius"
             android:onClick="resetForm"
-            android:background="@drawable/button_shape2"
             android:text="Annulla"
             android:textColor="#FFFFFF" />
     </RelativeLayout>

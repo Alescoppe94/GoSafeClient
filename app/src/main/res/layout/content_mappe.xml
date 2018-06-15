@@ -29,7 +29,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:text="@string/seleziona_piano"
-                android:textColor="#AAA"
+                android:layout_gravity="center_vertical"
+                android:textColor="#FFF"
                 android:textStyle="bold" />
 
             <Spinner
