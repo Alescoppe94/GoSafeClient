@@ -78,7 +78,6 @@ class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //gestire upgrade, al momento perde i dati vecchi
-        //TODO gestire prossimamente senza cancellare tutto
         db.execSQL("DROP TABLE IF EXISTS " + DAOUtente.TBL_NAME);
         db.execSQL(TABLE_UTENTE);
         db.execSQL("DROP TABLE IF EXISTS " + DAOTronco.TBL_NAME);
