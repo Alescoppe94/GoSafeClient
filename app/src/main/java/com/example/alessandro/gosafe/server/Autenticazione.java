@@ -347,49 +347,17 @@ public class Autenticazione {
                 login_in_corso.dismiss();
             }
 
-            if (result == null) { //TODO: sistemare login
-                DAOUtente daoUtente = new DAOUtente(ctx);
-                daoUtente.open();
-                Utente utentedb = daoUtente.getUserByUsername(utente.getUsername());
-                daoUtente.close();
-                if(utentedb != null) {
-                    if(utente.getPassword().equals(utentedb.getPassword())) {
-                        utente.setId_utente(utentedb.getId_utente());
-                        utente.setUsername(utentedb.getUsername());
-                        utente.setPassword(utentedb.getPassword());
-                        utente.setNome(utentedb.getNome());
-                        utente.setCognome(utentedb.getCognome());
-                        utente.setIs_autenticato(true);
-                        session.createUserLoginSession("User Session", utente.getUsername());
-                        Intent i = new Intent(ctx, VaiActivity.class);
-                        ctx.startActivity(i);
-                    } else {
-                        AlertDialog password_errata = new AlertDialog.Builder(ctx).create();
-                        password_errata.setTitle("Password errata");
-                        password_errata.setMessage(ctx.getString(R.string.error_incorrect_password));
-                        password_errata.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        password_errata.show();
-                    }
-                } else {
-                    AlertDialog utente_non_trovato = new AlertDialog.Builder(ctx).create();
-                    utente_non_trovato.setTitle("Impossibile effettuare il login");
-                    utente_non_trovato.setMessage(ctx.getString(R.string.error_invalid_login_hostuser));
-                    utente_non_trovato.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    utente_non_trovato.show();
-
-
-                }
-
+            if (result == null) {
+                AlertDialog utente_non_trovato = new AlertDialog.Builder(ctx).create();
+                utente_non_trovato.setTitle("Impossibile effettuare il login");
+                utente_non_trovato.setMessage(ctx.getString(R.string.error_invalid_login_hostuser));
+                utente_non_trovato.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                utente_non_trovato.show();
             } else {
                 if (jsonResponse.has("esito")) {
                     if (jsonResponse.get("esito").getAsString().equals("ERROR: Password errata")) {
