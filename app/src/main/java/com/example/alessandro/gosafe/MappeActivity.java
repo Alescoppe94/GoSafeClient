@@ -128,7 +128,12 @@ public class MappeActivity extends DefaultActivity{
 
     @Override
     public void onResume(){
-        imageViewPiano.invalidate();
+        String piano = spinner.getSelectedItem().toString();
+        String[] elems = piano.split(" ");
+        bitmap = ImageLoader.loadImageFromStorage(elems[1], this);
+        imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+        load = true;
+        imageViewPiano.setBool(false);
         super.onResume();
     }
 

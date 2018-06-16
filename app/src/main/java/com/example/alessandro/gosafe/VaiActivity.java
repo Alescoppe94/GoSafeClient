@@ -251,6 +251,12 @@ public class VaiActivity extends DefaultActivity {
 
     @Override
     public void onResume(){
+        String piano = spinner.getSelectedItem().toString();
+        String[] elems = piano.split(" ");
+        bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
+        imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+        load = true;
+        imageViewPiano.setBool(false);
         super.onResume();
     }
 
