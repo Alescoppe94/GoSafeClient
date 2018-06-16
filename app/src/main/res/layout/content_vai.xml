@@ -4,7 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp">
 
+        <TextView
+            android:id="@+id/vaiLabel"
+            android:layout_width="383dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/relativeLayout"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="#FFF"
+            android:textStyle="bold"
+            android:text="Tieni Premuto il punto in cui desideri arrivare" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -29,7 +46,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:text="@string/seleziona_piano"
-                android:textColor="#AAA"
+                android:layout_gravity="center_vertical"
+                android:textColor="#FFF"
                 android:textStyle="bold" />
 
             <Spinner
@@ -77,11 +95,11 @@
 
             <Button
                 android:id="@+id/partenzabutton"
-                android:layout_width="wrap_content"
+                android:layout_width="152dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="1dp"
-                android:background="@drawable/round_button"
+                android:background="@drawable/genericbuttonradius"
                 android:onClick="avviaPercorso"
                 android:text="Partenza"
                 android:textColor="#ffff" />
@@ -91,4 +109,6 @@
 
 
     </RelativeLayout>
+
+
 </RelativeLayout>

@@ -26,7 +26,7 @@
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:id="@+id/linearLayoutTitolo"
             android:gravity="center">
@@ -36,19 +36,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#F00"
+                android:textColor="#FFF"
                 android:gravity="center"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:text="MODIFICA IL TUO PROFILO" />
         </LinearLayout>
-        <!--Primo Layout: Nome -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/linearLayoutTitolo"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal"
             android:id="@+id/linearLayoutNome">
 
@@ -62,26 +62,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:paddingLeft="10dp"
+                    android:gravity="center_vertical"
                     android:textSize="25dp"
+                    android:textColor="#FFF"
                     android:text="Nome"
                     android:textStyle="bold"/>
             </LinearLayout>
+    <LinearLayout
+            android:layout_width="210dp"
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="268dp"
-                android:layout_height="match_parent">
-
-                <EditText
-                    android:id="@+id/modificaNomeText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:textSize="20dp"
-                    android:text="Homer" />
-            </LinearLayout>
+            <EditText
+                android:id="@+id/modificaNomeText"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:background="@drawable/username_input"
+                android:textSize="20dp"
+                android:paddingLeft="15dp"
+                android:hint="Homer" />
+        </LinearLayout>
         </LinearLayout>
 
         <!--Secondo Layout: Cognome -->
@@ -90,7 +93,7 @@
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/linearLayoutNome"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="25dp"
             android:orientation="horizontal"
             android:id="@+id/linearLayoutCognome">
 
@@ -105,13 +108,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:textSize="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:textColor="#FFF"
+                    android:paddingLeft="10dp"
                     android:text="Cognome"
                     android:textStyle="bold"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="268dp"
+                android:layout_width="210dp"
                 android:layout_height="match_parent">
 
                 <EditText
@@ -121,22 +127,19 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:inputType="textPersonName"
+                    android:paddingLeft="15dp"
+                    android:background="@drawable/username_input"
                     android:textSize="20dp"
-                    android:text="Simpson" />
+                    android:hint="Simpson" />
             </LinearLayout>
         </LinearLayout>
-
-        <!-- Terzo LinearLayout: Email -->
-
-
-        <!-- Quarto LinearLayout: Username (?)-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_below="@+id/linearLayoutCognome"
             android:id="@+id/linearLayoutUsername"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="25dp"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
 
@@ -151,13 +154,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:textSize="25dp"
-                    android:text="Usename"
+                    android:textSize="20dp"
+                    android:textColor="#FFF"
+                    android:paddingLeft="10dp"
+                    android:text="Username"
+                    android:gravity="center_vertical"
                     android:textStyle="bold"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="268dp"
+                android:layout_width="210dp"
                 android:layout_height="match_parent">
 
                 <EditText
@@ -165,40 +171,43 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/username_input"
                     android:ems="10"
-                    android:text="ciambella"
+                    android:hint="ciambella"
+                    android:paddingLeft="15dp"
                     android:textSize="20dp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Quinto LinearLayout: Password -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_below="@+id/linearLayoutUsername"
             android:id="@+id/linearLayoutPassword"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="25dp"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="121dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|left"
+            >
 
-            <LinearLayout
-                android:layout_width="121dp"
+            <TextView
+                android:id="@+id/passwordLabel"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|left"
-                >
-
-                <TextView
-                    android:id="@+id/passwordLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:textSize="25dp"
-                    android:text="OldPWD"
-                    android:textStyle="bold"/>
-            </LinearLayout>
+                android:layout_weight="1"
+                android:textSize="16dp"
+                android:text="Vecchia Password"
+                android:paddingLeft="10dp"
+                android:textColor="#FFF"
+                android:gravity="center_vertical"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
             <LinearLayout
-                android:layout_width="268dp"
+                android:layout_width="210dp"
                 android:layout_height="match_parent">
 
 
@@ -206,6 +215,8 @@
                     android:id="@+id/passwordText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:background="@drawable/password_input"
                     android:layout_weight="1"
                     android:ems="10"
                     android:inputType="textPassword" />
@@ -218,7 +229,7 @@
             android:layout_height="40dp"
             android:layout_below="@+id/linearLayoutPassword"
             android:id="@+id/linearLayoutConfermaPassword"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="25dp"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
 
@@ -233,13 +244,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:textSize="25dp"
-                    android:text="NewPWD"
+                    android:textSize="16dp"
+                    android:text="Nuova Password"
+                    android:textColor="#FFF"
+                    android:paddingLeft="10dp"
+                    android:gravity="center_vertical"
                     android:textStyle="bold"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="268dp"
+                android:layout_width="210dp"
                 android:layout_height="match_parent">
 
 
@@ -247,23 +261,21 @@
                     android:id="@+id/confermaPasswordText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/password_input"
                     android:layout_weight="1"
+                    android:paddingLeft="15dp"
                     android:ems="10"
                     android:inputType="textPassword" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Settimo LinearLayout: Carica immagine -->
-
-
-        <!-- Ottavo LinearLayout: Bottone di conferma -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_below="@+id/linearLayoutConfermaPassword"
             android:id="@+id/linearLayoutModificaButton"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:layout_alignParentStart="true"
             android:orientation="horizontal"
             android:gravity="left"
@@ -275,13 +287,13 @@
                 android:gravity="center">
                 <Button
                     android:id="@+id/annullaButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/normal_button"
+                    android:layout_width="110dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/genericbuttonradius"
                     android:textSize="10dp"
                     android:text="Annulla Modifica"
                     android:onClick="annullamodifica"
-                    android:textColor="#000"
+                    android:textColor="#FFF"
                     android:gravity="center"
                     />
             </LinearLayout>
@@ -292,12 +304,12 @@
                 android:gravity="center">
                 <Button
                     android:id="@+id/modificaButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/round_button"
+                    android:layout_width="110dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/genericbuttonradius"
                     android:textSize="10dp"
                     android:text="Conferma Modifica"
-                    android:textColor="#ffff"
+                    android:textColor="#FFF"
                     android:gravity="center"
                     android:onClick="confermaModifica"
                     />
