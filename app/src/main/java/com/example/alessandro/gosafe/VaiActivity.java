@@ -197,6 +197,7 @@ public class VaiActivity extends DefaultActivity {
                     Toast.makeText(getApplicationContext(), "Long press: Image not ready", Toast.LENGTH_SHORT).show();
                 }
                 daoBeacon.close();
+
             }
         });
 
@@ -218,7 +219,7 @@ public class VaiActivity extends DefaultActivity {
 
     }
 
-    //TODO Chiedere ad Ale se e a cosa serve
+
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {

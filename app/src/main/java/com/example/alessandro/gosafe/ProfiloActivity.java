@@ -83,7 +83,7 @@ public class ProfiloActivity extends DefaultActivity  {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (requestCode == PICK_IMAGE) {
-            //TODO: action
+
         }
     }
 
