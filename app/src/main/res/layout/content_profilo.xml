@@ -49,9 +49,9 @@
         android:layout_height="50dp"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="40dp"
-        android:background="@drawable/genericbuttonradius"
         android:onClick="logout"
         android:text="LOGOUT"
+        android:background="@drawable/background_signup"
         android:textColor="#FFF"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -64,9 +64,8 @@
         android:layout_marginStart="40dp"
         android:onClick="goToModificaProfilo"
         android:text="MODIFICA"
-        android:textColor="#FFF
-"
-        android:background="@drawable/genericbuttonradius"
+        android:textColor="#FFF"
+        android:background="@drawable/background_signup"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -77,7 +76,7 @@
         android:layout_marginBottom="198dp"
         android:gravity="center"
         android:text="Kevin Appoggetti"
-        android:textColor="#FFF"
+        android:textColor="#000"
         android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +91,7 @@
         android:layout_marginBottom="163dp"
         android:gravity="center"
         android:text="Username"
-        android:textColor="#FFF"
+        android:textColor="#000"
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
