@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.alessandro.gosafe.VaiActivity"
-    tools:layout_editor_absoluteY="81dp"
-    android:background="@drawable/bg">
+    tools:layout_editor_absoluteY="81dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <include layout="@layout/content_vai"/>
+
 
     </android.support.constraint.ConstraintLayout>
 
