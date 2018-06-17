@@ -18,7 +18,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="Tieni Premuto il punto in cui desideri arrivare"
-            android:textColor="#FFF"
+            android:textColor="#000"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -51,8 +51,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
                     android:text="@string/seleziona_piano"
-                    android:textColor="#FFF"
+                    android:textColor="#000"
                     android:textStyle="bold" />
 
                 <Spinner
