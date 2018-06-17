@@ -1,94 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <LinearLayout
+        android:id="@+id/titolo"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+        <TextView
+            android:id="@+id/vaiLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/relativeLayout"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Tieni Premuto il punto in cui desideri arrivare"
+            android:textColor="#000"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp">
+        android:layout_below="@+id/titolo"
+        android:gravity="top">
 
-        <LinearLayout
-            android:id="@+id/linearspinner"
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:gravity="top"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <TextView
-                android:id="@+id/pianoTextView"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/linearspinner"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="@string/seleziona_piano"
-                android:textColor="#AAA"
-                android:textStyle="bold" />
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:gravity="top"
+                android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="30dp"
-                android:layout_toRightOf="@+id/pianoTextView"
-                android:layout_weight="1"
-                android:background="@drawable/customborder" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/pianoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/seleziona_piano"
+                    android:textColor="#000"
+                    android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/linearspinner"
-            android:id = "@+id/mappaLayout"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/customborder"
-            android:orientation="vertical">
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@+id/pianoTextView"
+                    android:layout_weight="1"
+                    android:background="@drawable/customborder" />
+            </LinearLayout>
 
-            <!--<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+
+
+                <RelativeLayout
+                    android:id="@+id/mappaLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/linearspinner">
+
+                    <!--<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
                 android:id="@+id/imageViewPiano"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="matrix" />-->
 
-            <com.example.alessandro.gosafe.helpers.PinView
-                android:id="@+id/imageViewPiano"
-                android:layout_width="match_parent"
-                android:layout_height="270dp"
-                android:adjustViewBounds="true"
-                android:scaleType="matrix" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonLayout"
-            android:layout_below="@id/mappaLayout"
-            android:gravity="center"
-            android:layout_marginTop="20dp">
-
-            <Button
-                android:id="@+id/partenzabutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="1dp"
-                android:background="@drawable/round_button"
-                android:onClick="avviaPercorso"
-                android:text="Partenza"
-                android:textColor="#ffff" />
+                    <com.example.alessandro.gosafe.helpers.PinView
+                        android:id="@+id/imageViewPiano"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:scaleType="matrix" />
 
 
-        </LinearLayout>
+                    <Button
+                        android:id="@+id/partenzabutton"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="31dp"
+                        android:layout_marginEnd="28dp"
+                        android:background="@drawable/background_genericbutton2"
+                        android:drawableTop="@drawable/ic_vai_icon"
+                        android:onClick="avviaPercorso"
+                        android:padding="10dp"
+                        android:text="Vai"
+                        android:textColor="#ffff" />
+                </RelativeLayout>
 
 
-    </RelativeLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
 </RelativeLayout>
