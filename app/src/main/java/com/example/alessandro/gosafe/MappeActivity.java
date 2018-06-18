@@ -77,7 +77,7 @@ public class MappeActivity extends DefaultActivity{
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
                 String piano =(String) adapterView.getItemAtPosition(i);
                 String[] elems = piano.split(" ");
                 bitmap = ImageLoader.loadImageFromStorage(elems[1], getApplicationContext());

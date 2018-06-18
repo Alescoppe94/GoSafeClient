@@ -8,19 +8,6 @@
     tools:context="com.example.alessandro.gosafe.ProfiloActivity">
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="422dp"
-        android:layout_height="224dp"
-        android:layout_marginBottom="124dp"
-        android:layout_marginEnd="8dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/textViewUsername"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
@@ -33,25 +20,25 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="148dp"
+        android:layout_width="236dp"
+        android:layout_height="236dp"
+        android:layout_marginTop="72dp"
+        android:background="@drawable/shadow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:srcCompat="@drawable/picture" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/homergood" />
 
 
     <Button
         android:id="@+id/logoutbutton"
         android:layout_width="110dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="28dp"
         android:layout_marginEnd="40dp"
+        android:background="@drawable/background_signup"
         android:onClick="logout"
         android:text="LOGOUT"
-        android:background="@drawable/background_signup"
         android:textColor="#FFF"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -60,12 +47,12 @@
         android:id="@+id/modificabutton"
         android:layout_width="110dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="28dp"
         android:layout_marginStart="40dp"
+        android:background="@drawable/background_signup"
         android:onClick="goToModificaProfilo"
         android:text="MODIFICA"
         android:textColor="#FFF"
-        android:background="@drawable/background_signup"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -80,9 +67,9 @@
         android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.931" />
 
     <TextView
         android:id="@+id/textViewUsername"
@@ -95,9 +82,9 @@
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNomeCognome"
-        tools:layout_editor_absoluteX="175dp" />
+        app:layout_constraintVertical_bias="0.851" />
 
 </android.support.constraint.ConstraintLayout>
