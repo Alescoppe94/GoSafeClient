@@ -55,16 +55,22 @@ public class EmergenzaActivity extends DefaultActivity {
         daoUtente.close();
         richiestaPercorso = new RichiestaPercorso(utente_attivo);
         if(utente_attivo.getBeaconid() != null) {
-            DAOPiano daoPiano = new DAOPiano(this);
-            daoPiano.open();
             DAOBeacon daoBeacon = new DAOBeacon(this);
             daoBeacon.open();
+            Beacon beaconUtente = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
+
+            DAOPiano daoPiano = new DAOPiano(this);
+            daoPiano.open();
             bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano())), this);
-            imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
+            imageViewPiano = (PinView) findViewById(R.id.imageViewPiano);
             imageViewPiano.setImage(ImageSource.bitmap(bitmap));
-            richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
             daoPiano.close();
             daoBeacon.close();
+            if(!beaconUtente.is_puntodiraccola()) {
+                richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
+            } else {
+                showAlertSalvo();
+            }
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Attenzione!");
@@ -95,6 +101,8 @@ public class EmergenzaActivity extends DefaultActivity {
         //ImageView image = (ImageView) findViewById(R.id.imageViewProva);
         //image.setImageResource(R.drawable.q140);
     }
+
+
 
     public boolean salvo(MenuItem item){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -165,49 +173,74 @@ public class EmergenzaActivity extends DefaultActivity {
             Beacon beaconVecchio = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
             Beacon beaconNuovo = daoBeacon.getBeaconById(idBeacon);
 
-            SharedPreferences sharedPreferences = context.getSharedPreferences("isConnesso", context.MODE_PRIVATE);
-            boolean connesso = sharedPreferences.getBoolean("connesso",false);
-            if(connesso) {
-                DAOUtente daoUtente = new DAOUtente(context);
-                daoUtente.open();
-                utente_attivo = daoUtente.findUtente();
-                daoUtente.close();
-                richiestaPercorso.setUtente_attivo(utente_attivo);
-                richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
-                richiestaPercorso.getResult();
-            }
-            else{
-                percorsoEmer = richiestaPercorso.getPercorsoEmer();
-                if(percorsoEmer.contains(beaconNuovo.getId())){                          // significa che il pupo è nel percorso giusto, quindi va pulito il disegno
-                    int indexBeaconUtente = percorsoEmer.indexOf(beaconNuovo.getId());
-                    for (int i = 0; i< indexBeaconUtente; i++){
-                        percorsoEmer.remove(i);
-                    }
-                    imageViewPiano.play(daoBeacon.getCoords(percorsoEmer));
-                } else {                                                                    //significa che il pupo è fuori strada, va quindi ricalcolato il percorso
+            if(!beaconNuovo.is_puntodiraccola()) {
+
+                SharedPreferences sharedPreferences = context.getSharedPreferences("isConnesso", context.MODE_PRIVATE);
+                boolean connesso = sharedPreferences.getBoolean("connesso", false);
+                if (connesso) {
+                    DAOUtente daoUtente = new DAOUtente(context);
+                    daoUtente.open();
+                    utente_attivo = daoUtente.findUtente();
+                    daoUtente.close();
                     richiestaPercorso.setUtente_attivo(utente_attivo);
                     richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
                     richiestaPercorso.getResult();
-                }
+                } else {
+                    percorsoEmer = richiestaPercorso.getPercorsoEmer();
+                    if (percorsoEmer.contains(beaconNuovo.getId())) {                          // significa che il pupo è nel percorso giusto, quindi va pulito il disegno
+                        int indexBeaconUtente = percorsoEmer.indexOf(beaconNuovo.getId());
+                        for (int i = 0; i < indexBeaconUtente; i++) {
+                            percorsoEmer.remove(i);
+                        }
+                        imageViewPiano.play(daoBeacon.getCoords(percorsoEmer));
+                    } else {                                                                    //significa che il pupo è fuori strada, va quindi ricalcolato il percorso
+                        richiestaPercorso.setUtente_attivo(utente_attivo);
+                        richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
+                        richiestaPercorso.getResult();
+                    }
 
+                }
+                if (beaconVecchio.getPiano() != beaconNuovo.getPiano()) {
+                    DAOPiano daoPiano = new DAOPiano(context);
+                    daoPiano.open();
+                    bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(beaconNuovo.getPiano())), context);
+                    imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+                    daoPiano.close();
+                }
+                ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);
+                daoBeacon.close();
+                int coordxpartenza = newPosition.get(0);
+                int coordypartenza = newPosition.get(1);
+                PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
+                PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
+                imageViewPiano.setPin(newCoord);
+
+            } else {
+                showAlertSalvo();
             }
-            if(beaconVecchio.getPiano() != beaconNuovo.getPiano()){
-                DAOPiano daoPiano = new DAOPiano(context);
-                daoPiano.open();
-                bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(beaconNuovo.getPiano())), context);
-                imageViewPiano.setImage(ImageSource.bitmap(bitmap));
-                daoPiano.close();
-            }
-            ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);
-            daoBeacon.close();
-            int coordxpartenza = newPosition.get(0);
-            int coordypartenza = newPosition.get(1);
-            PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
-            PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
-            imageViewPiano.setPin(newCoord);
 
         }
     };
+
+    private void showAlertSalvo() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Attenzione!");
+        builder.setMessage("E' in corso un' emergenza ma ti trovi in un punto di raccolta.\nSii prudente e resta dove ti trovi!");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
+                editor.putBoolean("emergenza", false);
+                editor.apply();
+                startActivity(new Intent(getApplicationContext(), VaiActivity.class));
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     /*public void avviaProva(View view){
 
