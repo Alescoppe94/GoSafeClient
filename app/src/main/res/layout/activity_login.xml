@@ -50,7 +50,8 @@
                 android:textColor="#fff"
                 android:maxLines="1"
                 android:drawableLeft="@drawable/ic_person_white_24dp"
-                android:layout_marginTop="55dp"/>
+                android:layout_marginTop="55dp"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <View
                 android:layout_width="match_parent"
@@ -71,7 +72,8 @@
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="4dp"
-                android:drawableLeft="@drawable/ic_lock_white_24dp"/>
+                android:drawableLeft="@drawable/ic_lock_white_24dp"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <View
                 android:layout_width="match_parent"
