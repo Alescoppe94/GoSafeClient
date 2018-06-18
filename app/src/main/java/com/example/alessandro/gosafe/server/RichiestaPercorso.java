@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = "http://"+ Autenticazione.PATH;
+    private final String PATH = Autenticazione.PATH;
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
