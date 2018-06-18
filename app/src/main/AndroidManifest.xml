@@ -56,7 +56,7 @@
             android:screenOrientation="portrait"/>
         <activity
                 android:name=".EmergenzaActivity"
-                android:theme="@style/AppTheme.NoActionBar"
+                android:theme="@style/AppTheme"
             android:label="Emergenza!"
             android:screenOrientation="portrait"/>
         <activity
