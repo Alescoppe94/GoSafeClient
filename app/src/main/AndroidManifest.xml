@@ -51,7 +51,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ProfiloActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme"
             android:label="GoSafe - Profilo"
             android:screenOrientation="portrait"/>
         <activity
