@@ -213,7 +213,7 @@ public class VaiActivity extends DefaultActivity {
                     beaconD = daoBeacon.getBeaconById(idbeacondestinazione);
                     PointF pin = new PointF(beaconD.getCoordx(), beaconD.getCoordy());
                     imageViewPiano.setPin(pin);
-                    textLabel.setText("Ora clicca il pulsante Partenza per raggiungere la destinazione");
+                    textLabel.setText("Ora clicca il pulsante VAI per raggiungere la destinazione");
                     temp=10000000;
 
                     imageViewPiano.setBool(true);
