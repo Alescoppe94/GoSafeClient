@@ -77,7 +77,7 @@ public class MappeActivity extends DefaultActivity{
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
                 String piano =(String) adapterView.getItemAtPosition(i);
                 String[] elems = piano.split(" ");
                 bitmap = ImageLoader.loadImageFromStorage(elems[1], getApplicationContext());
@@ -128,14 +128,21 @@ public class MappeActivity extends DefaultActivity{
 
     @Override
     public void onResume(){
-        imageViewPiano.invalidate();
+        String piano = spinner.getSelectedItem().toString();
+        String[] elems = piano.split(" ");
+        bitmap = ImageLoader.loadImageFromStorage(elems[1], this);
+        imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+        load = true;
+        imageViewPiano.setBool(false);
         super.onResume();
     }
 
     @Override
     public void onDestroy(){
-        bitmap.recycle();
-        bitmap = null;
+        if(bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
         finish();
         super.onDestroy();
 

@@ -80,7 +80,7 @@ public class DbDownloadFirstBoot {
                     daoUtente.close();
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL("http://10.0.2.2:8080/gestionemappe/db/secured/download");
+                    URL url = new URL(Autenticazione.PATH +"/gestionemappe/db/secured/download");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Content-Type", "application/json");

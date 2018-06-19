@@ -60,13 +60,6 @@ public class ModificaActivity extends DefaultActivity {
         modificaCognomeText.setText(utente.getCognome());
         modificaNomeText.setText(utente.getNome());
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        Menu menu = navigation.getMenu();
-        MenuItem menuItem = menu.getItem(2);
-        menuItem.setChecked(true);
     }
 
    public void confermaModifica (View view){
@@ -149,6 +142,8 @@ public class ModificaActivity extends DefaultActivity {
         modificaUsernameText.setText(utente.getUsername());
         modificaCognomeText.setText(utente.getCognome());
         modificaNomeText.setText(utente.getNome());
+        Intent i = new Intent(this, ProfiloActivity.class);
+        startActivity(i);
     }
 
 }

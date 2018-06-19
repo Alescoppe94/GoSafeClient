@@ -41,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -84,6 +85,7 @@ public class VaiActivity extends DefaultActivity {
     Context ctx;
     ArrayAdapter<String> adapter;
     private PinView imageViewPiano;
+    private TextView textLabel;
     Utente user;
     private RichiestaPercorso richiestaPercorso;
     private Bitmap bitmap;
@@ -115,12 +117,13 @@ public class VaiActivity extends DefaultActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        textLabel = (TextView) findViewById(R.id.vaiLabel);
         imageViewPiano = (PinView) findViewById(R.id.imageViewPiano);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
                 String piano =(String) adapterView.getItemAtPosition(i);
                 String[] elems = piano.split(" ");
                 bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
@@ -190,6 +193,7 @@ public class VaiActivity extends DefaultActivity {
                     beaconD = daoBeacon.getBeaconById(idbeacondestinazione);
                     PointF pin = new PointF(beaconD.getCoordx(), beaconD.getCoordy());
                     imageViewPiano.setPin(pin);
+                    textLabel.setText("Ora clicca il pulsante Partenza per raggiungere la destinazione");
                     temp=10000000;
 
                     imageViewPiano.setBool(true);
@@ -251,6 +255,12 @@ public class VaiActivity extends DefaultActivity {
 
     @Override
     public void onResume(){
+        String piano = spinner.getSelectedItem().toString();
+        String[] elems = piano.split(" ");
+        bitmap = ImageLoader.loadImageFromStorage(elems[1], ctx);
+        imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+        load = true;
+        imageViewPiano.setBool(false);
         super.onResume();
     }
 
@@ -281,6 +291,7 @@ public class VaiActivity extends DefaultActivity {
             daoUtente.close();
             richiestaPercorso.ottieniPercorsoNoEmergenza(ctx, String.valueOf(idbeacondestinazione), imageViewPiano, position, spinner, user);
             drawn = true;
+            textLabel.setText("Tieni Premuto il punto in cui desideri arrivare");
         }else if(user.getPosition() == null){
             AlertDialog posnotselected = new AlertDialog.Builder(ctx).create();
             posnotselected.setTitle("Attenzione!");

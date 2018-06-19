@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 
 public class CheckConnessione{
 
-    private final String PATH = "http://10.0.2.2:8080";
+    private final String PATH = Autenticazione.PATH;
 
     public CheckConnessione() {
     }
