@@ -12,17 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/provabutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="1dp"
-            android:background="@drawable/round_button"
-            android:onClick="avviaProva"
-            android:text="Partenza"
-            android:textColor="#ffff" />
-
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"

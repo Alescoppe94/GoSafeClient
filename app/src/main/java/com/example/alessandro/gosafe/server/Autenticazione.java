@@ -392,7 +392,7 @@ public class Autenticazione {
                     long id_utente = utenteJson.get("id").getAsLong();
                     String username = utenteJson.get("username").getAsString();
                     String password = utenteJson.get("password").getAsString();
-                    String beaconId = "1"; //jobj.get("beaconId").getAsString(); //TODO: da sistemare
+                    String beaconId = "31"; //jobj.get("beaconId").getAsString(); //TODO: da sistemare
                     String nome = utenteJson.get("nome").getAsString();
                     String cognome = utenteJson.get("cognome").getAsString();
                     String idsessione = utenteJson.get("idsessione").getAsString();
