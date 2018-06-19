@@ -34,8 +34,13 @@ public class PinView extends SubsamplingScaleImageView {
     private boolean calcoloInCorso= true;
     private int pianoArrivo;
     private int pianoSpinner;
+    private boolean isPianoUtente=false;
 
     private boolean percorsoConPiuPiani = false;
+
+    public void setPianoUtente(boolean pianoUtente) {
+        isPianoUtente = pianoUtente;
+    }
 
     public void setCalcoloInCorso(boolean calcoloInCorso){
         this.calcoloInCorso = calcoloInCorso;
@@ -86,9 +91,23 @@ public class PinView extends SubsamplingScaleImageView {
         invalidate();
     }
 
+    public void setPinMyPosition(PointF sPin) {
+        this.inizioPin = sPin;
+        initialiseMyPosition();
+        invalidate();
+    }
+
     private void initialise() {
         float density = getResources().getDisplayMetrics().densityDpi;
-        pin = BitmapFactory.decodeResource(this.getResources(), R.drawable.pushpin_blue);
+        pin = BitmapFactory.decodeResource(this.getResources(), R.drawable.round_place_black_24);
+        float w = (density/420f) * pin.getWidth();
+        float h = (density/420f) * pin.getHeight();
+        pin = Bitmap.createScaledBitmap(pin, (int)w, (int)h, true);
+    }
+
+    private void initialiseMyPosition() {
+        float density = getResources().getDisplayMetrics().densityDpi;
+        pin = BitmapFactory.decodeResource(this.getResources(), R.drawable.round_my_location_black_24);
         float w = (density/420f) * pin.getWidth();
         float h = (density/420f) * pin.getHeight();
         pin = Bitmap.createScaledBitmap(pin, (int)w, (int)h, true);
@@ -147,7 +166,16 @@ public class PinView extends SubsamplingScaleImageView {
         else{
             this.sPin = null;
             bool = true;
-       }
+        }
+
+        if(inizioPin!=null && isPianoUtente){
+            initialiseMyPosition();
+            invalidate();
+            sourceToViewCoord(inizioPin,vPin);
+            vX = vPin.x - (pin.getWidth()/2);
+            vY = vPin.y - pin.getHeight();
+            canvas.drawBitmap(pin, vX, vY, paint);
+        }
 
     }
 

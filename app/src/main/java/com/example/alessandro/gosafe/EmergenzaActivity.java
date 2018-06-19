@@ -47,7 +47,7 @@ public class EmergenzaActivity extends DefaultActivity {
         SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
         editor.putBoolean("emergenza", true);
         editor.apply();
-        //imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
+        imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
         //imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
@@ -58,7 +58,9 @@ public class EmergenzaActivity extends DefaultActivity {
             DAOBeacon daoBeacon = new DAOBeacon(this);
             daoBeacon.open();
             Beacon beaconUtente = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
-
+            PointF pinMyPosition = new PointF(beaconUtente.getCoordx(), beaconUtente.getCoordy());
+            imageViewPiano.setPinMyPosition(pinMyPosition);
+            imageViewPiano.setPianoUtente(true);
             DAOPiano daoPiano = new DAOPiano(this);
             daoPiano.open();
             bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano())), this);
@@ -172,6 +174,8 @@ public class EmergenzaActivity extends DefaultActivity {
             daoBeacon.open();
             Beacon beaconVecchio = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
             Beacon beaconNuovo = daoBeacon.getBeaconById(idBeacon);
+            PointF pinMyPosition = new PointF(beaconNuovo.getCoordx(), beaconNuovo.getCoordy());
+            imageViewPiano.setPinMyPosition(pinMyPosition);
 
             if(!beaconNuovo.is_puntodiraccola()) {
 

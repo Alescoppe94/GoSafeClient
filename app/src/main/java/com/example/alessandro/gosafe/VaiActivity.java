@@ -120,6 +120,13 @@ public class VaiActivity extends DefaultActivity {
         textLabel = (TextView) findViewById(R.id.vaiLabel);
         imageViewPiano = (PinView) findViewById(R.id.imageViewPiano);
 
+        DAOBeacon daoBeacon = new DAOBeacon(this);
+        daoBeacon.open();
+        Beacon beaconMyPosition = daoBeacon.getBeaconById(user.getBeaconid());
+        PointF pinMyPosition = new PointF(beaconMyPosition.getCoordx(), beaconMyPosition.getCoordy());
+        imageViewPiano.setPinMyPosition(pinMyPosition);
+        daoBeacon.close();
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -131,6 +138,19 @@ public class VaiActivity extends DefaultActivity {
                 imageViewPiano.setImage(ImageSource.bitmap(bitmap));
                 load = true;
                 imageViewPiano.setBool(false);
+                DAOBeacon daoBeacon = new DAOBeacon(getApplicationContext());
+                daoBeacon.open();
+                Beacon beaconMyPosition = daoBeacon.getBeaconById(user.getBeaconid());
+                daoBeacon.close();
+                DAOPiano daoPiano = new DAOPiano(getApplicationContext());
+                daoPiano.open();
+                int numeroPiano = daoPiano.getNumeroPianoById(beaconMyPosition.getPiano());
+                daoPiano.close();
+                if(String.valueOf(numeroPiano).equals(elems[1])){
+                    imageViewPiano.setPianoUtente(true);
+                } else {
+                    imageViewPiano.setPianoUtente(false);
+                }
                 if(drawn){
                     //cancella vecchio percorso
                     //chiama richiestapercorso
@@ -238,7 +258,7 @@ public class VaiActivity extends DefaultActivity {
             int coordypartenza = newPosition.get(1);
             PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
             PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
-            imageViewPiano.setPin(newCoord);
+            imageViewPiano.setPinMyPosition(newCoord);
 
         }
     };
