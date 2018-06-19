@@ -1,6 +1,7 @@
 package com.example.alessandro.gosafe.server;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -17,11 +18,15 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Alessandro on 03/04/2018.
  */
 
 public class AggiornamentoInfoServer {
+
+
 
     public void aggiornamentoPosizione(Utente utente, Context ctx) {
         new AggiornamentoPosizioneTask(utente, ctx).execute();
@@ -57,9 +62,11 @@ public class AggiornamentoInfoServer {
                 String dati_pos = gson.toJson(utente);
 
                 try {
+                    SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                    String path = prefs.getString("ipAddress", null);
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL(Autenticazione.PATH +"/gestionemappe/utente/secured/updateposition");
+                    URL url = new URL("http://" + path +"/gestionemappe/utente/secured/updateposition");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");

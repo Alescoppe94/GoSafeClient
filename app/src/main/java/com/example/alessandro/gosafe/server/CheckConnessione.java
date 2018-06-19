@@ -9,15 +9,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class CheckConnessione{
 
-    private final String PATH = Autenticazione.PATH;
 
     public CheckConnessione() {
+
     }
 
     public boolean checkConnessione(Context ctx){
-        AsyncTask<Void, Void, Boolean> execute = new checkConnessioneTask().execute();
+        AsyncTask<Void, Void, Boolean> execute = new checkConnessioneTask(ctx).execute();
         boolean connesso = false;
         try {
             connesso = execute.get();
@@ -37,6 +39,12 @@ public class CheckConnessione{
 
     private class checkConnessioneTask extends AsyncTask<Void, Void, Boolean> {
 
+        Context ctx;
+
+        public checkConnessioneTask(Context ctx){
+            this.ctx = ctx;
+        }
+
         @Override
         protected void onPreExecute() {
 
@@ -45,8 +53,10 @@ public class CheckConnessione{
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
+                SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                String path = prefs.getString("ipAddress", null);
                 HttpURLConnection conn;
-                conn = (HttpURLConnection) new URL(PATH + "/").openConnection();
+                conn = (HttpURLConnection) new URL("http://" + path + "/").openConnection();
                 conn.setConnectTimeout(3000);
                 conn.setReadTimeout(3000);
                 conn.setRequestMethod("HEAD");

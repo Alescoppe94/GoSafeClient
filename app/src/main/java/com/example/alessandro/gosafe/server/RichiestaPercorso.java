@@ -2,6 +2,7 @@ package com.example.alessandro.gosafe.server;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -32,10 +33,11 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
-    private final String PATH = Autenticazione.PATH;
     private Utente utente_attivo;
     public Percorso percorsoPost;
     public Percorso percorsoEmergenza;
@@ -158,7 +160,9 @@ public class RichiestaPercorso {
                     byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
                     String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
                     System.out.println("BEACON DI ARRIVO IN RICH PERC: " +beaconArr);
-                    URL url = new URL(PATH + "/gestionemappe/mappe/secured/calcolapercorso/"+utente_attivo.getBeaconid()+"/"+beaconArr+""); //Gli devo passare il beacon d'arrivo
+                    SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                    String path = prefs.getString("ipAddress", null);
+                    URL url = new URL("http://" + path + "/gestionemappe/mappe/secured/calcolapercorso/"+utente_attivo.getBeaconid()+"/"+beaconArr+""); //Gli devo passare il beacon d'arrivo
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoInput(true);
                     conn.setRequestMethod("GET");
@@ -293,7 +297,9 @@ public class RichiestaPercorso {
                 try {
                     byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
                     String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
-                    URL url = new URL(PATH + "/gestionemappe/mappe/secured/visualizzapercorso/" + utente_attivo.getId_utente() + "/" + utente_attivo.getBeaconid());
+                    SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                    String path = prefs.getString("ipAddress", null);
+                    URL url = new URL("http://" + path + "/gestionemappe/mappe/secured/visualizzapercorso/" + utente_attivo.getId_utente() + "/" + utente_attivo.getBeaconid());
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoInput(true);
                     conn.setRequestMethod("GET");

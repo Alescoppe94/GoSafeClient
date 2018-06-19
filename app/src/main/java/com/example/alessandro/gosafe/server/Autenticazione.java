@@ -55,7 +55,6 @@ public class Autenticazione {
     private UserSessionManager session;
     private Utente utente_attivo;
     private HttpURLConnection connection;
-    public static final String PATH = "http://10.0.2.2:8080";  //qua viene gestito l'indirizzo ip per tutto il progetto
 
     public Autenticazione(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
@@ -108,7 +107,9 @@ public class Autenticazione {
                 String dati_reg = gson.toJson(utente);
 
                 try {
-                    URL url = new URL(PATH + "/gestionemappe/utente/registrazione");
+                    SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                    String path = prefs.getString("ipAddress", null);
+                    URL url = new URL("http://" + path + "/gestionemappe/utente/registrazione");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
@@ -288,7 +289,9 @@ public class Autenticazione {
                 String dati_login = gson.toJson(utente);
 
                 try {
-                    String request = PATH + "/gestionemappe/utente/login";
+                    SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                    String path = prefs.getString("ipAddress", null);
+                    String request = "http://" + path + "/gestionemappe/utente/login";
                     URL url = new URL(request);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoOutput(true);
@@ -480,9 +483,11 @@ public class Autenticazione {
                 String dati_reg = gson.toJson(utente);
 
                 try {
+                    SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                    String path = prefs.getString("ipAddress", null);
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL(PATH + "/gestionemappe/utente/secured/modifica");
+                    URL url = new URL("http://" + path + "/gestionemappe/utente/secured/modifica");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
@@ -628,9 +633,11 @@ public class Autenticazione {
                 String dati_utente = gson.toJson(utente);
 
                 try {
+                    SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
+                    String path = prefs.getString("ipAddress", null);
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL(PATH+ "/gestionemappe/utente/secured/logout");
+                    URL url = new URL("http://" + path + "/gestionemappe/utente/secured/logout");
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
