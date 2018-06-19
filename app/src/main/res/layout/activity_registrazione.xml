@@ -49,7 +49,8 @@
                 android:maxLines="1"
                 android:padding="8dp"
                 android:textColor="#fff"
-                android:textColorHint="#fff" />
+                android:textColorHint="#fff"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <View
                 android:layout_width="match_parent"
@@ -71,7 +72,8 @@
                 android:textColor="#fff"
                 android:maxLines="1"
                 android:drawableLeft="@drawable/account_card_details"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <View
                 android:layout_width="match_parent"
@@ -92,7 +94,8 @@
                 android:textColor="#fff"
                 android:maxLines="1"
                 android:drawableLeft="@drawable/account_card_details"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <View
                 android:layout_width="match_parent"
@@ -113,7 +116,8 @@
                 android:textColor="#fff"
                 android:maxLines="1"
                 android:drawableLeft="@drawable/ic_lock_white_24dp"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <View
                 android:layout_width="match_parent"
@@ -134,7 +138,8 @@
                 android:textColor="#fff"
                 android:maxLines="1"
                 android:drawableLeft="@drawable/ic_lock_white_24dp"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <View
                 android:layout_width="match_parent"
