@@ -1,6 +1,7 @@
 package com.example.alessandro.gosafe;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
     private EditText mNome;
     private EditText mCognome;
     private EditText mConfPassword;
+    private EditText mIpAddress;
     private Context ctx = this;
 
     @Override
@@ -26,11 +28,13 @@ public class RegistrazioneActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrazione);
         mUsername = (EditText) findViewById(R.id.username_reg);
+        mUsername.requestFocus();
         mPassword = (EditText) findViewById(R.id.password_reg);
         mConfPassword = (EditText) findViewById(R.id.confirmpassword_reg);
         //mEmail = (EditText) findViewById(R.id.email);
         mNome = (EditText) findViewById(R.id.nome);
         mCognome = (EditText) findViewById(R.id.cognome);
+        mIpAddress = (EditText) findViewById(R.id.ipaddress);
     }
 
     public void registrazione(View v) {
@@ -106,6 +110,15 @@ public class RegistrazioneActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
+            if(mIpAddress.getText().toString().length() < 2){
+                SharedPreferences.Editor editor = getSharedPreferences("ipAddress", MODE_PRIVATE).edit();
+                editor.putString("ipAddress", "10.0.2.2:8080");
+                editor.commit();
+            }else {
+                SharedPreferences.Editor editor = getSharedPreferences("ipAddress", MODE_PRIVATE).edit();
+                editor.putString("ipAddress", mIpAddress.getText().toString());
+                editor.commit();
+            }
             Utente utente = new Utente(username, password, /*email,*/ nome, cognome, false);
             Autenticazione autenticazione = new Autenticazione(utente);
             autenticazione.registrazioneUtente(this);

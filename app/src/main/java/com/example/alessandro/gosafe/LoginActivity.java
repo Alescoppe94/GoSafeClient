@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private EditText mUsernameView;
     private EditText mPasswordView;
-    private EditText mIpAdressView;
+    private EditText mIpAddressView;
     private final static int REQUEST_ENABLE_BT=1;
    // private UserSessionManager session;
 
@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mIpAdressView = (EditText) findViewById(R.id.ipaddress);
+        mIpAddressView = (EditText) findViewById(R.id.ipaddress);
 
         Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new OnClickListener() {
@@ -168,13 +168,13 @@ public class LoginActivity extends AppCompatActivity {
             focusView.requestFocus();
 
         } else {
-            if(mIpAdressView.getText().toString().length() < 2){
+            if(mIpAddressView.getText().toString().length() < 2){
                 SharedPreferences.Editor editor = getSharedPreferences("ipAddress", MODE_PRIVATE).edit();
                 editor.putString("ipAddress", "10.0.2.2:8080");
                 editor.commit();
             }else {
                 SharedPreferences.Editor editor = getSharedPreferences("ipAddress", MODE_PRIVATE).edit();
-                editor.putString("ipAddress", mIpAdressView.getText().toString());
+                editor.putString("ipAddress", mIpAddressView.getText().toString());
                 editor.commit();
             }
             Utente utente = new Utente(username, password);

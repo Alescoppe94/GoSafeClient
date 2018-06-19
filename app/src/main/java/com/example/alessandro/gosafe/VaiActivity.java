@@ -252,6 +252,7 @@ public class VaiActivity extends DefaultActivity {
             Toast.makeText(getApplicationContext(), idBeacon, Toast.LENGTH_LONG).show();
             DAOBeacon daoBeacon = new DAOBeacon(ctx);
             daoBeacon.open();
+            //Beacon beacon = daoBeacon.getBeaconById(idBeacon);  devo lavorarci
             ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);
             daoBeacon.close();
             int coordxpartenza = newPosition.get(0);
