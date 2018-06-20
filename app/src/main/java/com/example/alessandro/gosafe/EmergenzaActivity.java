@@ -149,7 +149,17 @@ public class EmergenzaActivity extends DefaultActivity {
 
     @Override
     public void onResume(){
-        imageViewPiano.invalidate();
+        DAOPiano daoPiano = new DAOPiano(this);
+        DAOBeacon daoBeacon = new DAOBeacon(this);
+        daoPiano.open();
+        daoBeacon.open();
+        int numeropiano = daoPiano.getNumeroPianoById(daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano());
+        daoBeacon.close();
+        daoPiano.close();
+        bitmap = ImageLoader.loadImageFromStorage(String.valueOf(numeropiano), this);
+        imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+
+        imageViewPiano.setBool(false);
         super.onResume();
     }
 
@@ -170,10 +180,18 @@ public class EmergenzaActivity extends DefaultActivity {
         public void onReceive(final Context context, Intent intent) {
             final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
+            utente_attivo.setBeaconid(idBeacon);
             DAOBeacon daoBeacon = new DAOBeacon(context);
             daoBeacon.open();
             Beacon beaconVecchio = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
             Beacon beaconNuovo = daoBeacon.getBeaconById(idBeacon);
+            DAOPiano daoPiano = new DAOPiano(context);
+            daoPiano.open();
+            int numeropiano = daoPiano.getNumeroPianoById(daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano());
+            daoPiano.close();
+            bitmap = ImageLoader.loadImageFromStorage(String.valueOf(numeropiano), context);
+            imageViewPiano.setImage(ImageSource.bitmap(bitmap));
+            imageViewPiano.setBool(false);
             PointF pinMyPosition = new PointF(beaconNuovo.getCoordx(), beaconNuovo.getCoordy());
             imageViewPiano.setPinMyPosition(pinMyPosition);
 
@@ -205,11 +223,11 @@ public class EmergenzaActivity extends DefaultActivity {
 
                 }
                 if (beaconVecchio.getPiano() != beaconNuovo.getPiano()) {
-                    DAOPiano daoPiano = new DAOPiano(context);
-                    daoPiano.open();
+                    DAOPiano pianoDao = new DAOPiano(context);
+                    pianoDao.open();
                     bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(beaconNuovo.getPiano())), context);
                     imageViewPiano.setImage(ImageSource.bitmap(bitmap));
-                    daoPiano.close();
+                    pianoDao.close();
                 }
                 ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon(idBeacon);
                 daoBeacon.close();
