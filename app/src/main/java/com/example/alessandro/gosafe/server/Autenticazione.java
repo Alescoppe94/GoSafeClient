@@ -346,9 +346,6 @@ public class Autenticazione {
 
             JsonObject jsonResponse = new Gson().fromJson(result, JsonObject.class);
 
-            if (ctx instanceof LoginActivity) {
-                login_in_corso.dismiss();
-            }
 
             if (result == null) {
                 AlertDialog utente_non_trovato = new AlertDialog.Builder(ctx).create();
@@ -432,7 +429,11 @@ public class Autenticazione {
                         ctx.startActivity(i);
                     }
 
+
                 }
+            }
+            if (ctx instanceof LoginActivity) {
+                login_in_corso.dismiss();
             }
         }
     }
@@ -729,13 +730,6 @@ public class Autenticazione {
             s.putExtras(bundle);
             ctx.startService(s);
         }
-        DAOBeacon daoBeacon = new DAOBeacon(ctx);
-        daoBeacon.open();
-        DAOUtente daoUtente = new DAOUtente(ctx);
-        daoUtente.open();
-
-        user = daoUtente.findUtente();
-
 
         Intent u = new Intent(ctx, CheckForDbUpdatesService.class);
         ctx.startService(u);

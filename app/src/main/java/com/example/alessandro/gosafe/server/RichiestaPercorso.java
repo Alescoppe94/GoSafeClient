@@ -152,11 +152,6 @@ public class RichiestaPercorso {
                 return null;
             } else {
                 try {
-                    Thread.sleep(1500);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
                     byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
                     String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
                     System.out.println("BEACON DI ARRIVO IN RICH PERC: " +beaconArr);
@@ -263,8 +258,8 @@ public class RichiestaPercorso {
             //coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.play(coorddelpercorso);
             imageViewPiano.setPianoSpinner(posizione);
-            calcolopercorso_in_corso.dismiss();
             imageViewPiano.setCalcoloInCorso(true);
+            calcolopercorso_in_corso.dismiss();
         }
     }
 
