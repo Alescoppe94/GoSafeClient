@@ -8,12 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Created by Alessandro on 04/05/2018.
- */
 
 public class DAOPesiTronco {
 
@@ -44,7 +38,6 @@ public class DAOPesiTronco {
         try {
             db=dbhelper.getWritableDatabase();
         } catch (Exception e) {
-            //gestire eccezioni
             e.printStackTrace();
         }
         return this;
@@ -83,55 +76,21 @@ public class DAOPesiTronco {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
-        }
-    }
-
-    public boolean delete(int id)
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + id, null)>0;
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            // Gestione delle eccezioni
-            return false;
-        }
-
-    }
-
-    public boolean deleteAll()
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME,null,null)>0;
-            System.out.println(TBL_NAME);
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            // Gestione delle eccezioni
-            return false;
-
         }
     }
 
     public boolean update(int id, int troncoId, int pesoId, float valore)
     {
-        /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
-        String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
         ContentValues updateValues = createContentValues(id, troncoId, pesoId, valore);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + id, null)>0;
-            return upd;
+            return db.update(TBL_NAME, updateValues, FIELD_ID + "=" + id, null)>0;
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
     }

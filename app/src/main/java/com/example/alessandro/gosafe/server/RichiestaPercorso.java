@@ -39,8 +39,8 @@ public class RichiestaPercorso {
 
     private HttpURLConnection conn;
     private Utente utente_attivo;
-    public Percorso percorsoPost;
-    public Percorso percorsoEmergenza;
+    private Percorso percorsoPost;
+    private Percorso percorsoEmergenza;
     private ArrayList<Integer> coorddelpercorso = new ArrayList<Integer>();
     private ArrayList<Integer> percorso = new ArrayList<Integer>();
     private ArrayList<String> percorsoEmer = new ArrayList<>();
@@ -91,7 +91,6 @@ public class RichiestaPercorso {
 
         protected void disegnaPercorso() {
 
-            //imageViewPiano.play(new ArrayList<Integer>());
             coorddelpercorso.clear();
 
            for(int j=0; j<percorso.size(); j+=3 ){
@@ -100,7 +99,6 @@ public class RichiestaPercorso {
                     coorddelpercorso.add(percorso.get(j+1));
                 }
             }
-            //coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.play(coorddelpercorso);
 
         }
@@ -137,7 +135,6 @@ public class RichiestaPercorso {
             calcolopercorso_in_corso = new ProgressDialog(ctx);
             calcolopercorso_in_corso.setIndeterminate(true);
             calcolopercorso_in_corso.setCancelable(true);
-            //calcolopercorso_in_corso.setCanceledOnTouchOutside(false);
             calcolopercorso_in_corso.setMessage(ctx.getString(R.string.calcolopercorsoincorso));
             calcolopercorso_in_corso.show();
             CheckConnessione checkConnessione = new CheckConnessione();
@@ -255,7 +252,6 @@ public class RichiestaPercorso {
                 }
             }
 
-            //coorddelpercorso = daoBeacon.getCoords(percorso);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.play(coorddelpercorso);
             imageViewPiano.setPianoSpinner(posizione);
             imageViewPiano.setCalcoloInCorso(true);
@@ -334,7 +330,6 @@ public class RichiestaPercorso {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Percorso percorso;
             if (result == null) {
                 percorsoEmergenza = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(),ctx);
             } else {
@@ -365,8 +360,6 @@ public class RichiestaPercorso {
                 percorsoEmer.add(ultimoBeacon.getId());            //1 8 8 4 4 5 ->
             }
             else percorsoConPiuPiani = true;
-
-            System.out.println("Percorso in Rich Perc: " + percorsoEmer);
 
             coordEmergenza = daoBeacon.getCoords(percorsoEmer);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
             imageViewPiano.setPercorsoConPiuPiani(percorsoConPiuPiani);
@@ -401,7 +394,7 @@ public class RichiestaPercorso {
                 Tappa tappaOttima = new Tappa(troncoOttimo, direzione);
                 tappeOttime.add(tappaOttima);
             }
-            percorso = new Percorso(tappeOttime, partenza);
+            percorso = new Percorso(tappeOttime);
         }else{
             percorso = null;
         }
@@ -431,7 +424,6 @@ public class RichiestaPercorso {
             float costo_percorso_def = Float.MAX_VALUE;
             Iterator<Map.Entry<LinkedList<Beacon>, Float>> iter = percorsi_ottimi.entrySet().iterator();
             while (iter.hasNext()) {
-                //Log.d("scelta percorso", "entrato");
                 Map.Entry<LinkedList<Beacon>, Float> percorso_costo = iter.next();
                 float costo_valore = percorso_costo.getValue();
                 if (costo_valore < costo_percorso_def) {
@@ -452,7 +444,7 @@ public class RichiestaPercorso {
                 Tappa tappaOttima = new Tappa(troncoOttimo, direzione);
                 tappeOttime.add(tappaOttima);
             }
-            Percorso percorso = new Percorso(tappeOttime, partenza);
+            Percorso percorso = new Percorso(tappeOttime);
             return percorso;
         }
         return null;
@@ -565,9 +557,7 @@ public class RichiestaPercorso {
 
         boolean contenuto = false;
 
-        //System.out.println(beacon.getId());
         for(Beacon b : beacons){
-            //System.out.println(b.getId());
             if(b.getId().equals(beacon.getId())){
                 contenuto = true;
             }

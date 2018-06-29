@@ -7,12 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.example.alessandro.gosafe.R;
-import com.example.alessandro.gosafe.database.DAOBeacon;
 
 import java.util.ArrayList;
 
@@ -77,12 +75,6 @@ public class PinView extends SubsamplingScaleImageView {
         invalidate();
     }
 
-    public void setPin(PointF sPin, PointF inizioPin) {
-        this.sPin = sPin;
-        this.inizioPin = inizioPin;
-        initialise();
-        invalidate();
-    }
 
     public void setPin(ArrayList<Integer> percorso) {
         this.percorso = percorso; //Setta il percorso. percorso = {Coord x Beacon1, Coord y Beacon1, Coord x Beacon2, Coord Y Beacon 2,...}
@@ -161,7 +153,6 @@ public class PinView extends SubsamplingScaleImageView {
             vX = vPin.x - (pin.getWidth()/2);
             vY = vPin.y - pin.getHeight();
             canvas.drawBitmap(pin, vX, vY, paint);
-            //invalidate();
         }
         else{
             this.sPin = null;
@@ -176,20 +167,6 @@ public class PinView extends SubsamplingScaleImageView {
             vY = vPin.y - pin.getHeight();
             canvas.drawBitmap(pin, vX, vY, paint);
         }
-
-    }
-
-    public void play(PointF punto) {
-        System.out.println(punto.toString());
-        setPin(punto);
-        //SubsamplingScaleImageView.AnimationBuilder animationBuilder = pinView.animateScaleAndCenter(scale, punto);
-
-    }
-
-    public void play(PointF punto, PointF inizio) {
-        System.out.println(punto.toString());
-        setPin(punto, inizio);
-        //SubsamplingScaleImageView.AnimationBuilder animationBuilder = pinView.animateScaleAndCenter(scale, punto);
 
     }
 

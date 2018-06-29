@@ -9,30 +9,17 @@ import android.support.v4.app.NotificationCompat;
 
 import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.R;
-import com.example.alessandro.gosafe.VaiActivity;
-import com.example.alessandro.gosafe.server.AggiornamentoInfoServer;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
 
 import java.util.Map;
 
-/**
- * Created by Alessandro on 08/03/2018.
- */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        /*if(remoteMessage.getNotification().getTitle().equals("Aggiornamento")){
-
-            String body = remoteMessage.getNotification().getBody();
-            AggiornamentoInfoServer aggiornamentoInfoServer = new AggiornamentoInfoServer();
-            aggiornamentoInfoServer.aggiornamentoDbClient(body);
-
-        }else if(remoteMessage.getNotification().getTitle().equals("Java")) {*/
         SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
         editor.putBoolean("emergenza", true);
         editor.apply();
@@ -52,7 +39,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notificationBuilder.build());
 
-        //}
 
     }
 

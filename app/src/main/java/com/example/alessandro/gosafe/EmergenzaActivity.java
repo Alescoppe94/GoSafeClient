@@ -9,13 +9,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.alessandro.gosafe.database.DAOBeacon;
@@ -48,7 +44,6 @@ public class EmergenzaActivity extends DefaultActivity {
         editor.putBoolean("emergenza", true);
         editor.apply();
         imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
-        //imageViewPiano.setImage(ImageSource.resource(R.drawable.q140));
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         utente_attivo = daoUtente.findUtente();
@@ -99,9 +94,6 @@ public class EmergenzaActivity extends DefaultActivity {
             AlertDialog alert = builder.create();
             alert.show();
         }
-
-        //ImageView image = (ImageView) findViewById(R.id.imageViewProva);
-        //image.setImageResource(R.drawable.q140);
     }
 
 
@@ -178,7 +170,6 @@ public class EmergenzaActivity extends DefaultActivity {
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
             utente_attivo.setBeaconid(idBeacon);
             DAOBeacon daoBeacon = new DAOBeacon(context);
@@ -263,52 +254,4 @@ public class EmergenzaActivity extends DefaultActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
-
-    /*public void avviaProva(View view){
-
-        DAOBeacon daoBeacon = new DAOBeacon(this);
-        daoBeacon.open();
-        Beacon beaconVecchio = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
-        Beacon beaconNuovo = daoBeacon.getBeaconById("26");
-        utente_attivo.setBeaconid("26");
-
-        SharedPreferences sharedPreferences = this.getSharedPreferences("isConnesso", this.MODE_PRIVATE);
-        boolean connesso = sharedPreferences.getBoolean("connesso",false);
-        if(connesso) {
-            richiestaPercorso.setUtente_attivo(utente_attivo);
-            richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
-            richiestaPercorso.getResult();
-        }
-        else{
-            percorsoEmer = richiestaPercorso.getPercorsoEmer();
-            if(percorsoEmer.contains(beaconNuovo.getId())){                          // significa che il pupo è nel percorso giusto, quindi va pulito il disegno
-                int indexBeaconUtente = percorsoEmer.indexOf(beaconNuovo.getId());
-                for (int i = 0; i< indexBeaconUtente; i++){
-                    percorsoEmer.remove(i);
-                }
-                imageViewPiano.play(daoBeacon.getCoords(percorsoEmer));
-            } else {                                                                    //significa che il pupo è fuori strada, va quindi ricalcolato il percorso
-                richiestaPercorso.setUtente_attivo(utente_attivo);
-                richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
-                richiestaPercorso.getResult();
-            }
-
-        }
-        if(beaconVecchio.getPiano() != beaconNuovo.getPiano()){
-            DAOPiano daoPiano = new DAOPiano(this);
-            daoPiano.open();
-            bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(beaconNuovo.getPiano())), this);
-            imageViewPiano.setImage(ImageSource.bitmap(bitmap));
-            daoPiano.close();
-        }
-        ArrayList<Integer> newPosition = daoBeacon.getCoordsByIdBeacon("26");
-        daoBeacon.close();
-        int coordxpartenza = newPosition.get(0);
-        int coordypartenza = newPosition.get(1);
-        PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
-        PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
-        imageViewPiano.setPin(newCoord);
-
-
-    }*/
 }

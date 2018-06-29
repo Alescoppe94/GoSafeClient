@@ -9,19 +9,16 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.alessandro.gosafe.entity.Utente;
-import com.example.alessandro.gosafe.firebase.MyFirebaseInstanceIdService;
 import com.example.alessandro.gosafe.server.Autenticazione;
 
 public class RegistrazioneActivity extends AppCompatActivity {
 
     private EditText mUsername;
     private EditText mPassword;
-    //private EditText mEmail;
     private EditText mNome;
     private EditText mCognome;
     private EditText mConfPassword;
     private EditText mIpAddress;
-    private Context ctx = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +28,6 @@ public class RegistrazioneActivity extends AppCompatActivity {
         mUsername.requestFocus();
         mPassword = (EditText) findViewById(R.id.password_reg);
         mConfPassword = (EditText) findViewById(R.id.confirmpassword_reg);
-        //mEmail = (EditText) findViewById(R.id.email);
         mNome = (EditText) findViewById(R.id.nome);
         mCognome = (EditText) findViewById(R.id.cognome);
         mIpAddress = (EditText) findViewById(R.id.ipaddress);
@@ -41,14 +37,12 @@ public class RegistrazioneActivity extends AppCompatActivity {
         final String username = mUsername.getText().toString();
         final String password = mPassword.getText().toString();
         final String confermaPassword = mConfPassword.getText().toString();
-        //final String email = mEmail.getText().toString();
         final String nome = mNome.getText().toString();
         final String cognome = mCognome.getText().toString();
 
         mUsername.setError(null);
         mPassword.setError(null);
         mConfPassword.setError(null);
-        //mEmail.setError(null);
         mNome.setError(null);
         mCognome.setError(null);
 
@@ -85,16 +79,6 @@ public class RegistrazioneActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        /*if (TextUtils.isEmpty(email)) {
-            mEmail.setError(getString(R.string.error_field_required));
-            focusView = mEmail;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmail.setError(getString(R.string.error_invalid_email));
-            focusView = mEmail;
-            cancel = true;
-        }*/
-
         if (TextUtils.isEmpty(nome)) {
             mNome.setError(getString(R.string.error_field_required));
             focusView = mNome;
@@ -125,17 +109,12 @@ public class RegistrazioneActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isEmailValid(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
     public void resetForm(View v) {
         mUsername.setText("");
         mPassword.setText("");
         mConfPassword.setText("");
         mNome.setText("");
         mCognome.setText("");
-        //mEmail.setText("");
     }
 
 }

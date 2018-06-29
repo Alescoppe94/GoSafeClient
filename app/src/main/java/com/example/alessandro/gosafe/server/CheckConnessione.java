@@ -45,10 +45,6 @@ public class CheckConnessione{
             this.ctx = ctx;
         }
 
-        @Override
-        protected void onPreExecute() {
-
-        }
 
         @Override
         protected Boolean doInBackground(Void... arg0) {
@@ -67,15 +63,6 @@ public class CheckConnessione{
             }
         }
 
-        @Override
-        protected void onProgressUpdate(Void... arg0) {
-
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-
-        }
     }
 
 }

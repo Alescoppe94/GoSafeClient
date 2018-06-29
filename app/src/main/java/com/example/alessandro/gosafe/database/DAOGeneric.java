@@ -12,20 +12,14 @@ import android.util.Base64;
 import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 import com.example.alessandro.gosafe.entity.Tronco;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
-/**
- * Created by Alessandro on 13/04/2018.
- */
 
 public class DAOGeneric{
 
@@ -43,7 +37,6 @@ public class DAOGeneric{
         try {
             db=dbhelper.getWritableDatabase();
         } catch (Exception e) {
-            //gestire eccezioni
             e.printStackTrace();
         }
         return this;
@@ -119,7 +112,12 @@ public class DAOGeneric{
         }
     }
 
-    private String saveToInternalStorage(Bitmap bitmapImage, int numeroPiano){
+    /**
+     * Questa funziona
+     * @param bitmapImage  una cosa
+     * @param numeroPiano  un'altra cosa
+     */
+    private void saveToInternalStorage(Bitmap bitmapImage, int numeroPiano){
         ContextWrapper cw = new ContextWrapper(ctx);
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
@@ -140,7 +138,6 @@ public class DAOGeneric{
                 e.printStackTrace();
             }
         }
-        return directory.getAbsolutePath();
     }
 
 }

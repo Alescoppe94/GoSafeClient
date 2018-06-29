@@ -52,7 +52,6 @@ public class DAOUtente {
         try {
             db=dbhelper.getWritableDatabase();
         } catch (Exception e) {
-            //gestire eccezioni
             e.printStackTrace();
         }
         return this;
@@ -99,80 +98,27 @@ public class DAOUtente {
         catch (SQLiteException sqle)
         {
             sqle.printStackTrace();
-            // Gestione delle eccezioni
             return false;
         }
-    }
-
-
-    //controllare bene
-    public boolean delete(Utente utente)
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + utente.getId_utente(), null)>0;
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            sqle.printStackTrace();
-            // Gestione delle eccezioni
-            return false;
-        }
-
     }
 
     public boolean deleteAll()
     {
         try
         {
-            boolean del = db.delete(TBL_NAME,null,null)>0;
-            System.out.println(TBL_NAME);
-            return del;
+            return db.delete(TBL_NAME,null,null)>0;
         }
         catch (SQLiteException sqle)
         {
             sqle.printStackTrace();
-            // Gestione delle eccezioni
             return false;
 
         }
     }
 
-    public Utente findByID(long id_utente)
-    {
-        Cursor crs;
-        Utente utente=null;
-        try
-        {
-            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_utente,null,null,null,null);
-            while(crs.moveToNext())
-            {
-                utente = new Utente(
-                        crs.getString(crs.getColumnIndex(FIELD_USER)),
-                        crs.getString(crs.getColumnIndex(FIELD_PASS)),
-                        crs.getString(crs.getColumnIndex(FIELD_NOME)),
-                        crs.getString(crs.getColumnIndex(FIELD_COGNOME)),
-                        crs.getString(crs.getColumnIndex(FIELD_BEACONID)),
-                        crs.getInt(crs.getColumnIndex(FIELD_PERCORSOID)),
-                        false,
-                        crs.getString(crs.getColumnIndex(FIELD_TOKEN)));
-            }
-            crs.close();
-        }
-        catch(SQLiteException sqle)
-        {
-            sqle.printStackTrace();
-            return null;
-        }
-
-        return utente;
-    }
-
     public Utente findUtente(){
         Utente utente = null;
         Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
-        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
         if (cursor.moveToFirst()) {
 
             utente = new Utente(
@@ -193,86 +139,16 @@ public class DAOUtente {
 
     public boolean update(Utente utente)
     {
-        /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
-        String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
         ContentValues updateValues = createContentValues(utente);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + utente.getId_utente(), null)>0;
-            return upd;
+            return db.update(TBL_NAME, updateValues, FIELD_ID + "=" + utente.getId_utente(), null)>0;
         }
         catch (SQLiteException sqle)
         {
             sqle.printStackTrace();
-            // Gestione delle eccezioni
             return false;
         }
     }
-
-    public Utente getUserByUsername(String username) {
-        Utente utente = null;
-        Cursor  cursor = db.query(TBL_NAME, FIELD_ALL, FIELD_USER+" = '" + username + "'",null,null,null,null);
-        if (cursor.moveToFirst()) {
-
-            utente = new Utente(
-                    cursor.getLong(cursor.getColumnIndex(FIELD_ID)),
-                    cursor.getString(cursor.getColumnIndex(FIELD_USER)),
-                    cursor.getString(cursor.getColumnIndex(FIELD_PASS)),
-                    cursor.getString(cursor.getColumnIndex(FIELD_NOME)),
-                    cursor.getString(cursor.getColumnIndex(FIELD_COGNOME)),
-                    cursor.getString(cursor.getColumnIndex(FIELD_BEACONID)),
-                    cursor.getInt(cursor.getColumnIndex(FIELD_PERCORSOID)),
-                    true,
-                    cursor.getString(cursor.getColumnIndex(FIELD_TOKEN)),
-                    cursor.getString(cursor.getColumnIndex(FIELD_IDSESSIONE)));
-        }
-        cursor.close();
-        return utente;
-    }
-
-   /* public Utente findByUsername(String username)
-    {
-        Cursor crs;
-        Utente utente=null;
-        try
-        {
-            crs=db.query(true, TBL_NAME, FIELD_ALL, FIELD_USER+" like '"+username+"'",null,null,null,null,null);
-            while(crs.moveToNext())
-            {
-                utente = new Utente(
-                        crs.getString(crs.getColumnIndex(FIELD_USER)),
-                        crs.getString(crs.getColumnIndex(FIELD_PASS)),
-                        crs.getString(crs.getColumnIndex(FIELD_NOME)),
-                        crs.getString(crs.getColumnIndex(FIELD_COGNOME)),
-                        crs.getInt(crs.getColumnIndex(FIELD_BEACONID)),
-                        crs.getInt(crs.getColumnIndex(FIELD_PERCORSOID)),
-                        false,
-                        crs.getString(crs.getColumnIndex(FIELD_TOKEN)));
-            }
-            crs.close();
-        }
-        catch(SQLiteException sqle)
-        {
-            return null;
-        }
-
-        return utente;
-    }
-    */
-
-    /*public Cursor findAll()
-    {
-        Cursor crs;
-        try
-        {
-            crs=db.query(TBL_NAME, FIELD_ALL, null, null, null, null, null);
-        }
-        catch(SQLiteException sqle)
-        {
-            return null;
-        }
-        return crs;
-    }
-*/
 
 }

@@ -1,6 +1,5 @@
 package com.example.alessandro.gosafe.server;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -13,42 +12,28 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 
 import com.example.alessandro.gosafe.EmergenzaActivity;
 import com.example.alessandro.gosafe.LoginActivity;
 import com.example.alessandro.gosafe.ProfiloActivity;
 import com.example.alessandro.gosafe.R;
-import com.example.alessandro.gosafe.UserSessionManager;
+import com.example.alessandro.gosafe.helpers.UserSessionManager;
 import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.beacon.BluetoothLeService;
-import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
-
-/**
- * Created by Alessandro on 16/03/2018.
- */
 
 public class Autenticazione {
 
@@ -60,22 +45,20 @@ public class Autenticazione {
         this.utente_attivo = utente_attivo;
     }
 
-    public void registrazioneUtente(Context ctx/*, String token*/) {
+    public void registrazioneUtente(Context ctx) {
         session = new UserSessionManager(ctx);
-        new registrazioneUtenteTask(utente_attivo, ctx/*, token*/).execute();
+        new registrazioneUtenteTask(utente_attivo, ctx).execute();
     }
 
     private class registrazioneUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
         private Context ctx;
-        //private String token;
         private ProgressDialog registrazione_in_corso;
         private boolean connesso;
 
-        public registrazioneUtenteTask(Utente utente, Context ctx/*, String token*/) {
+        public registrazioneUtenteTask(Utente utente, Context ctx) {
             this.utente = utente;
             this.ctx = ctx;
-            //this.token = token;
         }
 
         @Override
@@ -97,11 +80,6 @@ public class Autenticazione {
             if (!connesso) {
                 return null;
             } else {
-                try {
-                    Thread.sleep(1500);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
                 Gson gson = new Gson();
                 String dati_reg = gson.toJson(utente);
@@ -191,7 +169,6 @@ public class Autenticazione {
                 JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
                 long id_utente = jobj.get("id_utente").getAsLong();
                 String idsessione = jobj.get("idsessione").getAsString();
-                //new registrazioneTokenTask(token, id_utente).execute();
 
                 final boolean emergenza = jobj.get("emergenza").getAsBoolean();
                 SharedPreferences.Editor editor = ctx.getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
@@ -237,22 +214,20 @@ public class Autenticazione {
     }
 
 
-    public void autenticazioneUtente(Context ctx/*, String token*/) {
+    public void autenticazioneUtente(Context ctx) {
         session = new UserSessionManager(ctx);
-        new autenticazioneUtenteTask(utente_attivo, ctx/*, token*/).execute();
+        new autenticazioneUtenteTask(utente_attivo, ctx).execute();
     }
 
     private class autenticazioneUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
         private Context ctx;
-        /*private String token;*/
         private ProgressDialog login_in_corso;
         private boolean connesso;
 
-        public autenticazioneUtenteTask(Utente utente, Context ctx/*, String token*/) {
+        public autenticazioneUtenteTask(Utente utente, Context ctx) {
             this.utente = utente;
             this.ctx = ctx;
-            /*this.token = token;*/
         }
 
         @Override
@@ -277,13 +252,6 @@ public class Autenticazione {
             if (!connesso) {
                 return null;
             } else {
-                if (ctx instanceof LoginActivity) {
-                    try {
-                        Thread.sleep(1500);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
 
                 Gson gson = new Gson();
                 String dati_login = gson.toJson(utente);
@@ -299,8 +267,6 @@ public class Autenticazione {
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/json");
                     connection.setRequestProperty("Accept", "application/json");
-                    //connection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-                    //connection.setRequestProperty("Accept","*/*");
                     connection.connect();
 
                     OutputStream os = connection.getOutputStream();
@@ -398,9 +364,6 @@ public class Autenticazione {
                     SharedPreferences.Editor editor = ctx.getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
                     editor.putBoolean("emergenza", emergenza);
                     editor.apply();
-                /*if (token != null) {
-                    new registrazioneTokenTask(token, id_utente).execute();
-                }*/
 
                     utente.setId_utente(id_utente);
                     utente.setUsername(username);
@@ -411,7 +374,6 @@ public class Autenticazione {
                     utente.setIdsessione(idsessione);
                     utente.setIs_autenticato(true);
                     utente.registrazioneLocale(ctx);
-                    //utente.loginLocale(ctx, true);
                     session.createUserLoginSession("User Session", utente.getUsername());
 
                     DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
@@ -438,21 +400,19 @@ public class Autenticazione {
         }
     }
 
-    public void updateUtente(Context ctx/*, String token*/) {
-        new UpdateUtenteTask(utente_attivo, ctx/*, token*/).execute();
+    public void updateUtente(Context ctx) {
+        new UpdateUtenteTask(utente_attivo, ctx).execute();
     }
 
     private class UpdateUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
         private Context ctx;
-        //private String token;
         private ProgressDialog update_in_corso;
         private boolean connesso;
 
-        public UpdateUtenteTask(Utente utente, Context ctx/*, String token*/) {
+        public UpdateUtenteTask(Utente utente, Context ctx) {
             this.utente = utente;
             this.ctx = ctx;
-            //this.token = token;
         }
 
         @Override
@@ -474,11 +434,6 @@ public class Autenticazione {
             if (!connesso) {
                 return null;
             } else {
-                try {
-                    Thread.sleep(1500);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
                 Gson gson = new Gson();
                 String dati_reg = gson.toJson(utente);
@@ -575,9 +530,6 @@ public class Autenticazione {
                 } else {
                     JsonObject jobj = new Gson().fromJson(result, JsonObject.class);
                     String successo = jobj.get("esito").getAsString();
-                    //new registrazioneTokenTask(token, id_utente).execute();*/
-
-                    Log.d("caione", successo);
 
                     if (successo.equals("success")) {
                         DAOUtente daoutente = new DAOUtente(ctx);
@@ -607,7 +559,6 @@ public class Autenticazione {
 
         private Utente utente;
         private Context ctx;
-        private ProgressDialog logout_in_corso;
         private boolean connesso;
 
         public LogoutUtenteTask(Utente utente, Context ctx) {
@@ -704,10 +655,6 @@ public class Autenticazione {
                 daoUtente.open();
                 daoUtente.deleteAll();
                 daoUtente.close();
-                /*Intent i;
-                i = new Intent(ctx, LoginActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                ctx.startActivity(i); */
                 session.logOutUser();
             }
         }

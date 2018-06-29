@@ -1,25 +1,26 @@
-package com.example.alessandro.gosafe;
+package com.example.alessandro.gosafe.helpers;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.example.alessandro.gosafe.EmergenzaActivity;
+import com.example.alessandro.gosafe.LoginActivity;
+import com.example.alessandro.gosafe.VaiActivity;
+
 import java.util.HashMap;
 
-/**
- * Created by Luca on 30/05/18.
- */
 
 public class UserSessionManager {
 
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
-    Context _context;
-    int PRIVATE_MODE = 0;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private Context _context;
+    private int PRIVATE_MODE = 0;
     private static final String PREFER_NAME = "AndroidExamplePref";
     private static final String IS_USER_LOGIN = "IsUserLoggedIn";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_USERNAME = "username";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_USERNAME = "username";
 
     public UserSessionManager(Context context){
         this._context=context;
@@ -56,13 +57,6 @@ public class UserSessionManager {
         }
     }
 
-    public HashMap<String, String> getUserDetails(){
-        HashMap<String, String> user = new HashMap<>();
-        user.put(KEY_NAME, pref.getString(KEY_NAME, null));
-        user.put(KEY_USERNAME, pref.getString(KEY_USERNAME, null));
-        return user;
-    }
-
     public void logOutUser(){
         editor.clear();
         editor.commit();
@@ -72,7 +66,7 @@ public class UserSessionManager {
         _context.startActivity(i);
     }
 
-    public boolean isUserLoggedIn(){
+    private boolean isUserLoggedIn(){
         return pref.getBoolean(IS_USER_LOGIN, false);
     }
 

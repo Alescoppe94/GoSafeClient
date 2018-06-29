@@ -1,73 +1,43 @@
 package com.example.alessandro.gosafe;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.FloatMath;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOPiano;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Beacon;
-import com.example.alessandro.gosafe.entity.Piano;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.ImageLoader;
 import com.example.alessandro.gosafe.helpers.PinView;
-import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
-import com.example.alessandro.gosafe.server.DbDownloadFirstBoot;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.sql.Time;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class VaiActivity extends DefaultActivity {
 
-    //private PointF newCoord;
     private boolean load = true;
     private boolean drawn = false;
     float distance;
@@ -76,9 +46,6 @@ public class VaiActivity extends DefaultActivity {
 
     /*roba per menu a tendina*/
     Spinner spinner;
-    private PinView pinView;
-    int x;
-    int y;
     Beacon beaconD;
     int position;
 
@@ -130,7 +97,6 @@ public class VaiActivity extends DefaultActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_LONG).show();
                 changedPiano(adapterView, i);
             }
 
@@ -163,7 +129,6 @@ public class VaiActivity extends DefaultActivity {
                             int coordxpartenza = xcoordandycoord.get(0);
                             int coordypartenza = xcoordandycoord.get(1);
                             PointF mCoord = imageViewPiano.sourceToViewCoord((float) coordxpartenza, (float) coordypartenza);
-                            PointF newCoord = imageViewPiano.viewToSourceCoord(mCoord.x, mCoord.y);
                         }
                         load = false;
                     }
@@ -171,7 +136,6 @@ public class VaiActivity extends DefaultActivity {
                     //BEACON DI DESTINAZIONE
                     Cursor cursor;
                     cursor = daoBeacon.getAllBeaconInPiano(position);
-                    Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
 
                     //Calcola il beacon di destinazione + vicino rispetto al click dell'utente
                     while (cursor.moveToNext()){
@@ -181,7 +145,7 @@ public class VaiActivity extends DefaultActivity {
                         System.out.println("Distanza: " +distance);
                         if (distance < temp){
                             temp=distance;
-                            idbeacondestinazione=cursor.getString(cursor.getColumnIndex("ID_beacon"));  //da sostituire int con string
+                            idbeacondestinazione=cursor.getString(cursor.getColumnIndex("ID_beacon"));
                         }
                     }
                     beaconD = daoBeacon.getBeaconById(idbeacondestinazione);
@@ -221,7 +185,6 @@ public class VaiActivity extends DefaultActivity {
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            final String action = intent.getAction();
             String idBeacon = intent.getStringExtra("device");
             user.setBeaconid(idBeacon);
             Toast.makeText(getApplicationContext(), idBeacon, Toast.LENGTH_LONG).show();
@@ -358,8 +321,6 @@ public class VaiActivity extends DefaultActivity {
             imageViewPiano.setPianoUtente(false);
         }
         if(drawn){
-            //cancella vecchio percorso
-            //chiama richiestapercorso
             richiestaPercorso.cambiaPiano(imageViewPiano, position);
             imageViewPiano.setPianoSpinner(position);
         }

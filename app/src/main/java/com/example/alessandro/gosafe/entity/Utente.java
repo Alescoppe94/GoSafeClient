@@ -23,7 +23,6 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     private boolean is_autenticato;//true solo quando l'utente è autenticato sul server
     private String token;
     private String idsessione;
-    //private String email;
 
     public Utente(String username, String password){
 
@@ -33,10 +32,9 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
 
     }
 
-    public Utente(String username, String password, /*String email,*/ String nome, String cognome, boolean is_autenticato) {
+    public Utente(String username, String password, String nome, String cognome, boolean is_autenticato) {
         this.username = username;
         this.password = password;
-        //this.email = email;
         this.nome = nome;
         this.cognome = cognome;
         this.is_autenticato = is_autenticato;
@@ -79,16 +77,8 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
         return percorsoid;
     }
 
-    public void setPercorsoid(int percorsoid) {
-        this.percorsoid = percorsoid;
-    }
-
     public String getToken() {
         return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public void setId_utente(long id){
@@ -158,11 +148,6 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     public void setIdsessione(String idsessione) {
         this.idsessione = idsessione;
     }
-
-
-    //public void setId_utente(long id){this.id_utente= id;}
-
-    //public void setIs_autenticato(Boolean autenticato){this.is_autenticato= autenticato;}
 
     public void registrazioneLocale(Context ctx) {
         DAOUtente u = new DAOUtente(ctx);

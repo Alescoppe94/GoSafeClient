@@ -7,16 +7,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Piano;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-/**
- * Created by Alessandro on 04/05/2018.
- */
 
 public class DAOPiano {
 
@@ -45,7 +39,6 @@ public class DAOPiano {
         try {
             db=dbhelper.getWritableDatabase();
         } catch (Exception e) {
-            //gestire eccezioni
             e.printStackTrace();
         }
         return this;
@@ -89,46 +82,12 @@ public class DAOPiano {
         }
     }
 
-    public boolean delete(Piano piano)
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + piano.getId(), null)>0;
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            sqle.printStackTrace();
-            return false;
-        }
-
-    }
-
-    public boolean deleteAll()
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME,null,null)>0;
-            System.out.println(TBL_NAME);
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            sqle.printStackTrace();
-            return false;
-
-        }
-    }
-
     public boolean update(Piano piano)
     {
-        /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
-        String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
         ContentValues updateValues = createContentValues(piano);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + piano.getId(), null)>0;
-            return upd;
+            return db.update(TBL_NAME, updateValues, FIELD_ID + "=" + piano.getId(), null)>0;
         }
         catch (SQLiteException sqle)
         {
@@ -165,9 +124,6 @@ public class DAOPiano {
             crs = db.query(TBL_NAME, FIELD_ALL, null,null,null,null,null);
             while(crs.moveToNext())
             {
-               //new Piano(
-                 //       crs.getInt(crs.getColumnIndex(FIELD_ID)),
-               //piani.add(crs.getString(crs.getColumnIndex(FIELD_IMMAGINE)),
                 piani.add("Piano " + crs.getInt(crs.getColumnIndex(FIELD_PIANO)));
             }
             crs.close();

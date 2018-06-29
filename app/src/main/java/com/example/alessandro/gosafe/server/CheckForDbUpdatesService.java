@@ -5,13 +5,11 @@ import android.content.Intent;
 import java.text.SimpleDateFormat;
 
 import android.content.SharedPreferences;
-import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
-import android.util.Log;
 
 import com.example.alessandro.gosafe.database.*;
 import com.example.alessandro.gosafe.entity.Beacon;
@@ -27,17 +25,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-/**
- * Created by Alessandro on 03/05/2018.
- */
 
 public class CheckForDbUpdatesService extends Service {
 
@@ -74,7 +66,6 @@ public class CheckForDbUpdatesService extends Service {
 
     @Override
     public void onDestroy() {
-        //stopSelf();
         super.onDestroy();
         timertask.cancel();
         timer.cancel();
@@ -90,7 +81,6 @@ public class CheckForDbUpdatesService extends Service {
         if(connesso) {
 
             String result = null;
-            File dbpath = getApplicationContext().getDatabasePath("gosafe.db");
             SharedPreferences prefs = getSharedPreferences("dblastupdate", MODE_PRIVATE);
             if (prefs != null) {
                 long lastModified = prefs.getLong("last_update", 0);
@@ -118,14 +108,6 @@ public class CheckForDbUpdatesService extends Service {
                         if (400 > responseCode || responseCode >= 500) {
 
                             StringBuilder sb = new StringBuilder();
-                    /*StringBuilder sbe = new StringBuilder();
-                    BufferedReader bre = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
-                    String inputeLine;
-                    while ((inputeLine = bre.readLine()) != null) {
-                        sbe.append(inputeLine + "\n");
-                    }
-                    System.out.println(sbe.toString());
-                    bre.close();*/
                             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                             String inputLine;
 

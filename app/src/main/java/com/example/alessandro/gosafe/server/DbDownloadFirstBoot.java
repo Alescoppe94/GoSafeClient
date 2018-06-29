@@ -1,12 +1,10 @@
 package com.example.alessandro.gosafe.server;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 
-import com.example.alessandro.gosafe.R;
 import com.example.alessandro.gosafe.database.DAOGeneric;
 import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
@@ -16,17 +14,12 @@ import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * Created by Alessandro on 16/05/2018.
- */
 
 public class DbDownloadFirstBoot {
 

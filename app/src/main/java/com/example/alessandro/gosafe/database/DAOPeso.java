@@ -7,12 +7,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-import com.example.alessandro.gosafe.entity.Piano;
-
-/**
- * Created by Alessandro on 04/05/2018.
- */
-
 public class DAOPeso {
 
     private DBHelper dbhelper;
@@ -40,7 +34,6 @@ public class DAOPeso {
         try {
             db=dbhelper.getWritableDatabase();
         } catch (Exception e) {
-            //gestire eccezioni
             e.printStackTrace();
         }
         return this;
@@ -56,7 +49,7 @@ public class DAOPeso {
         ContentValues cv=new ContentValues();
         cv.put(FIELD_ID, idPeso);
         cv.put(FIELD_NOME, nome);
-        cv.put(FIELD_COEFFICIENTE, coeff); // qua ovviamente è da cambiare. Nel beacon per ora il piano è una entità e non un id
+        cv.put(FIELD_COEFFICIENTE, coeff);
         return cv;
     }
 
@@ -78,55 +71,22 @@ public class DAOPeso {
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
     }
 
-    public boolean delete(int idPeso)
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + idPeso, null)>0;
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            // Gestione delle eccezioni
-            return false;
-        }
-
-    }
-
-    public boolean deleteAll()
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME,null,null)>0;
-            System.out.println(TBL_NAME);
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            // Gestione delle eccezioni
-            return false;
-
-        }
-    }
 
     public boolean update(int idPeso, String nome, float coeff)
     {
-        /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
-        String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
         ContentValues updateValues = createContentValues(idPeso, nome, coeff);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + idPeso, null)>0;
-            return upd;
+            return db.update(TBL_NAME, updateValues, FIELD_ID + "=" + idPeso, null)>0;
         }
         catch (SQLiteException sqle)
         {
-            // Gestione delle eccezioni
+            sqle.printStackTrace();
             return false;
         }
     }

@@ -6,10 +6,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-/**
- * Created by Luca on 12/04/18.
- */
-
 public abstract class DefaultActivity extends AppCompatActivity {
 
 

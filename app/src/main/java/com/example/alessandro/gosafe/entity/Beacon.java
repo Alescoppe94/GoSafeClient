@@ -1,9 +1,5 @@
 package com.example.alessandro.gosafe.entity;
 
-/**
- * Created by Alessandro on 12/04/2018.
- */
-
 public class Beacon {
 
     private String id;
@@ -36,31 +32,15 @@ public class Beacon {
         return is_puntodiraccolta;
     }
 
-    public void setIs_puntodiraccolta(boolean is_puntodiraccolta) {
-        this.is_puntodiraccolta = is_puntodiraccolta;
-    }
-
     public int getPiano() {
         return piano;
-    }
-
-    public void setPiano(int piano) {
-        this.piano = piano;
     }
 
     public int getCoordx() {
         return coordx;
     }
 
-    public void setCoordx(int coordx) {
-        this.coordx = coordx;
-    }
-
     public int getCoordy() {
         return coordy;
-    }
-
-    public void setCoordy(int coordy) {
-        this.coordy = coordy;
     }
 }

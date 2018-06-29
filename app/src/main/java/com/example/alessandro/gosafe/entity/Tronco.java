@@ -8,10 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Created by Alessandro on 12/04/2018.
- */
-
 public class Tronco {
 
     private int id;
@@ -38,24 +34,12 @@ public class Tronco {
         return agibile;
     }
 
-    public void setAgibile(boolean agibile) {
-        this.agibile = agibile;
-    }
-
     public ArrayList<Beacon> getBeaconEstremi() {
         return beaconEstremi;
     }
 
-    public void setBeaconEstremi(ArrayList<Beacon> beaconEstremi) {
-        this.beaconEstremi = beaconEstremi;
-    }
-
     public float getArea() {
         return area;
-    }
-
-    public void setArea(float area) {
-        this.area = area;
     }
 
     public float calcolaCosto(Context ctx){

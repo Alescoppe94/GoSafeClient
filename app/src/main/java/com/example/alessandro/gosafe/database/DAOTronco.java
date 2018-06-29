@@ -12,10 +12,6 @@ import com.example.alessandro.gosafe.entity.Tronco;
 
 import java.util.*;
 
-/**
- * Created by Alessandro on 13/04/2018.
- */
-
 public class DAOTronco {
 
     private DBHelper dbhelper;
@@ -47,7 +43,6 @@ public class DAOTronco {
         try {
             db=dbhelper.getWritableDatabase();
         } catch (Exception e) {
-            //gestire eccezioni
             e.printStackTrace();
         }
         return this;
@@ -93,75 +88,12 @@ public class DAOTronco {
         return false;
     }
 
-    public boolean delete(Tronco tronco)
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME, FIELD_ID + "=" + tronco.getId(), null)>0;
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            sqle.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean deleteAll()
-    {
-        try
-        {
-            boolean del = db.delete(TBL_NAME,null,null)>0;
-            System.out.println(TBL_NAME);
-            return del;
-        }
-        catch (SQLiteException sqle)
-        {
-            sqle.printStackTrace();
-
-        }
-        return false;
-    }
-
-    public Tronco getTroncoByID(long id_tronco)
-    {
-        Cursor crs;
-        Tronco tronco=null;
-        DAOBeacon daoBeacon = new DAOBeacon(ctx);
-        ArrayList<Beacon> estremiTronco = new ArrayList<>();
-        estremiTronco.add(daoBeacon.getBeaconById(FIELD_BEACONAID));
-        estremiTronco.add(daoBeacon.getBeaconById(FIELD_BEACONBID));
-        try
-        {
-            crs=db.query(TBL_NAME, FIELD_ALL, FIELD_ID+"="+id_tronco,null,null,null,null);
-            Boolean agibile = (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false;
-            while(crs.moveToNext())
-            {
-                tronco = new Tronco(
-                        crs.getInt(crs.getColumnIndex(FIELD_ID)),
-                        agibile,
-                        estremiTronco,
-                        crs.getInt(crs.getColumnIndex(FIELD_AREA)));
-            }
-            crs.close();
-        }
-        catch(SQLiteException sqle)
-        {
-            sqle.printStackTrace();
-        }
-
-        return tronco;
-    }
-
     public boolean update(Tronco tronco)
     {
-        /*Cursor crs = db.rawQuery("select * from " +TBL_NAME,null);
-        String id = crs.getString(crs.getColumnIndex(FIELD_ID));*/
         ContentValues updateValues = createContentValues(tronco);
         try
         {
-            boolean upd = db.update(TBL_NAME, updateValues, FIELD_ID + "=" + tronco.getId(), null)>0;
-            return upd;
+            return db.update(TBL_NAME, updateValues, FIELD_ID + "=" + tronco.getId(), null)>0;
         }
         catch (SQLiteException sqle)
         {
@@ -174,7 +106,6 @@ public class DAOTronco {
 
         Cursor crs;
         Tronco tronco=null;
-        DAOBeacon daoBeacon = new DAOBeacon(ctx);
         ArrayList<Beacon> estremiTronco = new ArrayList<>();
         estremiTronco.add(beaconA);
         estremiTronco.add(beaconB);
@@ -182,7 +113,7 @@ public class DAOTronco {
         {
             crs=db.query(TBL_NAME, FIELD_ALL, FIELD_BEACONAID+"='" + beaconA.getId() + "' AND " + FIELD_BEACONBID+"='" + beaconB.getId() + "' OR " + FIELD_BEACONAID+"='" + beaconB.getId() + "' AND " + FIELD_BEACONBID+"='" + beaconA.getId() +"'",null,null,null,null);
             crs.moveToFirst();
-            Boolean agibile = (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false;
+            Boolean agibile = crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1;
             tronco = new Tronco(
                     crs.getInt(crs.getColumnIndex(FIELD_ID)),
                     agibile,
@@ -236,12 +167,12 @@ public class DAOTronco {
                 beaconDAO.close();
                 Tronco troncoOrd = new Tronco(
                         crs.getInt(crs.getColumnIndex(FIELD_ID)),
-                        (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false,
+                        crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1,
                         estremiOrdinati,
                         crs.getInt(crs.getColumnIndex(FIELD_AREA)));
                 Tronco troncoInv = new Tronco(
                         crs.getInt(crs.getColumnIndex(FIELD_ID)),
-                        (crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1)? true : false,
+                        crs.getInt(crs.getColumnIndex(FIELD_AGIBILE)) == 1,
                         estremiInvertiti,
                         crs.getInt(crs.getColumnIndex(FIELD_AREA)));
                 allTronchiEdificio.add(troncoOrd);
@@ -251,6 +182,7 @@ public class DAOTronco {
         }
         catch(SQLiteException sqle)
         {
+            sqle.printStackTrace();
             return null;
         }
         return allTronchiEdificio;
