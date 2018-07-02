@@ -10,7 +10,10 @@ import com.example.alessandro.gosafe.VaiActivity;
 
 import java.util.HashMap;
 
-
+/**
+ * Classe che implementa la sessione dell'utente dell'applicazione, permettendo all'utente di rimanere loggato anche
+ * quando l'applicazione viene chiusa o messa in background o il cellulare viene spento.
+ */
 public class UserSessionManager {
 
     private SharedPreferences pref;

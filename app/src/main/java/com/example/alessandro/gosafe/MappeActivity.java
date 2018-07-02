@@ -23,6 +23,9 @@ import com.example.alessandro.gosafe.helpers.PinView;
 
 import java.util.ArrayList;
 
+/**
+ * Classe che implementa la possibilità di visualizzare le mappe.
+ */
 public class MappeActivity extends DefaultActivity{
 
     Spinner spinner;
@@ -32,6 +35,10 @@ public class MappeActivity extends DefaultActivity{
 
     private Bitmap bitmap;
 
+    /**
+     * Inizializza la classe MappeActivity e setta i metodi per la gesture detection.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

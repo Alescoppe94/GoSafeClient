@@ -6,6 +6,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+/**
+ * Classe astratta che implementa il listener per la barra di navigazione sul fondo dello schermo.
+ * Tutte le activity ereditano da questa classe.
+ */
 public abstract class DefaultActivity extends AppCompatActivity {
 
 

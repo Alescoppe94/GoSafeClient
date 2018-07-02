@@ -35,6 +35,9 @@ import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * Classe che implementa il calcolo del percorso in emergenza e non.
+ */
 public class RichiestaPercorso {
 
     private HttpURLConnection conn;
@@ -47,7 +50,10 @@ public class RichiestaPercorso {
     private ArrayList<Integer> coordEmergenza = new ArrayList<>();
     private AsyncTask<Void, Void, String> task;
 
-
+    /**
+     * Inizializza l'utente
+     * @param utente_attivo parametro che rappresenta l'utente connesso all'applicazione
+     */
     public RichiestaPercorso(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
     }
@@ -63,10 +69,18 @@ public class RichiestaPercorso {
         return null;
     }
 
+    /**
+     * Permette di settare l'utente connesso all'applicazione
+     * @param utente_attivo parametro che rappresenta l'utente che vogliamo settare come utente della'applicazione
+     */
     public void setUtente_attivo(Utente utente_attivo) {
         this.utente_attivo = utente_attivo;
     }
 
+    /**
+     * Restituisce il percorso calcolato in fase di emergenza
+     * @return ritorna un percorso sotto forma di lista di stringhe
+     */
     public ArrayList<String> getPercorsoEmer() {
         return percorsoEmer;
     }
@@ -104,11 +118,23 @@ public class RichiestaPercorso {
         }
     }
 
+    /**
+     * Calcola il percorso in fase di non emergenza
+     * @param ctx rappresenta il context dell'applicazione
+     * @param beaconArr rappresenta il beacon di destinazione
+     * @param imageViewPiano rappresenta la mappa di partenza
+     * @param posizione rappresenta la posizione di partenza
+     * @param spinner rappresenta il menù a tendina delle mappe
+     * @param user rappresenta l'utente connesso all'applicazione
+     */
     public void ottieniPercorsoNoEmergenza(Context ctx, String beaconArr, PinView imageViewPiano, int posizione, Spinner spinner, Utente user) {
         this.utente_attivo = user;
         new OttieniPercorsoNoEmergenzaTask(ctx,beaconArr, imageViewPiano, posizione, spinner).execute();
     }
 
+    /**
+     * Classe che implementa il calcolo del percorso in non emergenza
+     */
     private class OttieniPercorsoNoEmergenzaTask extends AsyncTask<Void, Void, String>{
 
         private final String beaconArr;
@@ -128,6 +154,9 @@ public class RichiestaPercorso {
             this.spinner = spinner;
         }
 
+        /**
+         * Verifica la connessione con il server
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -142,6 +171,11 @@ public class RichiestaPercorso {
 
         }
 
+        /**
+         * Effettua la richiesta del percorso al server
+         * @param voids
+         * @return
+         */
         @Override
         protected String doInBackground(Void... voids) {
 
@@ -197,14 +231,15 @@ public class RichiestaPercorso {
 
         }
 
+
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if(result==null){ //Se il server è giù...
+            if(result==null){ /*Se il server è down richiede il calcolo in locale.*/
                 percorsoPost = calcolaPercorsoNoEmergenza(ctx, beaconArr);
                 System.out.println("Percorso finale: "+percorsoPost);
-            } else { //Se il server risponde...
+            } else { /*Se il server è up setta il percorso così come viene restituito dal server*/
                 percorsoPost = new Gson().fromJson(result, Percorso.class);
                 System.out.println("Percorso finale: "+percorsoPost.getTappe());
 
@@ -213,8 +248,10 @@ public class RichiestaPercorso {
             DAOPiano daoPiano = new DAOPiano(ctx);
             daoPiano.open();
 
-            // Devo tradurre il Percorso percorsopost in Tappe poi in Tronchi poi in ArrayList<Integer> percorso
-            //1 8 8 4 4 5
+            /*Viene costruito il percorso finale in un formato adatto al disegno sulla mappa:
+            * - Vengono salvate le coordinate x e y e il rispettivo piano di tutti i beacon del percorso, in sequenza
+            * - Viene caricata la mappa apposita e si setta lo spinner in modo da aggiornare il menù a tendina delle mappe
+            * - Viene lanciato il disegno del percorso sulla mappa*/
             percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getCoordx());
             percorso.add(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getCoordy());
             percorso.add(daoPiano.getNumeroPianoById(percorsoPost.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getPiano()));
@@ -225,10 +262,10 @@ public class RichiestaPercorso {
                 percorso.add(daoPiano.getNumeroPianoById(tappa.getTronco().getBeaconEstremi().get(0).getPiano()));
 
             }
-            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getCoordx());            //1 8 8 4 4 5 ->
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getCoordx());
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getCoordy());
             percorso.add(daoPiano.getNumeroPianoById(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(0).getPiano()));
-            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordx());            //1 8 8 4 4 5 ->
+            percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordx());
             percorso.add(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getCoordy());
             percorso.add(daoPiano.getNumeroPianoById(percorsoPost.getTappe().get(percorsoPost.getTappe().size()-1).getTronco().getBeaconEstremi().get(1).getPiano()));
 
@@ -259,6 +296,11 @@ public class RichiestaPercorso {
         }
     }
 
+    /**
+     * Classe che visualizza il percorso
+     * @param ctx contesto dell'applicazione
+     * @param imageViewPiano mappa del piano di partenza del percorso
+     */
     public void visualizzaPercorso(Context ctx, PinView imageViewPiano) { task = new VisualizzaPercorsoTask(ctx, imageViewPiano).execute(); }
 
     private class VisualizzaPercorsoTask extends AsyncTask<Void,Void,String> {

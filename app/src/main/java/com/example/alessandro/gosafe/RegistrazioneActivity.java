@@ -11,6 +11,9 @@ import android.widget.EditText;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.Autenticazione;
 
+/**
+ * Classe che implementa la funzionalità di registrazione degli utenti
+ */
 public class RegistrazioneActivity extends AppCompatActivity {
 
     private EditText mUsername;
@@ -20,6 +23,10 @@ public class RegistrazioneActivity extends AppCompatActivity {
     private EditText mConfPassword;
     private EditText mIpAddress;
 
+    /**
+     * Inizializzazione della classe
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +40,10 @@ public class RegistrazioneActivity extends AppCompatActivity {
         mIpAddress = (EditText) findViewById(R.id.ipaddress);
     }
 
+    /**
+     * Esecuzione della registrazione dell'utente
+     * @param v
+     */
     public void registrazione(View v) {
         final String username = mUsername.getText().toString();
         final String password = mPassword.getText().toString();
@@ -49,6 +60,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
+        /*Verifica dell'obbliglatorietà dei campi richiesti*/
         if (TextUtils.isEmpty(username)) {
             mUsername.setError(getString(R.string.error_field_required));
             focusView = mUsername;
@@ -109,6 +121,10 @@ public class RegistrazioneActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Resetta la form di registrazione.
+     * @param v
+     */
     public void resetForm(View v) {
         mUsername.setText("");
         mPassword.setText("");

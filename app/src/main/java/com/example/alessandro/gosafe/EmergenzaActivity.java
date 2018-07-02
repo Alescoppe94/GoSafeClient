@@ -25,6 +25,9 @@ import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 import java.util.ArrayList;
 
+/**
+ * Classe che implementa la scgermata di emergenza
+ */
 public class EmergenzaActivity extends DefaultActivity {
 
     private PinView imageViewPiano;
@@ -34,6 +37,10 @@ public class EmergenzaActivity extends DefaultActivity {
     private RichiestaPercorso richiestaPercorso;
     private ArrayList<String> percorsoEmer;
 
+    /**
+     * Inizializza la classe di EmergenzaActivity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

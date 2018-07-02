@@ -22,6 +22,9 @@ import android.widget.TextView;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.Autenticazione;
 
+/**
+ * Classe che implementa la form di login.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText mUsernameView;
@@ -31,6 +34,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
+    /**
+     * Inizializza la classe di login
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,13 +91,16 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
+        /*Consente di mantenere la connessione anche dopo aver messo l'applicazione in background*/
         SharedPreferences.Editor editor = this.getSharedPreferences("isConnesso", this.MODE_PRIVATE).edit();
         editor.putBoolean("connesso", false);
         editor.apply();
 
     }
 
+    /**
+     * Prova a effettuare il login dell'utente sul server
+     */
     private void attemptLogin() {
 
         mUsernameView.setError(null);
@@ -102,14 +112,14 @@ public class LoginActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
+        /*Controlla se la password è valida e se l'utente ne ha inserita una.*/
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
-        // Check for a valid email address.
+        /*Controlla la validità dello username*/
         if (TextUtils.isEmpty(username)) {
             mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
@@ -136,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /*Verifica che la password sia più lunga di 2 caratteri*/
     private boolean isPasswordValid(String password) {
         return password.length() > 2;
     }

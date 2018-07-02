@@ -10,7 +10,9 @@ import com.example.alessandro.gosafe.database.DAOUtente;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.Autenticazione;
 
-
+/**
+ * Classe che implementa la form di modifica del profilo
+ */
 public class ModificaActivity extends DefaultActivity {
 
     private EditText modificaNomeText;
@@ -22,6 +24,10 @@ public class ModificaActivity extends DefaultActivity {
     DAOUtente daoUtente = new DAOUtente(this);
     Utente utente;
 
+    /**
+     * Inizializza la classe di modifica del profilo
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,11 @@ public class ModificaActivity extends DefaultActivity {
 
     }
 
+    /**
+     * Controlla che le modifiche effettuate siano consistenti e, in caso positivo, aggiorna il DB lato
+     * client e server.
+     * @param view
+     */
    public void confermaModifica (View view){
 
         final long id = id_utente;
@@ -123,6 +134,10 @@ public class ModificaActivity extends DefaultActivity {
 
     }
 
+    /**
+     * Annulla le modifiche effettuate e non ancora confermate.
+     * @param v
+     */
     public void annullamodifica(View v){
         passwordText.setText(utente.getPassword());
         confermaPasswordText.setText(utente.getPassword());

@@ -14,6 +14,9 @@ import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.Autenticazione;
 import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 
+/**
+ * Classe che implementa la scermata del profilo dell'utente
+ */
 public class ProfiloActivity extends DefaultActivity  {
 
     private TextView mTextMessage;
@@ -22,7 +25,10 @@ public class ProfiloActivity extends DefaultActivity  {
 
     public static final int PICK_IMAGE = 1;
 
-
+    /**
+     * Inizializza la classe ProfiloActivity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,20 +49,20 @@ public class ProfiloActivity extends DefaultActivity  {
         nomeCognome.setText(utente.getNome()+" "+utente.getCognome());
         username.setText(utente.getUsername());
 
-        /*Roba per settare icona nel bottomNavigationView*/
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
 
     }
 
-
+    /*Consente di passare alla form di modifca del profilo*/
     public void goToModificaProfilo(View view){
         Intent i;
         i = new Intent(getApplicationContext(), ModificaActivity.class);
         startActivity(i);
     }
 
+    /*Esegue il logout dell'utente*/
     public void logout (View view){
         DAOUtente daoutente = new DAOUtente(this);
         daoutente.open();

@@ -36,6 +36,9 @@ import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 import java.util.ArrayList;
 
+/**
+ * Classe di navigazione è la prima ad essere caricata dopo il login.
+ */
 public class VaiActivity extends DefaultActivity {
 
     private boolean load = true;
@@ -57,6 +60,11 @@ public class VaiActivity extends DefaultActivity {
     private RichiestaPercorso richiestaPercorso;
     private Bitmap bitmap;
 
+    /**
+     * Metodo di inizializzazione dell'activity. Implementa l'interfaccia grafica e le funzionalità
+     * touch-screen.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,19 +74,20 @@ public class VaiActivity extends DefaultActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
 
-
+        /*Apertura DB e recupero utente */
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         user = daoUtente.findUtente();
         daoUtente.close();
         richiestaPercorso = new RichiestaPercorso(user);
 
+        /*Apertura DB e recupero piani */
         DAOPiano daoPiano = new DAOPiano(this);
         daoPiano.open();
         ArrayList<String> piani = daoPiano.getAllPiani();
         daoPiano.close();
 
-        //Spinner
+        /*Inizializzazione menù a tendina per scelta piani */
         spinner= (Spinner) findViewById(R.id.spinner);
         adapter = new ArrayAdapter<String> (this,android.R.layout.simple_spinner_dropdown_item,piani);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -87,6 +96,7 @@ public class VaiActivity extends DefaultActivity {
         textLabel = (TextView) findViewById(R.id.vaiLabel);
         imageViewPiano = (PinView) findViewById(R.id.imageViewPiano);
 
+        /*Apertura DB e recupero beacon di posizione iniziale*/
         DAOBeacon daoBeacon = new DAOBeacon(this);
         daoBeacon.open();
         Beacon beaconMyPosition = daoBeacon.getBeaconById(user.getBeaconid());
@@ -106,7 +116,7 @@ public class VaiActivity extends DefaultActivity {
             }
         });
 
-        //serve per definire le gesture da rilevare, per ora lo uso solo per settare il pin con long press
+        /*Definizione gesture detector per le funzionalità touch screen*/
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
 
             //CALCOLO DEL PERCORSO E DISEGNO
@@ -121,8 +131,8 @@ public class VaiActivity extends DefaultActivity {
                     if(load) {
 
 
-                        //BEACON DI PARTENZA
-                        //Definisco le 2 coordinate di partenza che prendo da beaconId dell'utente loggato
+                        /*BEACON DI PARTENZA
+                        Definzione delle dcoordinate di partenza*/
                         String idbeacondipartenza = user.getBeaconid();
                         if(idbeacondipartenza!= null) {
                             ArrayList<Integer> xcoordandycoord = daoBeacon.getCoordsByIdBeacon(idbeacondipartenza);
@@ -133,11 +143,11 @@ public class VaiActivity extends DefaultActivity {
                         load = false;
                     }
 
-                    //BEACON DI DESTINAZIONE
+                    /*BEACON DI DESTINAZIONE
+                    Calcola il beacon di destinazione + vicino rispetto al click dell'utente*/
                     Cursor cursor;
                     cursor = daoBeacon.getAllBeaconInPiano(position);
 
-                    //Calcola il beacon di destinazione + vicino rispetto al click dell'utente
                     while (cursor.moveToNext()){
                         int coordx = cursor.getInt(cursor.getColumnIndex("coordx"));
                         int coordy = cursor.getInt(cursor.getColumnIndex("coordy"));
@@ -163,7 +173,7 @@ public class VaiActivity extends DefaultActivity {
             }
         });
 
-        //setto il listener per l'evento
+        /*Inizializzazione listener evento di movimento sullo schermo*/
         imageViewPiano.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -171,10 +181,9 @@ public class VaiActivity extends DefaultActivity {
             }
         });
 
-
+        /*Istanziazione della barra di navigazione in fondo allo schermo*/
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
@@ -235,7 +244,6 @@ public class VaiActivity extends DefaultActivity {
         super.onResume();
     }
 
-
     @Override
     public void onDestroy(){
         if(bitmap != null) {
@@ -247,8 +255,15 @@ public class VaiActivity extends DefaultActivity {
 
     }
 
+    /**
+     * Metodo che implementa il calcolo del percorso attraverso l'utilizzo della classe RichiestaPercorso sul
+     * package server.
+     * @param view
+     */
     public void avviaPercorso(View view){
-        //RICHIESTA DEL PERCORSO: PROBLEMA: Il calcolo del percorso in RichiestaPercorso.java viene fatto dopox
+
+        /*Se le posizioni di partenza e arrivo sono settate e diverse tra loro, richiede il calcolo del percorso
+        * in non emergenza.*/
         if(user.getPosition()!= null && beaconD != null && !user.getPosition().equals(beaconD.getId())) {
             imageViewPiano.setBool(false);
             DAOPiano daoPiano = new DAOPiano(this);
@@ -264,6 +279,8 @@ public class VaiActivity extends DefaultActivity {
             drawn = true;
             textLabel.setText("Tieni Premuto il punto in cui desideri arrivare");
         }else if(user.getPosition() == null){
+            /*Altrimenti se la posizione di partenza è nulla (utente non connesso a un beacon), visualizza messaggio di
+            * non connessione al beacon*/
             AlertDialog posnotselected = new AlertDialog.Builder(ctx).create();
             posnotselected.setTitle("Attenzione!");
             posnotselected.setMessage(ctx.getString(R.string.nessunbeaconconnesso));
@@ -275,6 +292,8 @@ public class VaiActivity extends DefaultActivity {
                     });
             posnotselected.show();
         } else if(beaconD == null){
+            /*Altrimenti se la posizione di arrivo è nulla (nessun beacon è stato selezionato), visualizza messaggio di
+            * avviso che nessuna destinazione è stata selezionata*/
             AlertDialog posnotselected = new AlertDialog.Builder(ctx).create();
             posnotselected.setTitle("Nessuna destinazione selezionata");
             posnotselected.setMessage(ctx.getString(R.string.nessunadestinazioneselezionata));
@@ -286,6 +305,8 @@ public class VaiActivity extends DefaultActivity {
                     });
             posnotselected.show();
         }else{
+            /*Altrimenti se i beacon di partenza e arrivo coincidono, viene visualizzato un messaggio di avviso
+            * all'utente*/
             AlertDialog sameDestination = new AlertDialog.Builder(ctx).create();
             sameDestination.setTitle("Destinazione Coincide con Posizione Attuale");
             sameDestination.setMessage(ctx.getString(R.string.posizionecoincideconposizione));
