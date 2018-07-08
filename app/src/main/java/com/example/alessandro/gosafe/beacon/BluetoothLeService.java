@@ -8,12 +8,17 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.example.alessandro.gosafe.EmergenzaActivity;
+import com.example.alessandro.gosafe.R;
+import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.AggiornamentoInfoServer;
 
@@ -68,8 +73,14 @@ public class BluetoothLeService extends Service {
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!isScanning()){
-                    scanLeDevice(true);
+                final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+                BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();
+                if(mBluetoothAdapter.isEnabled()) {
+                    mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+                    mScanning = false;
+                    if (!isScanning()) {
+                        scanLeDevice(true);
+                    }
                 }
             }
         }, 10000, period);
@@ -94,47 +105,52 @@ public class BluetoothLeService extends Service {
     }
 
     private void scanLeDevice(final boolean enable) {
-        if (enable) {
+        try {
+            if (enable) {
 
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+                mScanning = true;
 
-                    mScanning = false;
-                    mBluetoothLeScanner.stopScan(mLeScanCallback);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mBluetoothLeScanner.stopScan(mLeScanCallback);
 
-                    orderByValue(beaconsDetected, new Comparator<Integer>() {
-                        @Override
-                        public int compare(Integer integer, Integer t1) {
-                            int i = integer.compareTo(t1);
-                            if(i != 0)
-                                i = -i;
-                            return i;
+                            orderByValue(beaconsDetected, new Comparator<Integer>() {
+                                @Override
+                                public int compare(Integer integer, Integer t1) {
+                                    int i = integer.compareTo(t1);
+                                    if (i != 0)
+                                        i = -i;
+                                    return i;
+                                }
+                            });
+                            if (beaconsDetected.entrySet().iterator().hasNext()) {
+                                String posizione = beaconsDetected.entrySet().iterator().next().getKey();
+                                if (!utente_attivo.getBeaconid().equals(posizione)) {
+                                    utente_attivo.setPosition(posizione, getApplicationContext());
+                                    AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
+                                    ai.aggiornamentoPosizione(utente_attivo, getApplicationContext());
+                                    final Intent intent = new Intent("updatepositionmap");
+                                    intent.putExtra("device", posizione);
+                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                                }
+                            }
+                            scanLeDevice(false);
+                        }catch(Exception e){
+                            e.printStackTrace();
                         }
-                    });
-                    if(beaconsDetected.entrySet().iterator().hasNext()) {
-                        String posizione = beaconsDetected.entrySet().iterator().next().getKey();
-                        if(!utente_attivo.getBeaconid().equals(posizione)) {
-                            utente_attivo.setPosition(posizione, getApplicationContext());
-                            AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
-                            ai.aggiornamentoPosizione(utente_attivo, getApplicationContext());
-                            final Intent intent = new Intent("updatepositionmap");
-                            intent.putExtra("device", posizione);
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                        }
+
                     }
-                    scanLeDevice(false);
-
-                }
-            }, scanPeriod);
-
-            mScanning = true;
-            mBluetoothLeScanner.startScan(mLeScanCallback);
-        }
-        else {
+                }, scanPeriod);
+                mBluetoothLeScanner.startScan(mLeScanCallback);
+            } else {
+                mScanning = false;
+                beaconsDetected.clear();
+            }
+        }catch(Exception e){
             mScanning = false;
-            beaconsDetected = null;
-            beaconsDetected = new LinkedHashMap<>();
+            beaconsDetected.clear();
         }
     }
 

@@ -1,5 +1,7 @@
 package com.example.alessandro.gosafe;
 
+import android.app.ActivityManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +10,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.os.Build;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOPiano;
 import com.example.alessandro.gosafe.database.DAOUtente;
@@ -31,6 +35,7 @@ import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.ImageLoader;
 import com.example.alessandro.gosafe.helpers.PinView;
+import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 
@@ -70,16 +75,31 @@ public class VaiActivity extends DefaultActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vai);
 
-        ctx = this;
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
-
         /*Apertura DB e recupero utente */
         DAOUtente daoUtente = new DAOUtente(this);
         daoUtente.open();
         user = daoUtente.findUtente();
         daoUtente.close();
         richiestaPercorso = new RichiestaPercorso(user);
+
+        if(!isMyServiceRunning(BluetoothLeService.class)){
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
+                Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", user);
+                bundle.putLong("periodo", 15000);
+                s.putExtras(bundle);
+                startService(s);
+            }
+        }
+        if(!isMyServiceRunning(CheckForDbUpdatesService.class)){
+            Intent u = new Intent(this, CheckForDbUpdatesService.class);
+            startService(u);
+        }
+        ctx = this;
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
 
         /*Apertura DB e recupero piani */
         DAOPiano daoPiano = new DAOPiano(this);
@@ -345,6 +365,16 @@ public class VaiActivity extends DefaultActivity {
             richiestaPercorso.cambiaPiano(imageViewPiano, position);
             imageViewPiano.setPianoSpinner(position);
         }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

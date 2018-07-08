@@ -100,8 +100,8 @@ public class PinView extends SubsamplingScaleImageView {
     private void initialiseMyPosition() {
         float density = getResources().getDisplayMetrics().densityDpi;
         pin = BitmapFactory.decodeResource(this.getResources(), R.drawable.round_my_location_black_24);
-        float w = (density/420f) * pin.getWidth();
-        float h = (density/420f) * pin.getHeight();
+        float w = (density/420f) * pin.getWidth()/1.6f;
+        float h = (density/420f) * pin.getHeight()/1.6f;
         pin = Bitmap.createScaledBitmap(pin, (int)w, (int)h, true);
     }
 
@@ -164,7 +164,7 @@ public class PinView extends SubsamplingScaleImageView {
             invalidate();
             sourceToViewCoord(inizioPin,vPin);
             vX = vPin.x - (pin.getWidth()/2);
-            vY = vPin.y - pin.getHeight();
+            vY = vPin.y - pin.getHeight()/2;
             canvas.drawBitmap(pin, vX, vY, paint);
         }
 
