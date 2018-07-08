@@ -177,17 +177,18 @@ public class Autenticazione {
 
                 utente.setId_utente(id_utente);
                 utente.setIs_autenticato(true);
+                utente.setBeaconid("12");
                 utente.setIdsessione(idsessione);
                 utente.registrazioneLocale(ctx);
 
                 DbDownloadFirstBoot dbDownload = new DbDownloadFirstBoot();
                 dbDownload.dbdownloadFirstBootAsyncTask(ctx);
 
-                startUpServices(ctx);
-
                 session.createUserLoginSession("User Session", utente.getUsername());
 
                 dbDownload.getResult();
+
+                startUpServices(ctx);
 
                 AlertDialog accesso_dopo_registrazione = new AlertDialog.Builder(ctx).create();
                 accesso_dopo_registrazione.setTitle("Registrazione effettuata con successo");

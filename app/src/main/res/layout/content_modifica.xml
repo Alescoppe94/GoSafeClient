@@ -162,7 +162,7 @@
                     <Button
                         android:id="@+id/annullaButton"
                         android:layout_width="120dp"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:layout_marginStart="30dp"
                         android:background="@drawable/background_genericbutton"
                         android:onClick="annullamodifica"
@@ -172,7 +172,7 @@
                     <Button
                         android:id="@+id/modificaButton"
                         android:layout_width="120dp"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:layout_marginStart="30dp"
                         android:background="@drawable/background_genericbutton"
                         android:onClick="confermaModifica"
