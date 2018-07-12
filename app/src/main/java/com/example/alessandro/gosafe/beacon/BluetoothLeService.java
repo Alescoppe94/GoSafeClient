@@ -134,39 +134,39 @@ public class BluetoothLeService extends Service {
 
                 mHandler.postDelayed(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() { //gestisce lo stop dello scan
                         try {
-                            mBluetoothLeScanner.stopScan(mLeScanCallback);
+                            mBluetoothLeScanner.stopScan(mLeScanCallback); //ferma lo scan
 
                             orderByValue(beaconsDetected, new Comparator<Integer>() {
                                 @Override
-                                public int compare(Integer integer, Integer t1) {
+                                public int compare(Integer integer, Integer t1) {  //ordina i beacon per distanza il primo della lista è il più vicino
                                     int i = integer.compareTo(t1);
                                     if (i != 0)
                                         i = -i;
                                     return i;
                                 }
                             });
-                            if (beaconsDetected.entrySet().iterator().hasNext()) {
+                            if (beaconsDetected.entrySet().iterator().hasNext()) {  //se c'è un beacon
                                 String posizione = beaconsDetected.entrySet().iterator().next().getKey();
-                                if (!utente_attivo.getBeaconid().equals(posizione)) {
-                                    utente_attivo.setPosition(posizione, getApplicationContext());
-                                    AggiornamentoInfoServer ai = new AggiornamentoInfoServer();
+                                if (!utente_attivo.getBeaconid().equals(posizione)) { //se è diverso da quello a cui era connesso l'utente
+                                    utente_attivo.setPosition(posizione, getApplicationContext()); //setta la nuova posizione
+                                    AggiornamentoInfoServer ai = new AggiornamentoInfoServer(); //avvia l'aggiornamento del server
                                     ai.aggiornamentoPosizione(utente_attivo, getApplicationContext());
-                                    final Intent intent = new Intent("updatepositionmap");
+                                    final Intent intent = new Intent("updatepositionmap"); // e notifica la gui per aggiornare la posizione sulla mappa
                                     intent.putExtra("device", posizione);
                                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                                 }
                             }
-                            scanLeDevice(false);
+                            scanLeDevice(false); //ferma lo scan
                         }catch(Exception e){
                             e.printStackTrace();
                         }
 
                     }
-                }, scanPeriod);
-                mBluetoothLeScanner.startScan(mLeScanCallback);
-            } else {
+                }, scanPeriod);  //è la durata dello scan
+                mBluetoothLeScanner.startScan(mLeScanCallback); //quando enable=True  si avvia lo scan
+            } else { //se enable = false svuota la lista dei beacon individuati e setta lo scanning a false
                 mScanning = false;
                 beaconsDetected.clear();
             }
@@ -176,16 +176,22 @@ public class BluetoothLeService extends Service {
         }
     }
 
-    // Device scan callback.
+    /**
+     *
+     * ogni volta che viene individuato un beacon viene richiamata questa callback
+     */
     private ScanCallback mLeScanCallback = new ScanCallback() {
 
                 @Override
                 public void onScanResult(final int callbackType, final ScanResult result) {
                     super.onScanResult(callbackType, result);
+                    //recupera le informazioni sul beacon
                     BluetoothDevice device = result.getDevice();
                     final String deviceName = device.getName();
                     final String mBluetoothDeviceAddress=device.getAddress();
 
+                    //handler che gestisce i beacon da prendere in considerazione. verifica che non siano già stati individuati
+                    //seleziona solo quelli che hanno il nome che contiene una certa stringa ad esempio "SensorTag"
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -209,6 +215,13 @@ public class BluetoothLeService extends Service {
                 }
             };
 
+    /**
+     * metodo che ordina le liste
+     * @param m la lista da ordinare
+     * @param c comparator
+     * @param <K> chiave di un elemento della lista
+     * @param <V> valore di un elemento della lista
+     */
     static <K, V> void orderByValue(LinkedHashMap<K, V> m, final Comparator<? super V> c) {
         List<Map.Entry<K, V>> entries = new ArrayList<>(m.entrySet());
 

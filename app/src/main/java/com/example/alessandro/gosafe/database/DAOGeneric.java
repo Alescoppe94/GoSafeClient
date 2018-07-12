@@ -21,17 +21,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * classe che lavora con più dao contemporaneamente per estrarre informazioni dal db
+ */
 public class DAOGeneric{
 
     private DBHelper dbhelper;
     private Context ctx;
     private SQLiteDatabase db;
 
+    /**
+     * costruttore
+     * @param ctx prende in input il Context
+     */
     public DAOGeneric(Context ctx)
     {
         this.ctx=ctx;
     }
 
+    /**
+     * metodo che apre la connessione al db
+     * @return ritorna il db appena aperto
+     * @throws SQLException
+     */
     public DAOGeneric open() throws SQLException {
         dbhelper = new DBHelper(ctx);
         try {
@@ -42,11 +54,19 @@ public class DAOGeneric{
         return this;
     }
 
+    /**
+     * chiude la connessione al db
+     */
     public void close()
     {
         dbhelper.close();
     }
 
+    /**
+     * metodo che crea il db all'avvio partendo dalle info provenienti dal server- sii utilizza una transaction essendo un'operazione che deve avvenire in blocco.
+     * se le tabelle esistono già vengono eliminate e ricreate popolandole mano a mano con le nuove informazioni
+     * @param jsonResponse contiene la risposta json con tutte le informazioni da inserire nel db
+     */
     public void ricreaDb(JsonObject jsonResponse) {
         JsonArray tronchiArray = jsonResponse.get("tronco").getAsJsonArray();
         JsonArray beaconArray = jsonResponse.get("beacon").getAsJsonArray();
@@ -113,9 +133,9 @@ public class DAOGeneric{
     }
 
     /**
-     * Questa funziona
-     * @param bitmapImage  una cosa
-     * @param numeroPiano  un'altra cosa
+     * metodo specifico per salvare le immagini dei piani nel db.
+     * @param bitmapImage  contiene l'immagine del piano
+     * @param numeroPiano  contiene il numero del piano
      */
     private void saveToInternalStorage(Bitmap bitmapImage, int numeroPiano){
         ContextWrapper cw = new ContextWrapper(ctx);
