@@ -8,17 +8,12 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.example.alessandro.gosafe.EmergenzaActivity;
-import com.example.alessandro.gosafe.R;
-import com.example.alessandro.gosafe.VaiActivity;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.server.AggiornamentoInfoServer;
 
@@ -32,54 +27,65 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-/*Service che si occupa di connettere e leggere i dati dal Beacon.*/
-
+/**
+ * E' un servizio che si occupa di rilevare i bacons e comunicare all'interfaccia e al db
+ * il beacon a cui si è connessi. Viene avviato al login e mantenuto sempre attivo.
+ */
 public class BluetoothLeService extends Service {
 
     private Utente utente_attivo;
-
     private boolean mScanning;
     private Handler mHandler;
-    private Timer mTimer;
-
-    private long scanPeriod;
-
+    private Timer mTimer;       //conserva il thread per il loop di scansione dei beacon
+    private long scanPeriod;    //contiene la durata della scansione
     private BluetoothLeScanner mBluetoothLeScanner;
+    private LinkedHashMap<String, Integer> beaconsDetected;  //contiene i beacon individuati
 
-    private LinkedHashMap<String, Integer> beaconsDetected;
-
+    /**
+     * metodo che viene eseguito al primo avvio del servizio. Inizializza il servizio.
+     */
     @Override
     public void onCreate() {
         super.onCreate();
 
         mHandler = new Handler();
 
-        this.scanPeriod = 3000;
+        this.scanPeriod = 3000; //contiene ogni quanto fare la scansione
 
-        beaconsDetected = new LinkedHashMap<>();
+        beaconsDetected = new LinkedHashMap<>(); //contiene i beacon individuati. Inizializzata vuota.
 
+        //inizializza le variabili per lavorare con i beacon
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
         mScanning = false;
     }
 
+    /**
+     * metodo chiamato ogni volta che il servizio viene riavviato. La prima volta parte subito dopo onCreate()
+     * inizializza il timer per far partire il loop di scansione.
+     * @param intent contiene l'intent che ha chiamato il servizio
+     * @param flags
+     * @param startId
+     * @return contiene il servizio appena creato per il sistema
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         utente_attivo = (Utente) intent.getExtras().getSerializable("user");
         final long period = intent.getExtras().getLong("periodo");
         mTimer = new Timer();
+        //il loop di scansione dei beacon. viene lanciato run ogni period
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
                 BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();
-                if(mBluetoothAdapter.isEnabled()) {
+                if(mBluetoothAdapter.isEnabled()) {  // se il bluetooth è attivo e non è in corso una scansione può partire scanLeDevice
                     mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
                     mScanning = false;
                     if (!isScanning()) {
-                        scanLeDevice(true);
+                        scanLeDevice(true); //metodo che gestisce scansione vera e propria
                     }
                 }
             }
@@ -87,23 +93,39 @@ public class BluetoothLeService extends Service {
         return Service.START_NOT_STICKY;
     }
 
+    /**
+     * metodo di avvio del servizio che fa il bind con l'applicazione di quest'ultimo
+     * @param intent contiene l'intent chiamante
+     * @return
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    /**
+     * metodo che ci informa se è in corso una scansione
+     * @return booleano settato a Vero se è in corso una scansione, altrimenti Falso
+     */
     public boolean isScanning() {
         return mScanning;
     }
 
+    /**
+     * metodo chiamato quando il servizio viene distrutto
+     */
     @Override
     public void onDestroy(){
         super.onDestroy();
-        mTimer.cancel();
+        mTimer.cancel();  //viene fermato il loop di scansione
         mTimer = null;
 
     }
 
+    /**
+     * metodo che gestisce un ciclo di scansione
+     * @param enable indica se la scansione può avvenire o meno
+     */
     private void scanLeDevice(final boolean enable) {
         try {
             if (enable) {
