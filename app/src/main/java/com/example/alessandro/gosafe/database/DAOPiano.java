@@ -11,13 +11,16 @@ import com.example.alessandro.gosafe.entity.Piano;
 
 import java.util.ArrayList;
 
-
+/**
+ * classe dao che si interfaccia con la tabella Piano
+ */
 public class DAOPiano {
 
     private DBHelper dbhelper;
     private Context ctx;
     private SQLiteDatabase db;
 
+    //costanti contenenti i nomi delle colonne della tabella Piano
     public static final String TBL_NAME="Piano";
     public static final String FIELD_ID="ID_piano";
     public static final String FIELD_IMMAGINE="immagine";
@@ -29,11 +32,20 @@ public class DAOPiano {
                     FIELD_PIANO
             };
 
+    /**
+     * costruttire
+     * @param ctx prende il contesto come parametro
+     */
     public DAOPiano(Context ctx)
     {
         this.ctx=ctx;
     }
 
+    /**
+     * metodo che apre la connessione alla tabella Piano
+     * @return ritorna l'oggetto contenente la connessione
+     * @throws SQLException
+     */
     public DAOPiano open() throws SQLException {
         dbhelper = new DBHelper(ctx);
         try {
@@ -44,11 +56,19 @@ public class DAOPiano {
         return this;
     }
 
+    /**
+     * chiude la connessione alla db
+     */
     public void close()
     {
         dbhelper.close();
     }
 
+    /**
+     * prepara l'oggetto piano affinchè possa essere inserito nel db
+     * @param piano piano da inserire nel db
+     * @return ritorna ContentValues contenente le informazioni del Piano
+     */
     public ContentValues createContentValues(Piano piano)
     {
         ContentValues cv=new ContentValues();
@@ -58,6 +78,11 @@ public class DAOPiano {
         return cv;
     }
 
+    /**
+     * metodo che si occupa di salvare un Piano nel db
+     * @param piano contiene il piano da inserire
+     * @return ritorna un booleano con l'esito dell'operazione
+     */
     public boolean save(Piano piano)
     {
         boolean ins;
@@ -82,6 +107,11 @@ public class DAOPiano {
         }
     }
 
+    /**
+     * metodo che esegue l'update di un Piano nel db
+     * @param piano Piano da aggiornare
+     * @return ritorna l'esito dell'operazione in un booleano
+     */
     public boolean update(Piano piano)
     {
         ContentValues updateValues = createContentValues(piano);
@@ -96,6 +126,11 @@ public class DAOPiano {
         }
     }
 
+    /**
+     * ritorna il numero del piano a partire dal suo id
+     * @param idPiano id del piano di cui recuperare il numero
+     * @return ritorna un intero contenente il numero del piano
+     */
     public int getNumeroPianoById(int idPiano) {
 
         Cursor crs;
@@ -116,6 +151,10 @@ public class DAOPiano {
         return numeropiano;
     }
 
+    /**
+     * recupera tutti i piani dal db
+     * @return ritorna un ArrayList con i numeri di tutti i piano sotto forma di String (ad es. "Piano 1")
+     */
     public ArrayList<String> getAllPiani(){
 
         Cursor crs;
