@@ -22,21 +22,37 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class AggiornamentoInfoServer {
 
+    /**
+     * metodo per creare l'asyncTask che si occupa di mantenere aggiornato il server
+     * @param utente utente connesso
+     * @param ctx contesto dell'applicazione
+     */
     public void aggiornamentoPosizione(Utente utente, Context ctx) {
         new AggiornamentoPosizioneTask(utente, ctx).execute();
     }
 
+    /**
+     * classe privata che gestisce l'AsyncTask che invia la posizione aggiornata dell'utente al server
+     */
     private class AggiornamentoPosizioneTask extends AsyncTask<Void, Void, String>{
 
         Utente utente;
         private boolean connesso;
         private Context ctx;
 
+        /**
+         * costruttore
+         * @param utente utente connesso
+         * @param ctx contesto dell'applicazione
+         */
         public AggiornamentoPosizioneTask(Utente utente, Context ctx) {
             this.utente = utente;
             this.ctx = ctx;
         }
 
+        /**
+         * metodo eseguito prima dell'avvio del task. nello specifico controlla la connessione al server
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -44,6 +60,12 @@ public class AggiornamentoInfoServer {
             connesso = checkConnessione.checkConnessione(ctx);
         }
 
+        /**
+         * metodo che costituisce l'AsyncTask vero e proprio. E' eseguito su un thread separato rispetto al principale.
+         * si occupa di fare una richiesta PUT al server che va a modificare la posizione dell'utente
+         * @param voids indica che non prende parametri
+         * @return ritorna una stringa vuota o una stringa con un messaggio di successo in base all'esito.
+         */
         @Override
         protected String doInBackground(Void... voids) {
 
@@ -60,8 +82,9 @@ public class AggiornamentoInfoServer {
                     String path = prefs.getString("ipAddress", null);
                     byte[] data = utente.getIdsessione().getBytes("UTF-8");
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
-                    URL url = new URL("http://" + path +"/gestionemappe/utente/secured/updateposition");
+                    URL url = new URL("http://" + path +"/gestionemappe/utente/secured/updateposition"); //url verso cui la richiesta viene fatta
                     conn = (HttpURLConnection) url.openConnection();
+                    //metodi che impostano l'header della richiesta
                     conn.setDoOutput(true);
                     conn.setRequestMethod("PUT");
                     conn.setRequestProperty("Content-Type", "application/json");
@@ -70,12 +93,14 @@ public class AggiornamentoInfoServer {
                     conn.setInstanceFollowRedirects(true);
                     conn.connect();
 
+                    //scrittura delle informazioni sulla posizione in output
                     OutputStream os = conn.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
                     osw.write(dati_pos);
                     osw.flush();
                     osw.close();
 
+                    //controlla l'esito della richiesta
                     int responseCode = conn.getResponseCode();
                     if(400 <= responseCode && responseCode <= 499){
                         this.cancel(true);
