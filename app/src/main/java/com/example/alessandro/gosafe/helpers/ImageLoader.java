@@ -10,24 +10,36 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+/**
+ * classe statica che si occupa del caricamento delle immagini
+ */
 public class ImageLoader {
 
+    /**
+     * costruttore
+     */
     public ImageLoader(){
 
     }
 
+    /**
+     * metodo statico che carica le immagini e le trasforma in bitmap pronti per essere visualizzati dalla gui
+     * @param numpiano numero del piano di cui estrarre l'immagine
+     * @param ctx Context necessario per la connessione al db
+     * @return ritorna il Bitmap con l'immagine caricata
+     */
     public static Bitmap loadImageFromStorage(String numpiano, Context ctx)
     {
         Bitmap immagine;
         try {
             ContextWrapper cw = new ContextWrapper(ctx);
-            // gets the files in the directory
+            //prende i file nella directory
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            File f=new File(directory, "q"+numpiano+".png");
+            File f=new File(directory, "q"+numpiano+".png");  //i file immagini sono salvati nella memoria interna del telefono
             BitmapFactory.Options opt = new BitmapFactory.Options();
-            opt.inPreferredConfig = Bitmap.Config.RGB_565;
+            opt.inPreferredConfig = Bitmap.Config.RGB_565; //scelto questo fromato perchè occupa meno memoria
             opt.inPurgeable=true;
-            immagine = BitmapFactory.decodeStream(new FileInputStream(f), new Rect(), opt);
+            immagine = BitmapFactory.decodeStream(new FileInputStream(f), new Rect(), opt); //crea il bitmap
 
 
         }
