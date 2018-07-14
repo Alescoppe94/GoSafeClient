@@ -1,6 +1,8 @@
 package com.example.alessandro.gosafe;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,11 +11,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.MenuItem;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.example.alessandro.gosafe.beacon.BluetoothLeService;
 import com.example.alessandro.gosafe.database.DAOBeacon;
 import com.example.alessandro.gosafe.database.DAOPiano;
 import com.example.alessandro.gosafe.database.DAOUtente;
@@ -21,6 +25,7 @@ import com.example.alessandro.gosafe.entity.Beacon;
 import com.example.alessandro.gosafe.entity.Utente;
 import com.example.alessandro.gosafe.helpers.ImageLoader;
 import com.example.alessandro.gosafe.helpers.PinView;
+import com.example.alessandro.gosafe.server.CheckForDbUpdatesService;
 import com.example.alessandro.gosafe.server.RichiestaPercorso;
 
 import java.util.ArrayList;
@@ -45,16 +50,34 @@ public class EmergenzaActivity extends DefaultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergenza);
+
+        DAOUtente daoUtente = new DAOUtente(this);
+        daoUtente.open();
+        utente_attivo = daoUtente.findUtente();
+        daoUtente.close();
+
+        if(!isMyServiceRunning(BluetoothLeService.class)){
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
+                Intent s = new Intent(this, BluetoothLeService.class);            //rimanda l'utente al servizio, può essere modificato
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", utente_attivo);
+                bundle.putLong("periodo", 15000);
+                s.putExtras(bundle);
+                startService(s);
+            }
+        }
+        if(!isMyServiceRunning(CheckForDbUpdatesService.class)){
+            Intent u = new Intent(this, CheckForDbUpdatesService.class);
+            startService(u);
+        }
+
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
         SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
         editor.putBoolean("emergenza", true);
         editor.apply();
         imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
-        DAOUtente daoUtente = new DAOUtente(this);
-        daoUtente.open();
-        utente_attivo = daoUtente.findUtente();
-        daoUtente.close();
         richiestaPercorso = new RichiestaPercorso(utente_attivo);
         if(utente_attivo.getBeaconid() != null) {
             DAOBeacon daoBeacon = new DAOBeacon(this);
@@ -261,4 +284,15 @@ public class EmergenzaActivity extends DefaultActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
