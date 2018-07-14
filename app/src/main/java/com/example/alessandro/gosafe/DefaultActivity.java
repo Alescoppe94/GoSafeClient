@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 /**
  * Classe astratta che implementa il listener per la barra di navigazione sul fondo dello schermo.
- * Tutte le activity ereditano da questa classe.
+ * Tutte le activity ereditano da questa classe. Al click su un particolare pulsante si visualizza un activity diversa.
  */
 public abstract class DefaultActivity extends AppCompatActivity {
 

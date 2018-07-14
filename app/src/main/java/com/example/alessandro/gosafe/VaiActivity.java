@@ -52,7 +52,7 @@ public class VaiActivity extends DefaultActivity {
     float temp=10000000;
     String idbeacondestinazione;
 
-    /*roba per menu a tendina*/
+    /*menu a tendina*/
     Spinner spinner;
     Beacon beaconD;
     int position;
@@ -66,7 +66,7 @@ public class VaiActivity extends DefaultActivity {
     private Bitmap bitmap;
 
     /**
-     * Metodo di inizializzazione dell'activity. Implementa l'interfaccia grafica e le funzionalità
+     * Metodo di inizializzazione dell'activity. Implementa l'interfaccia grafica e le funzionalità. Controlla che siano attivi anche i servizi di base
      * touch-screen.
      * @param savedInstanceState
      */
@@ -82,6 +82,7 @@ public class VaiActivity extends DefaultActivity {
         daoUtente.close();
         richiestaPercorso = new RichiestaPercorso(user);
 
+        //controlla l'esecuzione del servizio che cerca i beacon
         if(!isMyServiceRunning(BluetoothLeService.class)){
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (bluetoothAdapter != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
@@ -93,11 +94,13 @@ public class VaiActivity extends DefaultActivity {
                 startService(s);
             }
         }
+        //controlla l'esecuzione del servizio che si occupa di controllare aggiornamenti dal server
         if(!isMyServiceRunning(CheckForDbUpdatesService.class)){
             Intent u = new Intent(this, CheckForDbUpdatesService.class);
             startService(u);
         }
         ctx = this;
+        //inizializza il broadcast manager che consente al servizio della ricerca dei beacon di comunicare con la GUI
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
 
@@ -124,6 +127,7 @@ public class VaiActivity extends DefaultActivity {
         imageViewPiano.setPinMyPosition(pinMyPosition);
         daoBeacon.close();
 
+        //setta il listener sullo spinner per quando si cambia piano
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -211,12 +215,15 @@ public class VaiActivity extends DefaultActivity {
     }
 
 
+    /**
+     * oggetto che si occupa di gestire la recezione del broadcast qualora ci sia un cambio di beacon
+     * a cui l'utente è connesso.
+     */
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
             String idBeacon = intent.getStringExtra("device");
             user.setBeaconid(idBeacon);
-            Toast.makeText(getApplicationContext(), idBeacon, Toast.LENGTH_LONG).show();
             DAOBeacon daoBeacon = new DAOBeacon(ctx);
             daoBeacon.open();
             Beacon beacon = daoBeacon.getBeaconById(idBeacon);
@@ -243,6 +250,10 @@ public class VaiActivity extends DefaultActivity {
         }
     };
 
+    /**
+     * metodo eseguito quando si esce dall'app e rimane in background
+     * elimina gli elementi grafici per evitare errori di memoria
+     */
     @Override
     public void onPause(){
         imageViewPiano.recycle();
@@ -253,6 +264,9 @@ public class VaiActivity extends DefaultActivity {
         super.onPause();
     }
 
+    /**
+     * metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
+     */
     @Override
     public void onResume(){
         String piano = spinner.getSelectedItem().toString();
@@ -264,6 +278,10 @@ public class VaiActivity extends DefaultActivity {
         super.onResume();
     }
 
+    /**
+     * metodo eseguito quando si termina l'applicazioneo si cambia activity.
+     * anche qui si eliminano elementi grafici per evitare problemi di memoria
+     */
     @Override
     public void onDestroy(){
         if(bitmap != null) {
@@ -276,7 +294,7 @@ public class VaiActivity extends DefaultActivity {
     }
 
     /**
-     * Metodo che implementa il calcolo del percorso attraverso l'utilizzo della classe RichiestaPercorso sul
+     * Metodo che implementa il calcolo del percorso attraverso l'utilizzo della classe RichiestaPercorso nel
      * package server.
      * @param view
      */
@@ -340,6 +358,11 @@ public class VaiActivity extends DefaultActivity {
         }
     }
 
+    /**
+     * metodo che si occupa di visualizzare il piano corretto quando si cambia il piano nello spinner
+     * @param adapterView rappresenta l'adapterview dello spinner
+     * @param i contiene il numero dell'elemento cliccato
+     */
     private void changedPiano(AdapterView<?> adapterView, int i) {
         String piano =(String) adapterView.getItemAtPosition(i);
         String[] elems = piano.split(" ");
@@ -367,6 +390,11 @@ public class VaiActivity extends DefaultActivity {
         }
     }
 
+    /**
+     * controlla se un certo servizio è in esecuzione
+     * @param serviceClass nome del servizio da controllare
+     * @return ritorna un booleano: True se è in esecuzione altrimenti Falso
+     */
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

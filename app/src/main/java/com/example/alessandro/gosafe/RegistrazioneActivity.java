@@ -1,6 +1,5 @@
 package com.example.alessandro.gosafe;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +23,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
     private EditText mIpAddress;
 
     /**
-     * Inizializzazione della classe
+     * Inizializzazione della classe, le caselle di input vengono salvate in delle variabili
      * @param savedInstanceState
      */
     @Override

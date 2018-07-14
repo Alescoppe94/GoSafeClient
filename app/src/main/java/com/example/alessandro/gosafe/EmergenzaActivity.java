@@ -56,6 +56,8 @@ public class EmergenzaActivity extends DefaultActivity {
         utente_attivo = daoUtente.findUtente();
         daoUtente.close();
 
+        //controlla se i servizi di scanning del bluetooth e ilcontrollo degli aggiornamenti sul server sono avviati
+        //potrebbero essere spenti quando si chiude l'applicazione dalle applicazioni in background.
         if(!isMyServiceRunning(BluetoothLeService.class)){
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (bluetoothAdapter != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)) {
@@ -72,6 +74,7 @@ public class EmergenzaActivity extends DefaultActivity {
             startService(u);
         }
 
+        //serve per gestire le chiamate alla GUI provenienti dai servizi
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mGattUpdateReceiver, new IntentFilter("updatepositionmap"));
         SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
@@ -79,7 +82,7 @@ public class EmergenzaActivity extends DefaultActivity {
         editor.apply();
         imageViewPiano=(PinView) findViewById(R.id.imageViewPiano);
         richiestaPercorso = new RichiestaPercorso(utente_attivo);
-        if(utente_attivo.getBeaconid() != null) {
+        if(utente_attivo.getBeaconid() != null) { //se l'utente ha una posizione carica la mappa e la imposta con la sua posizione
             DAOBeacon daoBeacon = new DAOBeacon(this);
             daoBeacon.open();
             Beacon beaconUtente = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
@@ -93,12 +96,12 @@ public class EmergenzaActivity extends DefaultActivity {
             imageViewPiano.setImage(ImageSource.bitmap(bitmap));
             daoPiano.close();
             daoBeacon.close();
-            if(!beaconUtente.is_puntodiraccola()) {
+            if(!beaconUtente.is_puntodiraccola()) { // se l'utente non è in un punto di raccolta si calcola il percorso verso la via di fuga
                 richiestaPercorso.visualizzaPercorso(this, imageViewPiano);
-            } else {
+            } else { //se è in un punto di raccolta si mostra un dialog informando l'utente che è in salvo
                 showAlertSalvo();
             }
-        } else {
+        } else { //se non si è connessi a nessun beacon si notifica l'utente
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Attenzione!");
             builder.setMessage("Non sei connesso a nessun beacon.\nSei sicuro di trovarti nell'edificio?");
@@ -127,7 +130,12 @@ public class EmergenzaActivity extends DefaultActivity {
     }
 
 
-
+    /**
+     * metodo eseguito quando l'utente clicca sul bottone salvo. Consente di fermare manualmente la guida
+     * verso la via di fuga. In generale viene avvisato del fatto che probabilmente non si trova ancora al sicuro tramite un dialog.
+     * @param item il pulsante su cui a cliccato
+     * @return ritorna un booleano con l'esito dell'operazione
+     */
     public boolean salvo(MenuItem item){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -159,6 +167,10 @@ public class EmergenzaActivity extends DefaultActivity {
     }
 
 
+    /**
+     * metodo eseguito quando si esce dall'app e rimane in background
+     * elimina gli elementi grafici per evitare errori di memoria
+     */
     @Override
     public void onPause(){
         imageViewPiano.recycle();
@@ -169,6 +181,9 @@ public class EmergenzaActivity extends DefaultActivity {
         super.onPause();
     }
 
+    /**
+     * metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
+     */
     @Override
     public void onResume(){
         DAOPiano daoPiano = new DAOPiano(this);
@@ -186,6 +201,10 @@ public class EmergenzaActivity extends DefaultActivity {
     }
 
 
+    /**
+     * metodo eseguito quando si termina l'applicazioneo si cambia activity.
+     * anche qui si eliminano elementi grafici per evitare problemi di memoria
+     */
     @Override
     public void onDestroy(){
         if(bitmap != null) {
@@ -197,30 +216,35 @@ public class EmergenzaActivity extends DefaultActivity {
 
     }
 
+    /**
+     * oggetto che gestisce i messaggi provenienti dal servizio di ricerca del beacon più vicino.
+     *
+     */
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+        /**
+         * metodo che viene chiamato ogni volta che si ricevono messaggi dal servizio che crca i beacon.
+         * fa in modo di aggiornare l'interfaccia con la posizione aggiornata dell'utente, e ricalcola il percorso ogni volta
+         * che l'utente si connette ad un nuovo beacon
+         * @param context context dell'applicazione
+         * @param intent inttent che ha effettuato il broadcast
+         */
         @Override
         public void onReceive(final Context context, Intent intent) {
             String idBeacon = intent.getStringExtra("device");
-            utente_attivo.setBeaconid(idBeacon);
             DAOBeacon daoBeacon = new DAOBeacon(context);
             daoBeacon.open();
             Beacon beaconVecchio = daoBeacon.getBeaconById(utente_attivo.getBeaconid());
+            utente_attivo.setBeaconid(idBeacon);
             Beacon beaconNuovo = daoBeacon.getBeaconById(idBeacon);
-            DAOPiano daoPiano = new DAOPiano(context);
-            daoPiano.open();
-            int numeropiano = daoPiano.getNumeroPianoById(daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano());
-            daoPiano.close();
-            bitmap = ImageLoader.loadImageFromStorage(String.valueOf(numeropiano), context);
-            imageViewPiano.setImage(ImageSource.bitmap(bitmap));
             imageViewPiano.setBool(false);
             PointF pinMyPosition = new PointF(beaconNuovo.getCoordx(), beaconNuovo.getCoordy());
             imageViewPiano.setPinMyPosition(pinMyPosition);
 
-            if(!beaconNuovo.is_puntodiraccola()) {
+            if(!beaconNuovo.is_puntodiraccola()) { // se il beacon non è un punto di raccolta si fa richiesta di calcolare il percorso.
 
                 SharedPreferences sharedPreferences = context.getSharedPreferences("isConnesso", context.MODE_PRIVATE);
                 boolean connesso = sharedPreferences.getBoolean("connesso", false);
-                if (connesso) {
+                if (connesso) { //nel caso online
                     DAOUtente daoUtente = new DAOUtente(context);
                     daoUtente.open();
                     utente_attivo = daoUtente.findUtente();
@@ -228,25 +252,26 @@ public class EmergenzaActivity extends DefaultActivity {
                     richiestaPercorso.setUtente_attivo(utente_attivo);
                     richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
                     richiestaPercorso.getResult();
-                } else {
+                } else { //nel caso offline
                     percorsoEmer = richiestaPercorso.getPercorsoEmer();
-                    if (percorsoEmer.contains(beaconNuovo.getId())) {                          // significa che il pupo è nel percorso giusto, quindi va pulito il disegno
+                    if (percorsoEmer.contains(beaconNuovo.getId())) {                          // significa l'utente è nel percorso giusto, quindi va pulito il disegno
                         int indexBeaconUtente = percorsoEmer.indexOf(beaconNuovo.getId());
                         for (int i = 0; i < indexBeaconUtente; i++) {
                             percorsoEmer.remove(i);
                         }
                         imageViewPiano.play(daoBeacon.getCoords(percorsoEmer));
-                    } else {                                                                    //significa che il pupo è fuori strada, va quindi ricalcolato il percorso
+                    } else {                                                                    //significa l'utente è fuori strada, va quindi ricalcolato il percorso
                         richiestaPercorso.setUtente_attivo(utente_attivo);
                         richiestaPercorso.visualizzaPercorso(context, imageViewPiano);
                         richiestaPercorso.getResult();
                     }
 
                 }
-                if (beaconVecchio.getPiano() != beaconNuovo.getPiano()) {
+                if (beaconVecchio.getPiano() != beaconNuovo.getPiano()) { // si ricarica l'immagine se è cambiato il piano
                     DAOPiano pianoDao = new DAOPiano(context);
                     pianoDao.open();
-                    bitmap = ImageLoader.loadImageFromStorage(String.valueOf(daoPiano.getNumeroPianoById(beaconNuovo.getPiano())), context);
+                    int numeropiano = pianoDao.getNumeroPianoById(daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano());
+                    bitmap = ImageLoader.loadImageFromStorage(String.valueOf(numeropiano), context);
                     imageViewPiano.setImage(ImageSource.bitmap(bitmap));
                     pianoDao.close();
                 }
@@ -265,6 +290,10 @@ public class EmergenzaActivity extends DefaultActivity {
         }
     };
 
+    /**
+     * metodo eseguito se l'utente si trova in un punto di raccolta.
+     * Notifica l'utente tramite un messaggio
+     */
     private void showAlertSalvo() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Attenzione!");
@@ -285,6 +314,11 @@ public class EmergenzaActivity extends DefaultActivity {
         alert.show();
     }
 
+    /**
+     * metodo che controlla se un determinato servizio è in esecuzione
+     * @param serviceClass classe del servizio
+     * @return ritorna vero se il servizio è in esecuzione altrimenti falso.
+     */
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

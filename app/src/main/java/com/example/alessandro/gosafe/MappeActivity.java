@@ -1,19 +1,15 @@
 package com.example.alessandro.gosafe;
 
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.PointF;
 import android.support.design.widget.BottomNavigationView;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -57,6 +53,7 @@ public class MappeActivity extends DefaultActivity{
 
         imageViewPiano = (PinView) findViewById(R.id.imageViewPiano);
 
+        //inizializza lo spinner che cambia piano e immagine al click
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -76,7 +73,7 @@ public class MappeActivity extends DefaultActivity{
             }
         });
 
-        //serve per definire le gesture da rilevare, per ora lo uso solo per settare il pin con long press
+        //serve per definire le gesture da rilevare, viene usato solo per settare il pin con long press
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener());
 
         //setto il listener per l'evento
@@ -87,16 +84,20 @@ public class MappeActivity extends DefaultActivity{
             }
         });
 
-        /*Roba per cambiare pagina al click sulla bottomNavigationView*/
+        /*Cambia pagina al click sulla bottomNavigationView*/
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        /*Roba per settare icona nel bottomNavigationView*/
+        /*Settare l'icona nel bottomNavigationView*/
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
     }
 
+    /**
+     * metodo eseguito quando si esce dall'app e rimane in background
+     * elimina gli elementi grafici per evitare errori di memoria
+     */
     @Override
     public void onPause(){
         imageViewPiano.recycle();
@@ -107,6 +108,9 @@ public class MappeActivity extends DefaultActivity{
         super.onPause();
     }
 
+    /**
+     * metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
+     */
     @Override
     public void onResume(){
         String piano = spinner.getSelectedItem().toString();
@@ -117,6 +121,10 @@ public class MappeActivity extends DefaultActivity{
         super.onResume();
     }
 
+    /**
+     * metodo eseguito quando si termina l'applicazioneo si cambia activity.
+     * anche qui si eliminano elementi grafici per evitare problemi di memoria
+     */
     @Override
     public void onDestroy(){
         if(bitmap != null) {

@@ -38,7 +38,7 @@ public class ModificaActivity extends DefaultActivity {
         utente = daoUtente.findUtente();
         daoUtente.close();
 
-
+        //vengono caricate le caselle di input
         id_utente = utente.getId_utente();
         System.out.println("Id "+id_utente);
         modificaNomeText = (EditText) findViewById(R.id.modificaNomeText);

@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //verifica se il bluetooth è attivo, chiedendo all'utente di attivarlo qualora non lo sia
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter != null) {
             if (!mBluetoothAdapter.isEnabled()) {
@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+        //richiede accesso alla posizione altrimenti non funziona il rilevamento dei beacon
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         mUsernameView = (EditText) findViewById(R.id.username);
         mUsernameView.requestFocus();
 
+        //fa partire il login
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -82,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //fa partire l'activity di signup
         Button mSignUpButton = (Button) findViewById(R.id.signup);
         mSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -130,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
 
             focusView.requestFocus();
 
-        } else {
+        } else { // controlla l'indirizzo ip inserito
             if(mIpAddressView.getText().toString().length() < 2){
                 SharedPreferences.Editor editor = getSharedPreferences("ipAddress", MODE_PRIVATE).edit();
                 editor.putString("ipAddress", "10.0.2.2:8080");
@@ -152,14 +155,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * metodo che avvisa l'utente che il servizio di individuazione dei beacon non funziona se non si consente
+     * l'accesso alla posizione
+     * @param requestCode codice della richiesta
+     * @param permissions permessi
+     * @param grantResults garantire l'accesso
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_COARSE_LOCATION: {
                 if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Functionality limited");
-                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setTitle("Funzionalità Limitata");
+                    builder.setMessage("Dal momento che l'accesso alla posizione non è stata consentita, questa app non è in grado di individuare i beacon in background.");
                     builder.setPositiveButton(android.R.string.ok, null);
                     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
