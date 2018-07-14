@@ -17,7 +17,9 @@ import java.net.URL;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
+/**
+ * classe che si occupa di inviare le informazioni aggiornate al server
+ */
 public class AggiornamentoInfoServer {
 
     public void aggiornamentoPosizione(Utente utente, Context ctx) {

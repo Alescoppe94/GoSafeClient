@@ -3,20 +3,21 @@ package com.example.alessandro.gosafe.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 import com.example.alessandro.gosafe.entity.Utente;
 
-
+/**
+ * classe dao che si occupa di interfacciarsi con la tabella Utente
+ */
 public class DAOUtente {
     private DBHelper dbhelper;
     private Context ctx;
     private SQLiteDatabase db;
 
+    //costanti contenenti i nomi delle colonne della tabella
     public static final String TBL_NAME="Utente";
     public static final String FIELD_ID="ID_utente";
     public static final String FIELD_USER="username";
@@ -42,11 +43,20 @@ public class DAOUtente {
                     FIELD_IDSESSIONE
             };
 
+    /**
+     * costruttore
+     * @param ctx prende come parametro il Context dell'applicazione
+     */
     public DAOUtente(Context ctx)
     {
         this.ctx=ctx;
     }
 
+    /**
+     * apre la connessione alla tabella utente nel db
+     * @return ritorna l'oggetto contenente la connessione
+     * @throws SQLException
+     */
     public DAOUtente open() throws SQLException {
         dbhelper = new DBHelper(ctx);
         try {
@@ -57,11 +67,19 @@ public class DAOUtente {
         return this;
     }
 
+    /**
+     * chiude la connessione al db
+     */
     public void close()
     {
         dbhelper.close();
     }
 
+    /**
+     * prepara l'oggetto Utente per essere inserito nel db
+     * @param utente utente da inserire nel db
+     * @return ritorna ContentValues contenente l'utente pronto da inserire nel db
+     */
     private ContentValues createContentValues(Utente utente)
     {
         ContentValues cv=new ContentValues();
@@ -78,6 +96,11 @@ public class DAOUtente {
         return cv;
     }
 
+    /**
+     * metodo per salvare un utente nel db
+     * @param utente utente da inserire nel db
+     * @return ritorna un booleano con l'esito dell'operazione
+     */
     public boolean save(Utente utente)
     {
         boolean ins;
@@ -102,6 +125,10 @@ public class DAOUtente {
         }
     }
 
+    /**
+     * elimina tutti gli utenti nel db(ce n'è al massimo uno alla volta)
+     * @return ritorna un booleano con l'esito dell'operazione
+     */
     public boolean deleteAll()
     {
         try
@@ -137,6 +164,11 @@ public class DAOUtente {
         return utente;
     }
 
+    /**
+     * metodo che consente l'aggiornamento di un utente
+     * @param utente utente che deve essere aggiornato
+     * @return ritorna un booleano con l'esito dell'operazione
+     */
     public boolean update(Utente utente)
     {
         ContentValues updateValues = createContentValues(utente);

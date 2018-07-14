@@ -12,12 +12,16 @@ import com.example.alessandro.gosafe.entity.Tronco;
 
 import java.util.*;
 
+/**
+ * classe dao che si interfaccia con la tabella Tronco
+ */
 public class DAOTronco {
 
     private DBHelper dbhelper;
     private Context ctx;
     private SQLiteDatabase db;
 
+    //costanti contenenti i nomi delle colonne della tabella Tronco
     public static final String TBL_NAME="Tronco";
     public static final String FIELD_ID="ID_tronco";
     public static final String FIELD_BEACONAID="beaconAId";
@@ -33,11 +37,20 @@ public class DAOTronco {
                     FIELD_AREA
             };
 
+    /**
+     * costruttore
+     * @param ctx prende come parametro il Context dell'applicazione
+     */
     public DAOTronco(Context ctx)
     {
         this.ctx=ctx;
     }
 
+    /**
+     * apre la connessione con il db con la tabella Tronco
+     * @return ritorna l'oggetto contenente la connessione
+     * @throws SQLException
+     */
     public DAOTronco open() throws SQLException {
         dbhelper = new DBHelper(ctx);
         try {
@@ -48,11 +61,19 @@ public class DAOTronco {
         return this;
     }
 
+    /**
+     * metodo che chiude la connessione al db
+     */
     public void close()
     {
         dbhelper.close();
     }
 
+    /**
+     * metodo che si occupa di preparare l'oggetto Tronco per essere inserito nel db
+     * @param tronco tronco da inserire nel db
+     * @return ritorna un ContentValues contenente il tronco da inserire
+     */
     public ContentValues createContentValues(Tronco tronco)
     {
         ContentValues cv=new ContentValues();
@@ -64,6 +85,11 @@ public class DAOTronco {
         return cv;
     }
 
+    /**
+     * metodo che salva un tronco nel db
+     * @param tronco tronco da salvare nel db
+     * @return ritorna un booleano con l'esito dell'operazione
+     */
     public boolean save(Tronco tronco)
     {
         boolean ins;
@@ -88,6 +114,11 @@ public class DAOTronco {
         return false;
     }
 
+    /**
+     * metodo che aggiorna un tronco nel db
+     * @param tronco tronco da aggiornare
+     * @return ritorna un booleano con l'esito dell'operazione
+     */
     public boolean update(Tronco tronco)
     {
         ContentValues updateValues = createContentValues(tronco);
@@ -102,6 +133,12 @@ public class DAOTronco {
         return false;
     }
 
+    /**
+     * metodo che dati due beacon estremi restituisce il tronco corrispondente. l'ordine non è importante
+     * @param beaconA primo beacon estremo
+     * @param beaconB secondo beacon estremo
+     * @return ritorna il tronco corrispondente
+     */
     public Tronco getTroncoByBeacons(Beacon beaconA, Beacon beaconB) {
 
         Cursor crs;
@@ -129,6 +166,11 @@ public class DAOTronco {
         return tronco;
     }
 
+    /**
+     * metodo che si occupa di recuperare la direzione del tronco
+     * @param troncoOttimo tronco di cui verificare la direzione
+     * @return ritorna un booleano con contenente la direzione. ritorna false se ha direzione opposta a come è salvato nel db
+     */
     public boolean checkDirezioneTronco(Tronco troncoOttimo) {
 
         Cursor crs;
@@ -147,6 +189,10 @@ public class DAOTronco {
         return success;
     }
 
+    /**
+     * recupera tutti i tronchi nel db
+     * @return ritorna un Set di tronchi
+     */
     public Set<Tronco> getAllTronchi() {
 
         Set<Tronco> allTronchiEdificio = new HashSet<>();

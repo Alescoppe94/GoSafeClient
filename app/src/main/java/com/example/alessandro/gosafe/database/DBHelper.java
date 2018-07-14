@@ -14,6 +14,8 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "gosafe.db";
     private static final int DB_VERSION = 14;
     private Context context;
+
+    //di seguito sono contenute le strutture delle tabelle del db
     private static final String TABLE_UTENTE = "CREATE TABLE " + DAOUtente.TBL_NAME + " (" +
             DAOUtente.FIELD_ID + " INTEGER PRIMARY KEY NOT NULL, " +
             DAOUtente.FIELD_NOME + " TEXT NOT NULL, " +
@@ -56,11 +58,19 @@ class DBHelper extends SQLiteOpenHelper {
             DAOPesiTronco.FIELD_PESOID + " INTEGER NOT NULL, " +
             DAOPesiTronco.FIELD_VALORE + " REAL NOT NULL)";
 
+    /**
+     * costruttore
+     * @param context prende il Context dell'applicazione
+     */
     DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
     }
 
+    /**
+     * metodo eseguito all'avvio che crea tutte le tabelle
+     * @param db prende in input il db su cui creare le tabelle
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -72,9 +82,15 @@ class DBHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_PESITRONCO);
     }
 
+    /**
+     * metodo eseguito qualora ci sia un cambiamento della struttura del db.
+     * @param db database su cui avviene la modifica della struttura
+     * @param oldVersion numero di versione del vecchio db
+     * @param newVersion numero di versione del nuovo db
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //gestire upgrade, al momento perde i dati vecchi
+
         db.execSQL("DROP TABLE IF EXISTS " + DAOUtente.TBL_NAME);
         db.execSQL(TABLE_UTENTE);
         db.execSQL("DROP TABLE IF EXISTS " + DAOTronco.TBL_NAME);
@@ -94,22 +110,42 @@ class DBHelper extends SQLiteOpenHelper {
         editor.commit();
     }
 
+    /**
+     * metodo per recuperare il nome della tabella Tronco
+     * @return ritorna il nome della tabella Tronco
+     */
     public static String getTableTronco() {
         return TABLE_TRONCO;
     }
 
+    /**
+     * metodo per recuperare il nome della tabella Beacon
+     * @return ritorna il nome della tabella Beacon
+     */
     public static String getTableBeacon() {
         return TABLE_BEACON;
     }
 
+    /**
+     * metodo per recuperare il nome della tabella Piano
+     * @return ritorna il nome della tabella Piano
+     */
     public static String getTablePiano() {
         return TABLE_PIANO;
     }
 
+    /**
+     * metodo per recuperare il nome della tabella Peso
+     * @return ritorna il nome della tabella Peso
+     */
     public static String getTablePeso() {
         return TABLE_PESO;
     }
 
+    /**
+     * metodo per recuperare il nome della tabella PesiTronco
+     * @return ritorna il nome della tabella PesiTronco
+     */
     public static String getTablePesitronco() {
         return TABLE_PESITRONCO;
     }

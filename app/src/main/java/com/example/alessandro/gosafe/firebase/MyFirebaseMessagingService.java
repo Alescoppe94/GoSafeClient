@@ -17,20 +17,29 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
-
+/**
+ * classe servizio che gestisce l'arrivo della notifica inviata da firebase
+ */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    /**
+     * metodo eseguito ogni volta che arriva un messaggio da firebase
+     * @param remoteMessage rappresenta la notifica firebase
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
+        //imposta l'emergenza a true all'interno dell'applicazione
         SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
         editor.putBoolean("emergenza", true);
         editor.apply();
 
         Map<String, String> data = remoteMessage.getData();
 
+        //gestore delle notifiche
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        //gestisce le notifiche da oreo in poi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel("default", "My Notifications", NotificationManager.IMPORTANCE_HIGH);
 
@@ -43,6 +52,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
+        //impostazioni generali per tutte le versioni di android
         Intent intent = new Intent(this, EmergenzaActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
