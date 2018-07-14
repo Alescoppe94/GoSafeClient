@@ -31,23 +31,37 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * classe che modella il servizio che controlla se ci sono aggiornamenti sul database del server
+ */
 public class CheckForDbUpdatesService extends Service {
 
     private HttpURLConnection connection;
     private Timer timer;
     private TimerTask timertask;
 
+    /**
+     * metodo che parte subito all'avvio del servizio. in questo caso non fa nulla
+     */
     @Override
     public void onCreate(){
 
     }
 
+    /**
+     * metodo che parte ogni volta che il servizio viene avviato o riavviato.
+     * imposta il timer che gestisce il controllo periodico di aggiornamenti
+     * @param intent intent che ha avviato il servizio
+     * @param flags flags di impostazione
+     * @param startId
+     * @return
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
 
+        //timer che gestisce il loop di controllo degli aggiornamenti sul server
         timer = new Timer();
         timertask = new TimerTask() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void run() {
                 checkForUpdates();
@@ -64,17 +78,25 @@ public class CheckForDbUpdatesService extends Service {
         return null;
     }
 
+    /**
+     * metodo che gestisce la terminazione del servizio
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
-        timertask.cancel();
+        timertask.cancel(); // si fermano i timer
         timer.cancel();
         timertask = null;
         timer = null;
     }
 
+    /**
+     * metodo che si occupa di fare una chiamata GET al server per recuperare eventuali aggiiornamenti del database sul server.
+     * se ci sono vengono inseriti nel db locale
+     */
     private void checkForUpdates(){
 
+        //controlla la connessione
         CheckConnessione checkConnessione = new CheckConnessione();
         boolean connesso = checkConnessione.checkConnessione(getApplicationContext());
 
@@ -83,7 +105,7 @@ public class CheckForDbUpdatesService extends Service {
             String result = null;
             SharedPreferences prefs = getSharedPreferences("dblastupdate", MODE_PRIVATE);
             if (prefs != null) {
-                long lastModified = prefs.getLong("last_update", 0);
+                long lastModified = prefs.getLong("last_update", 0); //va a prendere l'ultima modifica del db locale
                 String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModified);
 
                 try {
@@ -96,14 +118,16 @@ public class CheckForDbUpdatesService extends Service {
                         String base64 = Base64.encodeToString(data, Base64.DEFAULT);
                         SharedPreferences pref = getSharedPreferences("ipAddress", MODE_PRIVATE);
                         String path = pref.getString("ipAddress", null);
-                        String request = "http://" + path +"/gestionemappe/db/secured/aggiornadb/" + formattedDate;
+                        String request = "http://" + path +"/gestionemappe/db/secured/aggiornadb/" + formattedDate; //url a cui fare la richiesta. si manda la data dell'ultima modifica nell'url
                         URL url = new URL(request);
                         connection = (HttpURLConnection) url.openConnection();
+                        //imposta l'header della richiesta
                         connection.setRequestMethod("GET");
                         connection.setRequestProperty("Content-Type", "application/json");
                         connection.setRequestProperty("Accept", "application/json");
                         connection.setRequestProperty("Authorization", "basic " + base64);
                         connection.connect();
+                        //si analizza il risultato
                         int responseCode = connection.getResponseCode();
                         if (400 > responseCode || responseCode >= 500) {
 
@@ -111,6 +135,7 @@ public class CheckForDbUpdatesService extends Service {
                             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                             String inputLine;
 
+                            //si scrive il risultato in una stringa
                             while ((inputLine = br.readLine()) != null) {
                                 sb.append(inputLine + "\n");
                             }
@@ -130,6 +155,7 @@ public class CheckForDbUpdatesService extends Service {
                         }
                     }
                 }
+                //se il risultato è diverso da nullo o diverso da una stringa vuota viene invocato il metodo per aggiornare il db
                 if (result != null && !result.equals("")) {
                     updateDB(result);
                 }
@@ -137,12 +163,19 @@ public class CheckForDbUpdatesService extends Service {
         }
     }
 
+    /**
+     * metodo che si occupa di aggiornare il db con le informazioni provenienti dal server
+     * @param result contiene il risultato della richiesta al server
+     */
     private void updateDB(String result) {
 
+        //viene trasformato in json
         JsonObject jsonResponse = new Gson().fromJson(result, JsonObject.class);
 
-        if(jsonResponse.get("tipologia").getAsString().equals("modifica")) {
+        //si controlla il tipo. può essere una modifica o un'inizializzazione da zero del db.
+        if(jsonResponse.get("tipologia").getAsString().equals("modifica")) { //se è una modifica...
 
+            //inserisce eventuali nuovi tronchi
             if (jsonResponse.get("tronco").getAsJsonArray().size() != 0) {
 
                 DAOTronco troncodao = new DAOTronco(getApplicationContext());
@@ -169,6 +202,7 @@ public class CheckForDbUpdatesService extends Service {
                 troncodao.close();
             }
 
+            //inserisce eventuali nuovi beacon
             if (jsonResponse.get("beacon").getAsJsonArray().size() != 0) {
 
                 DAOBeacon beacondao = new DAOBeacon(getApplicationContext());
@@ -187,6 +221,7 @@ public class CheckForDbUpdatesService extends Service {
                 beacondao.close();
             }
 
+            //inserisce eventuali nuovi piani
             if (jsonResponse.get("piano").getAsJsonArray().size() != 0) {
 
                 DAOPiano pianodao = new DAOPiano(getApplicationContext());
@@ -199,12 +234,12 @@ public class CheckForDbUpdatesService extends Service {
                     boolean notInDb = pianodao.save(piano);
                     if (!notInDb) {
                         pianodao.update(piano);
-
                     }
                 }
                 pianodao.close();
             }
 
+            //inserisce eventuali nuovi pesi
             if (jsonResponse.get("peso").getAsJsonArray().size() != 0) {
 
                 DAOPeso pesodao = new DAOPeso(getApplicationContext());
@@ -222,6 +257,7 @@ public class CheckForDbUpdatesService extends Service {
                 pesodao.close();
             }
 
+            //inserisce eventuali nuovi pesitronco
             if (jsonResponse.get("pesitronco").getAsJsonArray().size() != 0) {
 
                 DAOPesiTronco pesitroncodao = new DAOPesiTronco(getApplicationContext());
@@ -239,13 +275,14 @@ public class CheckForDbUpdatesService extends Service {
                 pesitroncodao.close();
             }
         }
-        else {
+        else { // se entra qui viene ricreato il db
             DAOGeneric daoGeneric = new DAOGeneric(getApplicationContext());
             daoGeneric.open();
             daoGeneric.ricreaDb(jsonResponse);
             daoGeneric.close();
         }
 
+        //quando c'è un update si modifica la data dell'ultimo aggiornamento
         SharedPreferences.Editor editor = getSharedPreferences("dblastupdate", MODE_PRIVATE).edit();
         editor.putLong("last_update", System.currentTimeMillis());
         editor.apply();

@@ -20,15 +20,25 @@ import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
+/**
+ * metodo che si occupa di scaricare il db al primo avvio
+ */
 public class DbDownloadFirstBoot {
 
     AsyncTask<Void, Void, String> task;
 
+    /**
+     * metodo che si occupa di avviare l'AsyncTask che si occupa di scaricare il db
+     * @param ctx context dell'applicazione
+     */
     public void dbdownloadFirstBootAsyncTask(Context ctx){
         task = new DbDownloadFirstBootAsyncTask(ctx).execute();
     }
 
+    /**
+     * metodo che ritorna il risultato dell'operazione di inserimento
+     * @return ritorna il risultato sotto forma di stringa
+     */
     public String getResult(){
         try {
             return task.get();
@@ -40,17 +50,27 @@ public class DbDownloadFirstBoot {
         return null;
     }
 
+    /**
+     * classe che modella l'AsyncTask che si occupa di scaricare il db al primo avvio
+     */
     private class DbDownloadFirstBootAsyncTask extends AsyncTask<Void, Void, String>{
 
         Context ctx;
         private boolean connesso;
 
+        /**
+         * costruttore
+         * @param ctx context dell'applicazione
+         */
         public DbDownloadFirstBootAsyncTask(Context ctx){
 
             this.ctx=ctx;
 
         }
 
+        /**
+         * metodo avviato prima di eseguirel'asynctask vero e proprio. controlla la connessione
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -58,6 +78,11 @@ public class DbDownloadFirstBoot {
             connesso = checkConnessione.checkConnessione(ctx);
         }
 
+        /**
+         * metodo che rappresenta l'asynctask vero e proprio. Fa una richiesta GET al server per ottenere il db.
+         * @param voids è un parametro nullo
+         * @return ritorna il risultato
+         */
         @Override
         protected String doInBackground(Void... voids) {
 
@@ -75,14 +100,16 @@ public class DbDownloadFirstBoot {
                     String base64 = Base64.encodeToString(data,Base64.DEFAULT);
                     SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
                     String path = prefs.getString("ipAddress", null);
-                    URL url = new URL("http://" + path +"/gestionemappe/db/secured/download");
+                    URL url = new URL("http://" + path +"/gestionemappe/db/secured/download"); //url della richiesta
                     connection = (HttpURLConnection) url.openConnection();
+                    //imposta l'header della richiesta
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Content-Type", "application/json");
                     connection.setRequestProperty("Accept", "application/json");
                     connection.setRequestProperty("Authorization", "basic " + base64);
                     connection.connect();
 
+                    //si analizza il codice della risposta
                     int responseCode = connection.getResponseCode();
                     if(400 <= responseCode && responseCode <= 499){
                         this.cancel(true);
@@ -93,6 +120,7 @@ public class DbDownloadFirstBoot {
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                     String inputLine;
 
+                    //si scrive la risposta in una stringa
                     while ((inputLine = br.readLine()) != null) {
                         sb.append(inputLine + "\n");
                     }
@@ -114,10 +142,16 @@ public class DbDownloadFirstBoot {
             return null;
         }
 
+        /**
+         * metodo eseguito dopo doInBackground. è un metodo di raccordo tra AsyncTask e Main thread.
+         * si occupa di analizzare la risposta del server
+         * @param result risultato del server
+         */
         @Override
         protected void onPostExecute(String result){
             super.onPostExecute(result);
 
+            //se il server non è offline
             if(result!=null) {
                 Gson gson = new Gson();
 
@@ -125,9 +159,10 @@ public class DbDownloadFirstBoot {
 
                 DAOGeneric daoGeneric = new DAOGeneric(ctx);
                 daoGeneric.open();
-                daoGeneric.ricreaDb(tabelleJson);
+                daoGeneric.ricreaDb(tabelleJson); //si ricrea il db
                 daoGeneric.close();
 
+                //si setta la data di ultimo update
                 SharedPreferences.Editor editor = ctx.getSharedPreferences("dblastupdate", MODE_PRIVATE).edit();
                 editor.putLong("last_update", System.currentTimeMillis());
                 editor.apply();
