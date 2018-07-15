@@ -212,7 +212,6 @@ public class RichiestaPercorso {
                 try {
                     byte[] data = utente_attivo.getIdsessione().getBytes("UTF-8");
                     String base64 = android.util.Base64.encodeToString(data, Base64.DEFAULT);
-                    System.out.println("BEACON DI ARRIVO IN RICH PERC: " +beaconArr);
                     SharedPreferences prefs = ctx.getSharedPreferences("ipAddress", MODE_PRIVATE);
                     String path = prefs.getString("ipAddress", null);
                     URL url = new URL("http://" + path + "/gestionemappe/mappe/secured/calcolapercorso/"+utente_attivo.getBeaconid()+"/"+beaconArr+""); //Gli devo passare il beacon d'arrivo. è l'url della chiamata REST
@@ -276,10 +275,8 @@ public class RichiestaPercorso {
 
             if(result==null){ /*Se il server è down richiede il calcolo in locale.*/
                 percorsoPost = calcolaPercorsoNoEmergenza(ctx, beaconArr);
-                System.out.println("Percorso finale: "+percorsoPost);
             } else { /*Se il server è up setta il percorso così come viene restituito dal server*/
                 percorsoPost = new Gson().fromJson(result, Percorso.class);
-                System.out.println("Percorso finale: "+percorsoPost.getTappe());
 
             }
 
@@ -438,41 +435,44 @@ public class RichiestaPercorso {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            if (result == null) { // se il server è offline calcola il percorso localmente
-                percorsoEmergenza = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(),ctx);
-            } else { //altrimenti si estrae il percorso dalla notifica proveniente dal server sotto forma di json
-                Notifica notifica = new Gson().fromJson(result, Notifica.class);
-                percorsoEmergenza = notifica.getPercorso();
-            }
-            // Si traduce il Percorso percorsoEmergenza in Tappe poi in Tronchi poi in ArrayList<Integer> percorso che rappresenta la sequenza di beacon
-            percorsoEmer.clear();
-            percorsoEmer.add(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId());
-            DAOBeacon daoBeacon = new DAOBeacon(ctx);
-            daoBeacon.open();
-            int pianoId = daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano();
-            for (int i = 1; i < percorsoEmergenza.getTappe().size() - 1; i++) {
-                Tappa tappa = percorsoEmergenza.getTappe().get(i);
-                Beacon beacon = tappa.getTronco().getBeaconEstremi().get(0);
-                if(beacon.getPiano() == pianoId) {
-                    percorsoEmer.add(beacon.getId());
+            try {
+                if (result == null) { // se il server è offline calcola il percorso localmente
+                    percorsoEmergenza = calcolaPercorsoEmergenza(utente_attivo.getBeaconid(), ctx);
+                } else { //altrimenti si estrae il percorso dalla notifica proveniente dal server sotto forma di json
+                    Notifica notifica = new Gson().fromJson(result, Notifica.class);
+                    percorsoEmergenza = notifica.getPercorso();
                 }
-            }
-            Beacon penultimoBeacon = percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0);
-            Beacon ultimoBeacon = percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1);
-            if(penultimoBeacon.getPiano() == pianoId) {
-                percorsoEmer.add(penultimoBeacon.getId());
-            }
-            //controlla se un percorso è su più piani
-            boolean percorsoConPiuPiani = false;
-            if(ultimoBeacon.getPiano() == pianoId) {
-                percorsoEmer.add(ultimoBeacon.getId());
-            }
-            else percorsoConPiuPiani = true;
+                // Si traduce il Percorso percorsoEmergenza in Tappe poi in Tronchi poi in ArrayList<Integer> percorso che rappresenta la sequenza di beacon
+                percorsoEmer.clear();
+                percorsoEmer.add(percorsoEmergenza.getTappe().get(0).getTronco().getBeaconEstremi().get(0).getId());
+                DAOBeacon daoBeacon = new DAOBeacon(ctx);
+                daoBeacon.open();
+                int pianoId = daoBeacon.getBeaconById(utente_attivo.getBeaconid()).getPiano();
+                for (int i = 1; i < percorsoEmergenza.getTappe().size() - 1; i++) {
+                    Tappa tappa = percorsoEmergenza.getTappe().get(i);
+                    Beacon beacon = tappa.getTronco().getBeaconEstremi().get(0);
+                    if (beacon.getPiano() == pianoId) {
+                        percorsoEmer.add(beacon.getId());
+                    }
+                }
+                Beacon penultimoBeacon = percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(0);
+                Beacon ultimoBeacon = percorsoEmergenza.getTappe().get(percorsoEmergenza.getTappe().size() - 1).getTronco().getBeaconEstremi().get(1);
+                if (penultimoBeacon.getPiano() == pianoId) {
+                    percorsoEmer.add(penultimoBeacon.getId());
+                }
+                //controlla se un percorso è su più piani
+                boolean percorsoConPiuPiani = false;
+                if (ultimoBeacon.getPiano() == pianoId) {
+                    percorsoEmer.add(ultimoBeacon.getId());
+                } else percorsoConPiuPiani = true;
 
-            coordEmergenza = daoBeacon.getCoords(percorsoEmer);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
-            imageViewPiano.setPercorsoConPiuPiani(percorsoConPiuPiani);
-            imageViewPiano.play(coordEmergenza); // viene disegnato il percorso
-            daoBeacon.close();
+                coordEmergenza = daoBeacon.getCoords(percorsoEmer);  // Crea una lista in cui vengono contenuti le coordinate di tutti i beacon del percorso
+                imageViewPiano.setPercorsoConPiuPiani(percorsoConPiuPiani);
+                imageViewPiano.play(coordEmergenza); // viene disegnato il percorso
+                daoBeacon.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

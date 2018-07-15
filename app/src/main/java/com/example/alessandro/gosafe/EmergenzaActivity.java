@@ -218,7 +218,6 @@ public class EmergenzaActivity extends DefaultActivity {
 
     /**
      * oggetto che gestisce i messaggi provenienti dal servizio di ricerca del beacon più vicino.
-     *
      */
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         /**

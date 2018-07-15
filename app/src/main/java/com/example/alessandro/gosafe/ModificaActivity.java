@@ -40,7 +40,6 @@ public class ModificaActivity extends DefaultActivity {
 
         //vengono caricate le caselle di input
         id_utente = utente.getId_utente();
-        System.out.println("Id "+id_utente);
         modificaNomeText = (EditText) findViewById(R.id.modificaNomeText);
         modificaCognomeText = (EditText) findViewById(R.id.modificaCognomeText);
         modificaUsernameText = (EditText) findViewById(R.id.modificaUsernameText);

@@ -176,7 +176,6 @@ public class VaiActivity extends DefaultActivity {
                         int coordx = cursor.getInt(cursor.getColumnIndex("coordx"));
                         int coordy = cursor.getInt(cursor.getColumnIndex("coordy"));
                         distance = (float)Math.sqrt(((sCoord.x-coordx)*(sCoord.x-coordx))+((sCoord.y-coordy)*(sCoord.y-coordy)));
-                        System.out.println("Distanza: " +distance);
                         if (distance < temp){
                             temp=distance;
                             idbeacondestinazione=cursor.getString(cursor.getColumnIndex("ID_beacon"));

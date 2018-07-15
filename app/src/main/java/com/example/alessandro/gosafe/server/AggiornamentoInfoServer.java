@@ -110,7 +110,6 @@ public class AggiornamentoInfoServer {
                         while ((inputeLine = bre.readLine()) != null) {
                             sbe.append(inputeLine + "\n");
                         }
-                        System.out.println(sbe.toString());
                         bre.close();
                     }else{
                         StringBuilder sb = new StringBuilder();
