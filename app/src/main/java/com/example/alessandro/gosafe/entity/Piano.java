@@ -1,7 +1,7 @@
 package com.example.alessandro.gosafe.entity;
 
 /**
- * classe che modella l'entity Piano
+ * Classe che modella l'entity Piano
  */
 public class Piano {
 
@@ -11,7 +11,7 @@ public class Piano {
     private Tronco[] tronchi;
 
     /**
-     * costruttore
+     * Costruttore
      * @param id id del Piano
      * @param immagine immagine del Piano
      * @param piano numero del Piano
@@ -23,7 +23,7 @@ public class Piano {
     }
 
     /**
-     * metodo getter per recuperare l'id del Piano
+     * Metodo getter per recuperare l'id del Piano
      * @return ritorna l'id del Piano
      */
     public int getId() {
@@ -31,7 +31,7 @@ public class Piano {
     }
 
     /**
-     * metodo setter che imposta l'id del Piano
+     * Metodo setter che imposta l'id del Piano
      * @param id riceve l'id da impostare
      */
     public void setId(int id) {
@@ -39,7 +39,7 @@ public class Piano {
     }
 
     /**
-     * metodo getter per recuperare l'immagine
+     * Metodo getter per recuperare l'immagine
      * @return ritorna l'immagine sotto forma di stringa base 64
      */
     public String getImmagine() {
@@ -47,7 +47,7 @@ public class Piano {
     }
 
     /**
-     * metodo getter che ritorna il numero del Piano
+     * Metodo getter che ritorna il numero del Piano
      * @return ritorna il numero del Piano
      */
     public int getPiano() {

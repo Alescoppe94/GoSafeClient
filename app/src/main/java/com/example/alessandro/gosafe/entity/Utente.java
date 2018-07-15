@@ -8,7 +8,7 @@ import com.example.alessandro.gosafe.firebase.MyFirebaseInstanceIdService;
 import java.io.Serializable;
 
 /**
- * classe che si occupa di modellare l'entity Utente
+ * Classe che si occupa di modellare l'entity Utente
  */
 public class Utente implements Serializable { //aggiunto serializable per mandare l'intent da autenticazionetask a Mainactivity
 
@@ -24,7 +24,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     private String idsessione;
 
     /**
-     * costruttore
+     * Costruttore
      * @param username username dell'utente
      * @param password password dell'utente
      */
@@ -37,7 +37,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * costruttore
+     * Costruttore
      * @param username username dell'utente
      * @param password password dell'utente
      * @param nome nome dell'utente
@@ -54,7 +54,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * costruttore
+     * Costruttore
      * @param id_utente id dell'utente
      * @param username username dell'utente
      * @param password password dell'utente
@@ -79,6 +79,17 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
         this.idsessione = idsessione;
     }
 
+    /**
+     * Costruttore
+     * @param username username dell'utente
+     * @param password password dell'utente
+     * @param nome nome dell'utente
+     * @param cognome cognome dell'utente
+     * @param beaconid id del beacon a cui è connesso l'utente
+     * @param percorsoid id del percorso di fuga assegnato all'utente
+     * @param is_autenticato booleano che indica se l'utente è autenticato sul server
+     * @param token token firebase assegnato all'utente
+     */
     public Utente(String username, String password, String nome, String cognome, String beaconid, int percorsoid, boolean is_autenticato, String token) {
         this.username = username;
         this.password = password;
@@ -91,7 +102,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter che recuperare l'id del beacon a cui l'utente è connesso
+     * Metodo getter per recuperare l'id del beacon a cui l'utente è connesso
      * @return ritorna una stringa con l'id del beacon
      */
     public String getBeaconid() {
@@ -99,7 +110,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo setter per impostare il beacon a cui l'utente è connesso
+     * Metodo setter per impostare il beacon a cui l'utente è connesso
      * @param beaconid id del nuovo beeacona cui l'utente è connesso
      */
     public void setBeaconid(String beaconid) {
@@ -107,7 +118,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter che recupera l'id del percorso assegnato all'utente
+     * Metodo getter che recupera l'id del percorso assegnato all'utente
      * @return ritorna un intero con l'id del percorso
      */
     public int getPercorsoid() {
@@ -115,7 +126,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare il token di firebase assegnato all'utente
+     * Metodo getter per recuperare il token di firebase assegnato all'utente
      * @return ritorna una stringa con il token firebase
      */
     public String getToken() {
@@ -123,7 +134,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo setter che imposta l'id dell'utente
+     * Metodo setter che imposta l'id dell'utente
      * @param id riceve in input l'id dell'utente
      */
     public void setId_utente(long id){
@@ -131,7 +142,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo setter che imposta se l'utente è autenticato sul server
+     * Metodo setter che imposta se l'utente è autenticato sul server
      * @param autenticato riceve un booleano di valore diverso in base a se l'utente è autenticato o meno
      */
     public void setIs_autenticato(Boolean autenticato){
@@ -139,7 +150,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare se l'utente è autenticato
+     * Metodo getter per recuperare se l'utente è autenticato
      * @return ritorna un booleano di valore diverso in base al fatto che l'utente è autenticato
      */
     public boolean getIs_autenticato() {
@@ -147,7 +158,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare lo username dell'utente
+     * Metodo getter per recuperare lo username dell'utente
      * @return ritorna lo username
      */
     public String getUsername(){
@@ -155,7 +166,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo setter che imposta lo username dell'utente
+     * Metodo setter che imposta lo username dell'utente
      * @param username username da impostare nell'oggetto utente
      */
     public void setUsername(String username) {
@@ -163,7 +174,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter che recupera la password dell'utente
+     * Metodo getter che recupera la password dell'utente
      * @return ritorna la password dell'utente
      */
     public String getPassword() {
@@ -171,7 +182,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo setter per impostare la password
+     * Metodo setter per impostare la password
      * @param password riceve come input la password da impostare
      */
     public void setPassword(String password) {
@@ -179,7 +190,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare il nome dell'utente
+     * Metodo getter per recuperare il nome dell'utente
      * @return ritorna il nome dell'utente
      */
     public String getNome() {
@@ -187,7 +198,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo setter per impostare il nome
+     * Metodo setter per impostare il nome
      * @param nome nome da settare nell'utente
      */
     public void setNome(String nome) {
@@ -195,7 +206,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare il cognome dell'utente
+     * Metodo getter per recuperare il cognome dell'utente
      * @return ritorna il cognome
      */
     public String getCognome() {
@@ -203,7 +214,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo setter per impostare il cognome dell'utente
+     * Metodo setter per impostare il cognome dell'utente
      * @param cognome cognome da impostare
      */
     public void setCognome(String cognome) {
@@ -211,7 +222,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo che imposta la posizione dell'utente sul db e nella variabile beaconId della classe
+     * Metodo che imposta la posizione dell'utente sul db e nella variabile beaconId della classe
      * @param pos rappresenta il beacon a cui è connesso l'utente
      * @param ctx Context dell'applicazione necessaria per aprire la connessione al db
      */
@@ -224,7 +235,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare la posizione dell'utente
+     * Metodo getter per recuperare la posizione dell'utente
      * @return ritorna la posizione dell'utente. è una stringa con il MAC address del beacon
      */
     public String getPosition(){
@@ -232,7 +243,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare l'id dell'utente
+     * Metodo getter per recuperare l'id dell'utente
      * @return ritorna l'id dell'utente
      */
     public long getId_utente() {
@@ -240,7 +251,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo getter per recuperare l'id di sessione dell'utente
+     * Metodo getter per recuperare l'id di sessione dell'utente
      * @return ritorna l'id di sessione salvato nell'oggetto utente
      */
     public String getIdsessione() {
@@ -248,7 +259,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     *metodo setter per impostare l'id sessione nell'oggetto utente
+     * Metodo setter per impostare l'id sessione nell'oggetto utente
      * @param idsessione id della sessione ricevuto dal server
      */
     public void setIdsessione(String idsessione) {
@@ -256,7 +267,7 @@ public class Utente implements Serializable { //aggiunto serializable per mandar
     }
 
     /**
-     * metodo che si occupa di salvare nel db locale l'utente che si è appena loggato/registrato.
+     * Metodo che si occupa di salvare nel db locale l'utente che si è appena loggato/registrato.
      * @param ctx riceve il Context dell'applicazione necessario per realizzare la connessione con il db
      */
     public void registrazioneLocale(Context ctx) {

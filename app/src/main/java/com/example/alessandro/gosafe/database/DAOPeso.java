@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 /**
- *classe dao che gestisce la tabella Peso
+ *Classe dao che gestisce la tabella Peso
  */
 public class DAOPeso {
 
@@ -29,7 +29,7 @@ public class DAOPeso {
             };
 
     /**
-     * costruttore
+     * Costruttore
      * @param ctx prende il Context
      */
     public DAOPeso(Context ctx)
@@ -38,7 +38,7 @@ public class DAOPeso {
     }
 
     /**
-     * apre la connessione al db
+     * Apre la connessione al db
      * @return ritorna l'oggetto contenente la connessione al db
      * @throws SQLException
      */
@@ -53,7 +53,7 @@ public class DAOPeso {
     }
 
     /**
-     * chiude la connessione al db
+     * Chiude la connessione al db
      */
     public void close()
     {
@@ -61,7 +61,7 @@ public class DAOPeso {
     }
 
     /**
-     * prepara il peso da inserire nel db
+     * Prepara il peso da inserire nel db
      * @param idPeso id del peso da aggiungere
      * @param nome nome del peso da aggiungere
      * @param coeff valore del peso da aggiungere
@@ -77,7 +77,7 @@ public class DAOPeso {
     }
 
     /**
-     * salva un nuovo peso nel db
+     * Salva un nuovo peso nel db
      * @param idPeso id del nuovo peso
      * @param nome nome del nuovo peso
      * @param coeff valore del nuovo peso
@@ -94,7 +94,7 @@ public class DAOPeso {
                 ContentValues initialValues = createContentValues(idPeso, nome, coeff);
                 ins = db.insert(TBL_NAME, null, initialValues)>=0;
             }
-            else//esiste già un beacon con questo id
+            else//esiste già un peso con questo id
                 ins = false;
             crs.close();
             return ins;
@@ -107,7 +107,7 @@ public class DAOPeso {
     }
 
     /**
-     * metodo che aggiorna il coeffieciente di un peso
+     * Metodo che aggiorna il coeffieciente di un peso
      * @param idPeso id del peso da aggiornare
      * @param nome eventuale nuovo nome del peso da aggiornare
      * @param coeff nuovo valore del coefficiente

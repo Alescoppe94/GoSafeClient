@@ -1,7 +1,7 @@
 package com.example.alessandro.gosafe.entity;
 
 /**
- * classe che modella l'entity Notifica
+ * Classe che modella l'entity Notifica
  */
 public class Notifica {
 
@@ -11,7 +11,7 @@ public class Notifica {
     private String messaggio;
 
     /**
-     * costruttore
+     * Costruttore
      * @param utenteId id dell'utente a cui è rivolta la notifica
      * @param percorso percorso ricevuto dal server
      * @param messaggio messaggio ricevuto sal server
@@ -23,7 +23,7 @@ public class Notifica {
     }
 
     /**
-     * metodo getter che recupera l'id della notifica
+     * Metodo getter che recupera l'id della notifica
      * @return ritorna l'id della notifica
      */
     public int getId() {
@@ -31,7 +31,7 @@ public class Notifica {
     }
 
     /**
-     * metodo setter che imposta l'id della notifica
+     * Metodo setter che imposta l'id della notifica
      * @param id prende l'id della notifica
      */
     public void setId(int id) {
@@ -39,7 +39,7 @@ public class Notifica {
     }
 
     /**
-     * metodo getter che recupera il percorso ricevuto dal server
+     * Metodo getter che recupera il percorso ricevuto dal server
      * @return ritorna il percorso. e' il percorso di evacuazione
      */
     public Percorso getPercorso() {

@@ -1,7 +1,7 @@
 package com.example.alessandro.gosafe.entity;
 
 /**
- * classe che modella l'entity Tappa. serve per dare una direzione a un Tronco
+ * Classe che modella l'entity Tappa. serve per dare una direzione a un Tronco
  */
 public class Tappa {
 
@@ -10,7 +10,7 @@ public class Tappa {
     private boolean direzione;
 
     /**
-     * costruttore
+     * Costruttore
      * @param tronco tronco di cui si vuole salvare la direzione
      * @param direzione direzione del tronco
      */
@@ -21,7 +21,7 @@ public class Tappa {
     }
 
     /**
-     * metodo getter che recupera l'id
+     * Metodo getter che recupera l'id
      * @return ritorna l'id della Tappa
      */
     public int getId() {
@@ -29,13 +29,13 @@ public class Tappa {
     }
 
     /**
-     * metodo setter che imposta l'id della Tappa
+     * Metodo setter che imposta l'id della Tappa
      * @param id riceve in input l'id da impostare
      */
     public void setId(int id) { this.id = id; }
 
     /**
-     * metodo getter che consente di estrarre dalla Tappa il Tronco corrispondente
+     * Metodo getter che consente di estrarre dalla Tappa il Tronco corrispondente
      * @return ritorna il Tronco contenuto nella Tappa
      */
     public Tronco getTronco() {

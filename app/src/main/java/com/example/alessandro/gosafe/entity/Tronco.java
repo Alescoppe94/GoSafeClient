@@ -65,7 +65,7 @@ public class Tronco {
     }
 
     /**
-     * metodo getter per recuperare l'area di un Tronco
+     * Metodo getter per recuperare l'area di un Tronco
      * @return ritrona l'area di un Tronco
      */
     public float getArea() {
@@ -73,7 +73,7 @@ public class Tronco {
     }
 
     /**
-     * metodo che calcola il costo di un Tronco a partire dai pesiTronco
+     * Metodo che calcola il costo di un Tronco a partire dai pesiTronco
      * @param ctx riceve il Context dell'applicazione per stabilire la connessione con il db
      * @return ritorna il costo calcolato
      */

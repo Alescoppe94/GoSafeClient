@@ -25,7 +25,7 @@ public class UserSessionManager {
     private static final String KEY_USERNAME = "username";
 
     /**
-     * costruttore
+     * Costruttore
      * @param context prende in input il context dell'applicazione
      */
     public UserSessionManager(Context context){
@@ -35,7 +35,7 @@ public class UserSessionManager {
     }
 
     /**
-     * metodo che crea la sessione una volta effettuato il login
+     * Metodo che crea la sessione una volta effettuato il login
      * @param name nome della variabile che va a costituire la chiave
      * @param username username dell'utente che va a costituire il valore nello shared preferences
      */
@@ -47,7 +47,7 @@ public class UserSessionManager {
     }
 
     /**
-     * metodo che controlla se è stato effettuato il login o meno
+     * Metodo che controlla se è stato effettuato il login o meno
      */
     public void checkLogin(){
         SharedPreferences sharedPreferences = _context.getSharedPreferences("isEmergenza", _context.MODE_PRIVATE);
@@ -74,7 +74,7 @@ public class UserSessionManager {
     }
 
     /**
-     * metodo chiamato al logout per terminare la sessione
+     * Metodo chiamato al logout per terminare la sessione
      */
     public void logOutUser(){
         editor.clear();
@@ -86,7 +86,7 @@ public class UserSessionManager {
     }
 
     /**
-     * metodo che controlla se un utente è loggato
+     * Metodo che controlla se un utente è loggato
      * @return ritrona un booleano settato a True se è loggato altrimenti False
      */
     private boolean isUserLoggedIn(){

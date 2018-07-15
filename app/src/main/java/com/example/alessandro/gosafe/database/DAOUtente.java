@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteException;
 import com.example.alessandro.gosafe.entity.Utente;
 
 /**
- * classe dao che si occupa di interfacciarsi con la tabella Utente
+ * Classe dao che si occupa di interfacciarsi con la tabella Utente
  */
 public class DAOUtente {
     private DBHelper dbhelper;
@@ -44,7 +44,7 @@ public class DAOUtente {
             };
 
     /**
-     * costruttore
+     * Costruttore
      * @param ctx prende come parametro il Context dell'applicazione
      */
     public DAOUtente(Context ctx)
@@ -53,7 +53,7 @@ public class DAOUtente {
     }
 
     /**
-     * apre la connessione alla tabella utente nel db
+     * Apre la connessione alla tabella utente nel db
      * @return ritorna l'oggetto contenente la connessione
      * @throws SQLException
      */
@@ -68,7 +68,7 @@ public class DAOUtente {
     }
 
     /**
-     * chiude la connessione al db
+     * Chiude la connessione al db
      */
     public void close()
     {
@@ -76,7 +76,7 @@ public class DAOUtente {
     }
 
     /**
-     * prepara l'oggetto Utente per essere inserito nel db
+     * Prepara l'oggetto Utente per essere inserito nel db
      * @param utente utente da inserire nel db
      * @return ritorna ContentValues contenente l'utente pronto da inserire nel db
      */
@@ -97,7 +97,7 @@ public class DAOUtente {
     }
 
     /**
-     * metodo per salvare un utente nel db
+     * Metodo per salvare un utente nel db
      * @param utente utente da inserire nel db
      * @return ritorna un booleano con l'esito dell'operazione
      */
@@ -126,7 +126,7 @@ public class DAOUtente {
     }
 
     /**
-     * elimina tutti gli utenti nel db(ce n'è al massimo uno alla volta)
+     * Elimina tutti gli utenti nel db(ce n'è al massimo uno alla volta)
      * @return ritorna un booleano con l'esito dell'operazione
      */
     public boolean deleteAll()
@@ -143,6 +143,10 @@ public class DAOUtente {
         }
     }
 
+    /**
+     * Metodo che serve per recuperare l'Utente dal db locale
+     * @return ritorna l'oggetto Utente contenuto nel db
+     */
     public Utente findUtente(){
         Utente utente = null;
         Cursor  cursor = db.rawQuery("select * from " +TBL_NAME,null);
@@ -165,7 +169,7 @@ public class DAOUtente {
     }
 
     /**
-     * metodo che consente l'aggiornamento di un utente
+     * Metodo che consente l'aggiornamento di un utente
      * @param utente utente che deve essere aggiornato
      * @return ritorna un booleano con l'esito dell'operazione
      */

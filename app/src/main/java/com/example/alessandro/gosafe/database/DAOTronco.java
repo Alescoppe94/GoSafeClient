@@ -13,7 +13,7 @@ import com.example.alessandro.gosafe.entity.Tronco;
 import java.util.*;
 
 /**
- * classe dao che si interfaccia con la tabella Tronco
+ * Classe dao che si interfaccia con la tabella Tronco
  */
 public class DAOTronco {
 
@@ -38,7 +38,7 @@ public class DAOTronco {
             };
 
     /**
-     * costruttore
+     * Costruttore
      * @param ctx prende come parametro il Context dell'applicazione
      */
     public DAOTronco(Context ctx)
@@ -47,7 +47,7 @@ public class DAOTronco {
     }
 
     /**
-     * apre la connessione con il db con la tabella Tronco
+     * Apre la connessione con il db con la tabella Tronco
      * @return ritorna l'oggetto contenente la connessione
      * @throws SQLException
      */
@@ -62,7 +62,7 @@ public class DAOTronco {
     }
 
     /**
-     * metodo che chiude la connessione al db
+     * Metodo che chiude la connessione al db
      */
     public void close()
     {
@@ -70,7 +70,7 @@ public class DAOTronco {
     }
 
     /**
-     * metodo che si occupa di preparare l'oggetto Tronco per essere inserito nel db
+     * Metodo che si occupa di preparare l'oggetto Tronco per essere inserito nel db
      * @param tronco tronco da inserire nel db
      * @return ritorna un ContentValues contenente il tronco da inserire
      */
@@ -86,7 +86,7 @@ public class DAOTronco {
     }
 
     /**
-     * metodo che salva un tronco nel db
+     * Metodo che salva un tronco nel db
      * @param tronco tronco da salvare nel db
      * @return ritorna un booleano con l'esito dell'operazione
      */
@@ -115,7 +115,7 @@ public class DAOTronco {
     }
 
     /**
-     * metodo che aggiorna un tronco nel db
+     * Metodo che aggiorna un tronco nel db
      * @param tronco tronco da aggiornare
      * @return ritorna un booleano con l'esito dell'operazione
      */
@@ -134,7 +134,7 @@ public class DAOTronco {
     }
 
     /**
-     * metodo che dati due beacon estremi restituisce il tronco corrispondente. l'ordine non è importante
+     * Metodo che dati due beacon estremi restituisce il tronco corrispondente. l'ordine non è importante
      * @param beaconA primo beacon estremo
      * @param beaconB secondo beacon estremo
      * @return ritorna il tronco corrispondente
@@ -167,7 +167,7 @@ public class DAOTronco {
     }
 
     /**
-     * metodo che si occupa di recuperare la direzione del tronco
+     * Metodo che si occupa di recuperare la direzione del tronco
      * @param troncoOttimo tronco di cui verificare la direzione
      * @return ritorna un booleano con contenente la direzione. ritorna false se ha direzione opposta a come è salvato nel db
      */
@@ -190,7 +190,7 @@ public class DAOTronco {
     }
 
     /**
-     * recupera tutti i tronchi nel db
+     * Recupera tutti i tronchi nel db
      * @return ritorna un Set di tronchi
      */
     public Set<Tronco> getAllTronchi() {

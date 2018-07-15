@@ -59,7 +59,7 @@ class DBHelper extends SQLiteOpenHelper {
             DAOPesiTronco.FIELD_VALORE + " REAL NOT NULL)";
 
     /**
-     * costruttore
+     * Costruttore
      * @param context prende il Context dell'applicazione
      */
     DBHelper(Context context) {
@@ -68,7 +68,7 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * metodo eseguito all'avvio che crea tutte le tabelle
+     * Metodo eseguito all'avvio che crea tutte le tabelle
      * @param db prende in input il db su cui creare le tabelle
      */
     @Override
@@ -83,7 +83,7 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * metodo eseguito qualora ci sia un cambiamento della struttura del db.
+     * Metodo eseguito qualora ci sia un cambiamento della struttura del db.
      * @param db database su cui avviene la modifica della struttura
      * @param oldVersion numero di versione del vecchio db
      * @param newVersion numero di versione del nuovo db
@@ -111,7 +111,7 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * metodo per recuperare il nome della tabella Tronco
+     * Metodo per recuperare il nome della tabella Tronco
      * @return ritorna il nome della tabella Tronco
      */
     public static String getTableTronco() {
@@ -119,7 +119,7 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * metodo per recuperare il nome della tabella Beacon
+     * Metodo per recuperare il nome della tabella Beacon
      * @return ritorna il nome della tabella Beacon
      */
     public static String getTableBeacon() {
@@ -127,7 +127,7 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * metodo per recuperare il nome della tabella Piano
+     * Metodo per recuperare il nome della tabella Piano
      * @return ritorna il nome della tabella Piano
      */
     public static String getTablePiano() {
@@ -135,7 +135,7 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * metodo per recuperare il nome della tabella Peso
+     * Metodo per recuperare il nome della tabella Peso
      * @return ritorna il nome della tabella Peso
      */
     public static String getTablePeso() {
@@ -143,7 +143,7 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * metodo per recuperare il nome della tabella PesiTronco
+     * Metodo per recuperare il nome della tabella PesiTronco
      * @return ritorna il nome della tabella PesiTronco
      */
     public static String getTablePesitronco() {

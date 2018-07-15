@@ -4,7 +4,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 /**
- * classe che modella il servizio che gestisce Firebase
+ * Classe che modella il servizio che gestisce Firebase
  */
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
@@ -13,7 +13,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
     public static String recent_token;
 
     /**
-     * metodo eseguito quando il token firebase subisce un refresh
+     * Metodo eseguito quando il token firebase subisce un refresh
      */
     public void onTokenRefresh(){
 
@@ -23,7 +23,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
     }
 
     /**
-     * metodo get per recuperare il token firebase
+     * Metodo get per recuperare il token firebase
      * @return ritrona il token
      */
     public static String get_token(){

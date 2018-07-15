@@ -11,19 +11,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 /**
- * classe statica che si occupa del caricamento delle immagini
+ * Classe statica che si occupa del caricamento delle immagini
  */
 public class ImageLoader {
 
     /**
-     * costruttore
+     * Costruttore
      */
     public ImageLoader(){
 
     }
 
     /**
-     * metodo statico che carica le immagini e le trasforma in bitmap pronti per essere visualizzati dalla gui
+     * Metodo statico che carica le immagini e le trasforma in bitmap pronti per essere visualizzati dalla gui
      * @param numpiano numero del piano di cui estrarre l'immagine
      * @param ctx Context necessario per la connessione al db
      * @return ritorna il Bitmap con l'immagine caricata

@@ -18,12 +18,12 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 /**
- * classe servizio che gestisce l'arrivo della notifica inviata da firebase
+ * Classe servizio che gestisce l'arrivo della notifica inviata da firebase
  */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     /**
-     * metodo eseguito ogni volta che arriva un messaggio da firebase
+     * Metodo eseguito ogni volta che arriva un messaggio da firebase
      * @param remoteMessage rappresenta la notifica firebase
      */
     @Override
@@ -43,7 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel("default", "My Notifications", NotificationManager.IMPORTANCE_HIGH);
 
-            // Configure the notification channel.
+            // Configura il canale di notifica
             notificationChannel.setDescription("Channel description");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);

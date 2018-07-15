@@ -28,7 +28,7 @@ import java.util.TimerTask;
 
 
 /**
- * E' un servizio che si occupa di rilevare i bacons e comunicare all'interfaccia e al db
+ * E' un servizio che si occupa di rilevare i beacons e comunicare all'interfaccia e al db
  * il beacon a cui si è connessi. Viene avviato al login e mantenuto sempre attivo.
  */
 public class BluetoothLeService extends Service {
@@ -42,7 +42,7 @@ public class BluetoothLeService extends Service {
     private LinkedHashMap<String, Integer> beaconsDetected;  //contiene i beacon individuati
 
     /**
-     * metodo che viene eseguito al primo avvio del servizio. Inizializza il servizio.
+     * Metodo che viene eseguito al primo avvio del servizio. Inizializza il servizio.
      */
     @Override
     public void onCreate() {
@@ -62,8 +62,8 @@ public class BluetoothLeService extends Service {
     }
 
     /**
-     * metodo chiamato ogni volta che il servizio viene riavviato. La prima volta parte subito dopo onCreate()
-     * inizializza il timer per far partire il loop di scansione.
+     * Metodo chiamato ogni volta che il servizio viene riavviato. La prima volta parte subito dopo onCreate().
+     * Inizializza il timer per far partire il loop di scansione.
      * @param intent contiene l'intent che ha chiamato il servizio
      * @param flags
      * @param startId
@@ -94,7 +94,7 @@ public class BluetoothLeService extends Service {
     }
 
     /**
-     * metodo di avvio del servizio che fa il bind con l'applicazione di quest'ultimo
+     * Metodo di avvio del servizio che fa il bind con l'applicazione di quest'ultimo
      * @param intent contiene l'intent chiamante
      * @return
      */
@@ -104,7 +104,7 @@ public class BluetoothLeService extends Service {
     }
 
     /**
-     * metodo che ci informa se è in corso una scansione
+     * Metodo che ci informa se è in corso una scansione
      * @return booleano settato a Vero se è in corso una scansione, altrimenti Falso
      */
     public boolean isScanning() {
@@ -112,7 +112,7 @@ public class BluetoothLeService extends Service {
     }
 
     /**
-     * metodo chiamato quando il servizio viene distrutto
+     * Metodo chiamato quando il servizio viene distrutto
      */
     @Override
     public void onDestroy(){
@@ -123,7 +123,7 @@ public class BluetoothLeService extends Service {
     }
 
     /**
-     * metodo che gestisce un ciclo di scansione
+     * Metodo che gestisce un ciclo di scansione
      * @param enable indica se la scansione può avvenire o meno
      */
     private void scanLeDevice(final boolean enable) {
@@ -177,8 +177,7 @@ public class BluetoothLeService extends Service {
     }
 
     /**
-     *
-     * ogni volta che viene individuato un beacon viene richiamata questa callback
+     * Ogni volta che viene individuato un beacon viene richiamata questa callback
      */
     private ScanCallback mLeScanCallback = new ScanCallback() {
 
@@ -197,7 +196,7 @@ public class BluetoothLeService extends Service {
                         public void run() {
 
                             if (deviceName != null && deviceName.length() > 0) {
-                                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) {
+                                if (deviceName.contains("XT1039") || deviceName.contains("OnePlus X") || deviceName.contains("SensorTag")) { //sono stati aggiunti altri dispositivi per il test
                                     if(beaconsDetected.containsKey(mBluetoothDeviceAddress)) {
                                         if (beaconsDetected.get(mBluetoothDeviceAddress) < result.getRssi())
                                             beaconsDetected.put(mBluetoothDeviceAddress, result.getRssi());
@@ -216,7 +215,7 @@ public class BluetoothLeService extends Service {
             };
 
     /**
-     * metodo che ordina le liste
+     * Metodo che ordina le liste
      * @param m la lista da ordinare
      * @param c comparator
      * @param <K> chiave di un elemento della lista

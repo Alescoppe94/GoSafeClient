@@ -3,7 +3,7 @@ package com.example.alessandro.gosafe.entity;
 import java.util.LinkedList;
 
 /**
- * classe che modella l'entity Percorso
+ * Classe che modella l'entity Percorso
  */
 public class Percorso {
 
@@ -11,7 +11,7 @@ public class Percorso {
     private LinkedList<Tappa> tappe;
 
     /**
-     * costruttore
+     * Costruttore
      * @param tappe riceve in input l'elenco delle Tappe
      */
     public Percorso(LinkedList<Tappa> tappe) {
@@ -19,7 +19,7 @@ public class Percorso {
     }
 
     /**
-     * metodo getter che ritorna l'id del Percorso
+     * Metodo getter che ritorna l'id del Percorso
      * @return ritorna l'id del Piano
      */
     public int getId() {
@@ -27,13 +27,13 @@ public class Percorso {
     }
 
     /**
-     * metodo setter che imposta l'id del Percorso
+     * Metodo setter che imposta l'id del Percorso
      * @param id
      */
     public void setId(int id) { this.id = id;}
 
     /**
-     * metodo getter che recupera le Tappe di un Percorso
+     * Metodo getter che recupera le Tappe di un Percorso
      * @return ritorna un LinkedList con le Tappe del Percorso
      */
     public LinkedList<Tappa> getTappe() {

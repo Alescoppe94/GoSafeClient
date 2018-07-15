@@ -42,7 +42,7 @@ public class DAOBeacon {
             };
 
     /**
-     * costruttore
+     * Costruttore
      * @param ctx Context
      */
     public DAOBeacon(Context ctx)
@@ -51,7 +51,7 @@ public class DAOBeacon {
     }
 
     /**
-     * apre la connesione al db
+     * Apre la connesione al db
      * @return ritorna l'oggetto DAOBeacon
      * @throws SQLException
      */
@@ -66,7 +66,7 @@ public class DAOBeacon {
     }
 
     /**
-     * chiude la connessione al db
+     * Chiude la connessione al db
      */
     public void close()
     {
@@ -74,7 +74,7 @@ public class DAOBeacon {
     }
 
     /**
-     * prepara le variabili da inserire nel db a partire dall'oggetto Beacon
+     * Prepara le variabili da inserire nel db a partire dall'oggetto Beacon
      * @param beacon oggetto Beacon da inserire
      * @return ritorna l'oggetto in formato ContentValues pronto da inserire nel db
      */
@@ -90,7 +90,7 @@ public class DAOBeacon {
     }
 
     /**
-     * salva il beacon nel db
+     * Salva il beacon nel db
      * @param beacon l'oggetto Beacon da salvare
      * @return ritorna un booleano che indica il successo o meno dell'operazione
      */
@@ -106,7 +106,7 @@ public class DAOBeacon {
                 ContentValues initialValues = createContentValues(beacon);
                 ins = db.insert(TBL_NAME, null, initialValues)>=0;
             }
-            else//esiste già un beacon con questo id
+            else//se esiste già un beacon con questo id ins viene settato a False
                 ins = false;
             crs.close();
             return ins;
@@ -119,7 +119,7 @@ public class DAOBeacon {
     }
 
     /**
-     * recupera il beacon a partire dall'id
+     * Recupera il beacon a partire dall'id
      * @param id_beacon contiene il MAC address del beacon che è anche l'id nel db
      * @return ritorna l'oggetto Beacon appena richiesto
      */
@@ -149,7 +149,7 @@ public class DAOBeacon {
     }
 
     /**
-     * serve per aggiornare un record nel db a partire da un beacon
+     * Serve per aggiornare un record nel db a partire da un beacon
      * @param beacon oggetto Beacon da aggiornare
      * @return ritorna booleano in base all'esito dell'operazione
      */
@@ -169,7 +169,7 @@ public class DAOBeacon {
     }
 
     /**
-     * metodo che recupera tutti i beacon punti di raccolta
+     * Metodo che recupera tutti i beacon punti di raccolta
      * @return ritorna un insieme di oggetti Beacon
      */
     public Set<Beacon> getAllPuntiDiRaccolta() {
@@ -199,7 +199,7 @@ public class DAOBeacon {
     }
 
     /**
-     * metodo che recupera tutti i beacon su un piano
+     * Metodo che recupera tutti i beacon su un piano
      * @param position indica il numero del piano
      * @return ritorna un Cursor contenente i risultati
      */
@@ -210,7 +210,7 @@ public class DAOBeacon {
     }
 
     /**
-     * recupera le coordinate di un insieme di beacons
+     * Recupera le coordinate di un insieme di beacons
      * @param percorso riceve una lista di MAC address di beacon che rappresentano il percorso ordinato
      * @return vengono ritornate le coordinate dei beacon in una lista
      */
@@ -230,7 +230,7 @@ public class DAOBeacon {
     }
 
     /**
-     * recupera le coordinate di un solo beacon a partire dal suo MAC address
+     * Recupera le coordinate di un solo beacon a partire dal suo MAC address
      * @param idBeacon MAC address del beacon
      * @return ritorna una lista con le coordinate del beacon
      */

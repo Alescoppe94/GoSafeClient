@@ -39,7 +39,7 @@ public class PinView extends SubsamplingScaleImageView {
     private boolean percorsoConPiuPiani = false;
 
     /**
-     * metodo setter che imposta se il piano su cui si trova l'utente è lo stesso di quello su cui sitrova la destinazione
+     * Metodo setter che imposta se il piano su cui si trova l'utente è lo stesso di quello su cui sitrova la destinazione
      * @param pianoUtente ritorna un true se posizione e destinazione sono sullo stesso piano
      */
     public void setPianoUtente(boolean pianoUtente) {
@@ -47,7 +47,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo setter che imposta se si sta calcolando un percorso o meno
+     * Metodo setter che imposta se si sta calcolando un percorso o meno
      * @param calcoloInCorso riceve un booleano settato a True se si sta calcolando un percorso
      */
     public void setCalcoloInCorso(boolean calcoloInCorso){
@@ -55,7 +55,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo setter che imposta il numero del piano selezionato sullo spinner
+     * Metodo setter che imposta il numero del piano selezionato sullo spinner
      * @param pianoSpinner riceve il numero del piano selezionato
      */
     public void setPianoSpinner(int pianoSpinner){
@@ -63,7 +63,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo setter che imposta un booleano che si assicura che venga disegnato prima il pin di arrivo rispetto al percorso
+     * Metodo setter che imposta un booleano che si assicura che venga disegnato prima il pin di arrivo rispetto al percorso
      * @param bool True se si vuole disegnare il pin di arrivo
      */
     public void setBool(boolean bool){
@@ -71,7 +71,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo setter che imposta il Piano di arrivo
+     * Metodo setter che imposta il Piano di arrivo
      * @param pianoArrivo imposta il piano di arrivo
      */
     public void setPianoArrivo(int pianoArrivo){
@@ -79,7 +79,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo setter che imposta se un percorso contiene più piani o meno
+     * Metodo setter che imposta se un percorso contiene più piani o meno
      * @param percorsoConPiuPiani riceve un booleano settato a True se un percorso è su più piani
      */
     public void setPercorsoConPiuPiani(boolean percorsoConPiuPiani) {
@@ -87,7 +87,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * costruttore
+     * Costruttore
      * @param context riceve il Context
      */
     public PinView(Context context) {
@@ -95,7 +95,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * costruttore
+     * Costruttore
      * @param context riceve il context dell'applicazione
      * @param attr
      */
@@ -105,7 +105,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo che imposta il pin a partire da un punto
+     * Metodo che imposta il pin a partire da un punto
      * @param sPin contiene un PointF contenente le coordinate su cui disegnare il pin
      */
     public void setPin(PointF sPin) {
@@ -115,7 +115,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo che imposta il percorso da disegnare
+     * Metodo che imposta il percorso da disegnare
      * @param percorso riceve in input il percorso da disegnare
      */
     public void setPin(ArrayList<Integer> percorso) {
@@ -125,7 +125,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo che imposta l'icona con la posizione dell'utente
+     * Metodo che imposta l'icona con la posizione dell'utente
      * @param sPin prende un PointF con le coordinate della posizione dell'utente
      */
     public void setPinMyPosition(PointF sPin) {
@@ -135,7 +135,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * inizializza il pin da rappresentare sulla mappa come destinazione
+     * Inizializza il pin da rappresentare sulla mappa come destinazione
      */
     private void initialise() {
         float density = getResources().getDisplayMetrics().densityDpi;
@@ -146,7 +146,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * inizializza l'icona che rappresenta la posizione dell'utente sulla mappa
+     * Inizializza l'icona che rappresenta la posizione dell'utente sulla mappa
      */
     private void initialiseMyPosition() {
         float density = getResources().getDisplayMetrics().densityDpi;
@@ -157,8 +157,8 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * metodo che viene chiamato ogni volta che c'è una modifica all'interfaccia grafica. viene invocato in maniera automatica.
-     * si può forzare la chiamata con invalidate
+     * Metodo che viene chiamato ogni volta che c'è una modifica all'interfaccia grafica. viene invocato in maniera automatica.
+     * Si può forzare la chiamata con invalidate
      * @param canvas oggetto che rappresenta la view su cui disegnare
      */
     @Override
@@ -173,6 +173,7 @@ public class PinView extends SubsamplingScaleImageView {
 
         paint.setAntiAlias(true);
 
+        //disegna la linea del percorso
         if (percorso!=null && pin != null) {
 
             for(int i=0; i<=percorso.size()-4;i=i+2){ //Prende i beacon a 2 a 2 e disegna la linea
@@ -228,7 +229,7 @@ public class PinView extends SubsamplingScaleImageView {
     }
 
     /**
-     * si occupa di invocare il metodo per disegnare il percorso
+     * Si occupa di invocare il metodo per disegnare il percorso
      * @param percorso percorso da disegnare
      */
     public void play(ArrayList<Integer> percorso) {

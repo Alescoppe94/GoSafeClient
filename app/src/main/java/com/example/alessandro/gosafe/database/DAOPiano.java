@@ -12,7 +12,7 @@ import com.example.alessandro.gosafe.entity.Piano;
 import java.util.ArrayList;
 
 /**
- * classe dao che si interfaccia con la tabella Piano
+ * Classe dao che si interfaccia con la tabella Piano
  */
 public class DAOPiano {
 
@@ -33,7 +33,7 @@ public class DAOPiano {
             };
 
     /**
-     * costruttire
+     * Costruttore
      * @param ctx prende il contesto come parametro
      */
     public DAOPiano(Context ctx)
@@ -42,7 +42,7 @@ public class DAOPiano {
     }
 
     /**
-     * metodo che apre la connessione alla tabella Piano
+     * Metodo che apre la connessione alla tabella Piano
      * @return ritorna l'oggetto contenente la connessione
      * @throws SQLException
      */
@@ -57,7 +57,7 @@ public class DAOPiano {
     }
 
     /**
-     * chiude la connessione alla db
+     * Chiude la connessione alla db
      */
     public void close()
     {
@@ -65,7 +65,7 @@ public class DAOPiano {
     }
 
     /**
-     * prepara l'oggetto piano affinchè possa essere inserito nel db
+     * Prepara l'oggetto piano affinchè possa essere inserito nel db
      * @param piano piano da inserire nel db
      * @return ritorna ContentValues contenente le informazioni del Piano
      */
@@ -79,7 +79,7 @@ public class DAOPiano {
     }
 
     /**
-     * metodo che si occupa di salvare un Piano nel db
+     * Metodo che si occupa di salvare un Piano nel db
      * @param piano contiene il piano da inserire
      * @return ritorna un booleano con l'esito dell'operazione
      */
@@ -95,7 +95,7 @@ public class DAOPiano {
                 ContentValues initialValues = createContentValues(piano);
                 ins = db.insert(TBL_NAME, null, initialValues)>=0;
             }
-            else//esiste già un beacon con questo id
+            else//esiste già un piano con questo id
                 ins = false;
             crs.close();
             return ins;
@@ -108,7 +108,7 @@ public class DAOPiano {
     }
 
     /**
-     * metodo che esegue l'update di un Piano nel db
+     * Metodo che esegue l'update di un Piano nel db
      * @param piano Piano da aggiornare
      * @return ritorna l'esito dell'operazione in un booleano
      */
@@ -127,7 +127,7 @@ public class DAOPiano {
     }
 
     /**
-     * ritorna il numero del piano a partire dal suo id
+     * Ritorna il numero del piano a partire dal suo id
      * @param idPiano id del piano di cui recuperare il numero
      * @return ritorna un intero contenente il numero del piano
      */
@@ -152,7 +152,7 @@ public class DAOPiano {
     }
 
     /**
-     * recupera tutti i piani dal db
+     * Recupera tutti i piani dal db
      * @return ritorna un ArrayList con i numeri di tutti i piano sotto forma di String (ad es. "Piano 1")
      */
     public ArrayList<String> getAllPiani(){

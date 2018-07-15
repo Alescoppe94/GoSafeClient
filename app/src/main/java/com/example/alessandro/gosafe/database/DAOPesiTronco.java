@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteException;
 import java.util.HashMap;
 
 /**
- * dao che gestisce la tabella pesitronco
+ * Dao che gestisce la tabella pesitronco
  */
 public class DAOPesiTronco {
 
@@ -33,7 +33,7 @@ public class DAOPesiTronco {
             };
 
     /**
-     * costruttore
+     * Costruttore
      * @param ctx prende in input il Context
      */
     public DAOPesiTronco(Context ctx)
@@ -42,7 +42,7 @@ public class DAOPesiTronco {
     }
 
     /**
-     * apre la connessione al db
+     * Apre la connessione al db
      * @return ritorna l'oggetto
      * @throws SQLException
      */
@@ -57,7 +57,7 @@ public class DAOPesiTronco {
     }
 
     /**
-     * chiude la connessione al db
+     * Chiude la connessione al db
      */
     public void close()
     {
@@ -65,7 +65,7 @@ public class DAOPesiTronco {
     }
 
     /**
-     * prepara le informazioni da inserire nel db
+     * Prepara le informazioni da inserire nel db
      * @param id id del peso
      * @param troncoId id del tronco
      * @param pesoId id del peso
@@ -83,7 +83,7 @@ public class DAOPesiTronco {
     }
 
     /**
-     * serve per salvare le informazioni nel database
+     * Serve per salvare le informazioni nel database
      * @param id id del pesotronco
      * @param troncoId id del tronco
      * @param pesoId id del peso
@@ -114,7 +114,7 @@ public class DAOPesiTronco {
     }
 
     /**
-     * metodo che fa l'update di un pesotronco nel db
+     * Metodo che fa l'update di un pesotronco nel db
      * @param id id del pesotronco
      * @param troncoId id del tronco
      * @param pesoId id del peso
@@ -136,7 +136,7 @@ public class DAOPesiTronco {
     }
 
     /**
-     * metodo che recupera tutti i pesitronco per un tronco specifico
+     * Metodo che recupera tutti i pesitronco per un tronco specifico
      * @param troncoId id del tronco di cui prendere i pesitronco
      * @return ritorna un hashmap con tutti i pesi tronco
      */
@@ -162,7 +162,7 @@ public class DAOPesiTronco {
     }
 
     /**
-     * metodo che prende il valore del pesotronco corrispondente a un peso
+     * Metodo che prende il valore del pesotronco corrispondente a un peso
      * @param troncoId id del tronco di cui prendere il pesotronco
      * @param peso nome del peso
      * @return ritorna il pesotronco associato

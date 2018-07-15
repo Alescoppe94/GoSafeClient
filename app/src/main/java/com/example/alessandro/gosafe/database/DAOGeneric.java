@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * classe che lavora con più dao contemporaneamente per estrarre informazioni dal db
+ * Classe che lavora con più dao contemporaneamente per estrarre informazioni dal db
  */
 public class DAOGeneric{
 
@@ -31,7 +31,7 @@ public class DAOGeneric{
     private SQLiteDatabase db;
 
     /**
-     * costruttore
+     * Costruttore
      * @param ctx prende in input il Context
      */
     public DAOGeneric(Context ctx)
@@ -40,7 +40,7 @@ public class DAOGeneric{
     }
 
     /**
-     * metodo che apre la connessione al db
+     * Metodo che apre la connessione al db
      * @return ritorna il db appena aperto
      * @throws SQLException
      */
@@ -55,7 +55,7 @@ public class DAOGeneric{
     }
 
     /**
-     * chiude la connessione al db
+     * Chiude la connessione al db
      */
     public void close()
     {
@@ -63,8 +63,8 @@ public class DAOGeneric{
     }
 
     /**
-     * metodo che crea il db all'avvio partendo dalle info provenienti dal server- sii utilizza una transaction essendo un'operazione che deve avvenire in blocco.
-     * se le tabelle esistono già vengono eliminate e ricreate popolandole mano a mano con le nuove informazioni
+     * Metodo che crea il db all'avvio partendo dalle info provenienti dal server. Si utilizza una transaction essendo un'operazione che deve avvenire in blocco.
+     * Se le tabelle esistono già vengono eliminate e ricreate popolandole mano a mano con le nuove informazioni
      * @param jsonResponse contiene la risposta json con tutte le informazioni da inserire nel db
      */
     public void ricreaDb(JsonObject jsonResponse) {
@@ -133,7 +133,8 @@ public class DAOGeneric{
     }
 
     /**
-     * metodo specifico per salvare le immagini dei piani nel db.
+     * Metodo specifico per salvare le immagini dei piani nella memoria interna del dispositivo. Essendo immagini si
+     * preferisce salvarle nella memoria del telefono anzichè nel db.
      * @param bitmapImage  contiene l'immagine del piano
      * @param numeroPiano  contiene il numero del piano
      */

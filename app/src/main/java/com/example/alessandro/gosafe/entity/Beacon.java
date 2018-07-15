@@ -1,7 +1,7 @@
 package com.example.alessandro.gosafe.entity;
 
 /**
- * classe che modell l'entity beacon
+ * classe che modella l'entity beacon
  */
 public class Beacon {
 
@@ -12,12 +12,12 @@ public class Beacon {
     private int coordy;
 
     /**
-     * costruttore
+     * Costruttore
      */
     public Beacon(){}
 
     /**
-     * costruttore
+     * Costruttore
      * @param id prende l'id del beacon
      */
     public Beacon(String id){
@@ -25,7 +25,7 @@ public class Beacon {
     }
 
     /**
-     * costruttore
+     * Costruttore
      * @param id id del beacon
      * @param is_puntodiraccolta booleano indicante se è un punto di raccolta
      * @param piano intero con il numero del piano
@@ -41,7 +41,7 @@ public class Beacon {
     }
 
     /**
-     * metodo getter per l'id del beacon
+     * Metodo getter per l'id del beacon
      * @return ritorna l'id del beacon
      */
     public String getId() {
@@ -49,13 +49,13 @@ public class Beacon {
     }
 
     /**
-     * metodo setter per l'id del beacon
+     * Metodo setter per l'id del beacon
      * @param id id del beacon da settare
      */
     public void setId(String id) { this.id = id; }
 
     /**
-     * metodo getter se è punto di raccolta
+     * Metodo getter se è punto di raccolta
      * @return ritorna un booleano in base al fatto che è un punto di raccolta o meno
      */
     public boolean is_puntodiraccola() {
@@ -63,7 +63,7 @@ public class Beacon {
     }
 
     /**
-     * metodo getter che recupera l'intero del piano
+     * Metodo getter che recupera l'intero del piano
      * @return ritorna l'intero del piano
      */
     public int getPiano() {
@@ -71,7 +71,7 @@ public class Beacon {
     }
 
     /**
-     * metodo getter che recupera la coordinata x del beacon
+     * Metodo getter che recupera la coordinata x del beacon
      * @return ritorna la coordinata x
      */
     public int getCoordx() {
@@ -79,7 +79,7 @@ public class Beacon {
     }
 
     /**
-     * metodo getter che recupera la coordinata y del beacon
+     * Metodo getter che recupera la coordinata y del beacon
      * @return ritorna la coordinata y del beacon
      */
     public int getCoordy() {
