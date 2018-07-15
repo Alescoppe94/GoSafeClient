@@ -95,8 +95,8 @@ public class MappeActivity extends DefaultActivity{
     }
 
     /**
-     * metodo eseguito quando si esce dall'app e rimane in background
-     * elimina gli elementi grafici per evitare errori di memoria
+     * Metodo eseguito quando si esce dall'app e rimane in background.
+     * Elimina gli elementi grafici per evitare errori di memoria
      */
     @Override
     public void onPause(){
@@ -109,7 +109,7 @@ public class MappeActivity extends DefaultActivity{
     }
 
     /**
-     * metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
+     * Metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
      */
     @Override
     public void onResume(){
@@ -122,7 +122,7 @@ public class MappeActivity extends DefaultActivity{
     }
 
     /**
-     * metodo eseguito quando si termina l'applicazioneo si cambia activity.
+     * Metodo eseguito quando si termina l'applicazioneo si cambia activity.
      * anche qui si eliminano elementi grafici per evitare problemi di memoria
      */
     @Override

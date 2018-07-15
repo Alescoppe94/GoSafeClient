@@ -131,7 +131,7 @@ public class EmergenzaActivity extends DefaultActivity {
 
 
     /**
-     * metodo eseguito quando l'utente clicca sul bottone salvo. Consente di fermare manualmente la guida
+     * Metodo eseguito quando l'utente clicca sul bottone salvo. Consente di fermare manualmente la guida
      * verso la via di fuga. In generale viene avvisato del fatto che probabilmente non si trova ancora al sicuro tramite un dialog.
      * @param item il pulsante su cui a cliccato
      * @return ritorna un booleano con l'esito dell'operazione
@@ -168,7 +168,7 @@ public class EmergenzaActivity extends DefaultActivity {
 
 
     /**
-     * metodo eseguito quando si esce dall'app e rimane in background
+     * Metodo eseguito quando si esce dall'app e rimane in background
      * elimina gli elementi grafici per evitare errori di memoria
      */
     @Override
@@ -182,7 +182,7 @@ public class EmergenzaActivity extends DefaultActivity {
     }
 
     /**
-     * metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
+     * Metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
      */
     @Override
     public void onResume(){
@@ -202,7 +202,7 @@ public class EmergenzaActivity extends DefaultActivity {
 
 
     /**
-     * metodo eseguito quando si termina l'applicazioneo si cambia activity.
+     * Metodo eseguito quando si termina l'applicazioneo si cambia activity.
      * anche qui si eliminano elementi grafici per evitare problemi di memoria
      */
     @Override
@@ -217,7 +217,7 @@ public class EmergenzaActivity extends DefaultActivity {
     }
 
     /**
-     * oggetto che gestisce i messaggi provenienti dal servizio di ricerca del beacon più vicino.
+     * Oggetto che gestisce i messaggi provenienti dal servizio di ricerca del beacon più vicino.
      */
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         /**
@@ -290,7 +290,7 @@ public class EmergenzaActivity extends DefaultActivity {
     };
 
     /**
-     * metodo eseguito se l'utente si trova in un punto di raccolta.
+     * Metodo eseguito se l'utente si trova in un punto di raccolta.
      * Notifica l'utente tramite un messaggio
      */
     private void showAlertSalvo() {
@@ -314,7 +314,7 @@ public class EmergenzaActivity extends DefaultActivity {
     }
 
     /**
-     * metodo che controlla se un determinato servizio è in esecuzione
+     * Metodo che controlla se un determinato servizio è in esecuzione
      * @param serviceClass classe del servizio
      * @return ritorna vero se il servizio è in esecuzione altrimenti falso.
      */

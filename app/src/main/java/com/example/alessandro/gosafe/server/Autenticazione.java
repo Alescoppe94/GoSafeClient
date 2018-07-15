@@ -36,7 +36,7 @@ import java.net.URL;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * classe che gestisce la fase di autenticazione, registrazione e logout.
+ * Classe che gestisce la fase di autenticazione, registrazione e logout.
  */
 public class Autenticazione {
 
@@ -45,7 +45,7 @@ public class Autenticazione {
     private HttpURLConnection connection;
 
     /**
-     * costruttore
+     * Costruttore
      * @param utente_attivo riceve l'utente attivo che vuole fare un'operazione
      */
     public Autenticazione(Utente utente_attivo) {
@@ -53,7 +53,7 @@ public class Autenticazione {
     }
 
     /**
-     * metodo che lancia l'AsyncTask di registrazione. Crea anche una sessione
+     * Metodo che lancia l'AsyncTask di registrazione. Crea anche una sessione
      * @param ctx
      */
     public void registrazioneUtente(Context ctx) {
@@ -62,7 +62,7 @@ public class Autenticazione {
     }
 
     /**
-     * classe che si occupa dell'AsyncTask della reditrazione
+     * Classe che si occupa dell'AsyncTask della reditrazione
      */
     private class registrazioneUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
@@ -71,7 +71,7 @@ public class Autenticazione {
         private boolean connesso;
 
         /**
-         * costruttore
+         * Costruttore
          * @param utente utente che si vuole registrare
          * @param ctx context dell'applicazione
          */
@@ -81,7 +81,7 @@ public class Autenticazione {
         }
 
         /**
-         * metodo eseguito prima dell'AsyncTask vero e proprio. Si occupa di istanziare il ProgressDialog e di controllare la connessione al server
+         * Metodo eseguito prima dell'AsyncTask vero e proprio. Si occupa di istanziare il ProgressDialog e di controllare la connessione al server
          */
         @Override
         protected void onPreExecute() {
@@ -97,7 +97,7 @@ public class Autenticazione {
         }
 
         /**
-         * AsyncTask vero e proprio. Non è più eseguito sul Thread principale. compie una chiamata POST al server con le informazioni
+         * AsyncTask vero e proprio. Non è più eseguito sul Thread principale. Compie una chiamata POST al server con le informazioni
          * del nuovo utente registrato.
          * @param arg0 argomento che effettivamente è vuoto
          * @return ritorna l'esito dell'operazione sotto forma di una stringa
@@ -159,17 +159,9 @@ public class Autenticazione {
         }
 
         /**
-         * metodo che in questo caso non compie nessuna azione
-         * @param arg0 anche qui è vuoto
-         */
-        @Override
-        protected void onProgressUpdate(Void... arg0) {
-
-        }
-
-        /**
-         * metodo che viene eseguito subito dopo doInBackgroud(). è di raccordo tra l'AsyncTask e il thread principale.
-         * Analizza il risultato ricevuto dal server facendo il parsing del json di risposta
+         * Metodo che viene eseguito subito dopo doInBackgroud(). E' di raccordo tra l'AsyncTask e il thread principale.
+         * Analizza il risultato ricevuto dal server facendo il parsing del json di risposta. Verifica se la registrazione ha avuto
+         * successo o meno
          * @param result risultato ricevuto dal server
          */
         @Override
@@ -265,7 +257,7 @@ public class Autenticazione {
 
 
     /**
-     * metodo che si occupa di lanciare l'AsyncTask che si occupa dell'autenticazione
+     * Metodo che si occupa di lanciare l'AsyncTask che si occupa dell'autenticazione
      * @param ctx context dell'applicazione
      */
     public void autenticazioneUtente(Context ctx) {
@@ -274,7 +266,7 @@ public class Autenticazione {
     }
 
     /**
-     * classe che gestisce l'AsyncTask dell'autenticazione
+     * Classe che gestisce l'AsyncTask dell'autenticazione
      */
     private class autenticazioneUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
@@ -283,7 +275,7 @@ public class Autenticazione {
         private boolean connesso;
 
         /**
-         * costruttore
+         * Costruttore
          * @param utente utente da loggare
          * @param ctx context dell'applicazione
          */
@@ -293,7 +285,7 @@ public class Autenticazione {
         }
 
         /**
-         * metodo eseguito prima dell'AsyncTask vero e proprio. crea un ProgressDialog. controlla anche la connessione al server
+         * Metodo eseguito prima dell'AsyncTask vero e proprio. Crea un ProgressDialog. Controlla anche la connessione al server
          */
         @Override
         protected void onPreExecute() {
@@ -312,7 +304,7 @@ public class Autenticazione {
         }
 
         /**
-         * metodo che esegue l'AsyncTask vero e proprio. esegue una richiesta POST al server per fare l'autenticazione
+         * Metodo che esegue l'AsyncTask vero e proprio. esegue una richiesta POST al server per fare l'autenticazione
          * @param arg0 in questo caso è vuoto
          * @return ritorna una stringa con l'esito dell'operazione
          */
@@ -375,17 +367,8 @@ public class Autenticazione {
         }
 
         /**
-         * metodo che in questo caso non viene eseguito
-         * @param arg0 variabile vuota
-         */
-        @Override
-        protected void onProgressUpdate(Void... arg0) {
-
-        }
-
-        /**
-         * metodo che viene eseguito non appena doInBackground termina. è di raccordo tra l'AsyncTask e il thread principale
-         * Analizza la risposta del server
+         * Metodo che viene eseguito non appena doInBackground termina. E' di raccordo tra l'AsyncTask e il thread principale
+         * Analizza la risposta del server per verificare se il login ha avuto successo o meno
          * @param result risultato del server
          */
         @Override
@@ -487,7 +470,7 @@ public class Autenticazione {
     }
 
     /**
-     * metodo che avvia l'AsyncTask che si occupa dell'update dell'utente
+     * Metodo che avvia l'AsyncTask che si occupa dell'update dell'utente
      * @param ctx context dell'applicazione
      */
     public void updateUtente(Context ctx) {
@@ -495,7 +478,7 @@ public class Autenticazione {
     }
 
     /**
-     * classe che modella l'AsyncTask utilizzato per fare l'update delle informazioni dell'utente sul server
+     * Classe che modella l'AsyncTask utilizzato per fare l'update delle informazioni dell'utente sul server
      */
     private class UpdateUtenteTask extends AsyncTask<Void, Void, String> {
         private Utente utente;
@@ -504,7 +487,7 @@ public class Autenticazione {
         private boolean connesso;
 
         /**
-         * costruttore
+         * Costruttore
          * @param utente utente da aggiornare
          * @param ctx context dell'applicazione
          */
@@ -514,7 +497,7 @@ public class Autenticazione {
         }
 
         /**
-         * metodo eseguito prima dell'AsyncTask vero e proprio che crea un ProgressDialog e controlla la connettività al server
+         * Metodo eseguito prima dell'AsyncTask vero e proprio che crea un ProgressDialog e controlla la connettività al server
          */
         @Override
         protected void onPreExecute() {
@@ -530,7 +513,7 @@ public class Autenticazione {
         }
 
         /**
-         * metodo che rappresenta l'AsyncTask vero e proprio. si occupa di fare una richiesta Post al server con le informazioni aggiornate dell'utente
+         * Metodo che rappresenta l'AsyncTask vero e proprio. Si occupa di fare una richiesta Post al server con le informazioni aggiornate dell'utente
          * @param arg0 è un parametro in questo caso vuota
          * @return ritorna l'esito dell'operazione sul server
          */
@@ -602,17 +585,8 @@ public class Autenticazione {
         }
 
         /**
-         * metodo in questo caso non utilizzato
-         * @param arg0 è un parametro vuoto
-         */
-        @Override
-        protected void onProgressUpdate(Void... arg0) {
-
-        }
-
-        /**
-         * metodo eseguito dopo doInBackground. è di raccordo tra l'AsyncTask e il Thread principale.
-         * analizza il risultato
+         * Metodo eseguito dopo doInBackground. E' di raccordo tra l'AsyncTask e il Thread principale.
+         * Analizza il risultato se ha avuto successo o meno la modifica.
          * @param result contiene il risultato del server
          */
         @Override
@@ -672,7 +646,7 @@ public class Autenticazione {
     }
 
     /**
-     * metodo che si occupa di avviare l'AsyncTask che si occupa del logout
+     * Metodo che si occupa di avviare l'AsyncTask che si occupa del logout
      * @param ctx context dell'applicazione
      */
     public void logoutUtente(Context ctx) {
@@ -682,7 +656,7 @@ public class Autenticazione {
     }
 
     /**
-     * classe che modella l'AsyncTask che si occupa di fare il logout dell'utente
+     * Classe che modella l'AsyncTask che si occupa di fare il logout dell'utente
      */
     private class LogoutUtenteTask extends AsyncTask<Void, Void, String>{
 
@@ -691,7 +665,7 @@ public class Autenticazione {
         private boolean connesso;
 
         /**
-         * costruttore
+         * Costruttore
          * @param utente utente che deve fare il logout
          * @param ctx context dell'applicazione
          */
@@ -701,7 +675,7 @@ public class Autenticazione {
         }
 
         /**
-         * metodo eseguito prima dell'AsyncTask vero e proprio. controlla la connessione
+         * Metodo eseguito prima dell'AsyncTask vero e proprio. controlla la connessione
          */
         @Override
         protected void onPreExecute() {
@@ -711,7 +685,7 @@ public class Autenticazione {
         }
 
         /**
-         * metodo che rappresenta l'AsyncTask vero e proprio. Si occupa di fare una richiesta put al server che
+         * Metodo che rappresenta l'AsyncTask vero e proprio. Si occupa di fare una richiesta put al server che
          * modifica lo stato dell'utente da connesso a sconnesso
          * @param voids parametro che è vuoto
          * @return ritorna l'esito dell'operazione sul server
@@ -783,8 +757,8 @@ public class Autenticazione {
         }
 
         /**
-         * metodo eseguito dopo il doInBackground. è di raccordo tra thrad principale e l'AsyncTask.
-         * analizza la risposta del server
+         * Metodo eseguito dopo il doInBackground. è di raccordo tra thread principale e l'AsyncTask.
+         * Analizza la risposta del server per vedere se il logout ha avuto successo o meno
          * @param result risultato dell'operazione sul server
          */
         @Override
@@ -815,7 +789,7 @@ public class Autenticazione {
     }
 
     /**
-     * metodo che si occupa di avviare i servizi di base dell'applicazione.
+     * Metodo che si occupa di avviare i servizi di base dell'applicazione.
      * in particolare fa partire la scansione dei beacon e il controllo di aggiornamenti sul server
      * @param ctx context dell'applicazione
      */

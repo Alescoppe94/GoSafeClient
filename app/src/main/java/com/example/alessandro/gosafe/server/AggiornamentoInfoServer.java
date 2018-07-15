@@ -18,12 +18,12 @@ import java.net.URL;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * classe che si occupa di inviare le informazioni aggiornate al server
+ * Classe che si occupa di inviare le informazioni aggiornate al server
  */
 public class AggiornamentoInfoServer {
 
     /**
-     * metodo per creare l'asyncTask che si occupa di mantenere aggiornato il server
+     * Metodo per creare l'asyncTask che si occupa di mantenere aggiornato il server
      * @param utente utente connesso
      * @param ctx contesto dell'applicazione
      */
@@ -32,7 +32,7 @@ public class AggiornamentoInfoServer {
     }
 
     /**
-     * classe privata che gestisce l'AsyncTask che invia la posizione aggiornata dell'utente al server
+     * Classe privata che gestisce l'AsyncTask che invia la posizione aggiornata dell'utente al server
      */
     private class AggiornamentoPosizioneTask extends AsyncTask<Void, Void, String>{
 
@@ -41,7 +41,7 @@ public class AggiornamentoInfoServer {
         private Context ctx;
 
         /**
-         * costruttore
+         * Costruttore
          * @param utente utente connesso
          * @param ctx contesto dell'applicazione
          */
@@ -51,7 +51,7 @@ public class AggiornamentoInfoServer {
         }
 
         /**
-         * metodo eseguito prima dell'avvio del task. nello specifico controlla la connessione al server
+         * Metodo eseguito prima dell'avvio del task. Nello specifico controlla la connessione al server
          */
         @Override
         protected void onPreExecute() {
@@ -61,8 +61,8 @@ public class AggiornamentoInfoServer {
         }
 
         /**
-         * metodo che costituisce l'AsyncTask vero e proprio. E' eseguito su un thread separato rispetto al principale.
-         * si occupa di fare una richiesta PUT al server che va a modificare la posizione dell'utente
+         * Metodo che costituisce l'AsyncTask vero e proprio. E' eseguito su un thread separato rispetto al principale.
+         * Si occupa di fare una richiesta PUT al server che va a modificare la posizione dell'utente
          * @param voids indica che non prende parametri
          * @return ritorna una stringa vuota o una stringa con un messaggio di successo in base all'esito.
          */

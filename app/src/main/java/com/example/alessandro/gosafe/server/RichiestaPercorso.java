@@ -59,7 +59,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * metodo che ritorna il risultato dell'operazione
+     * Metodo che ritorna il risultato dell'operazione
      * @return ritorna il risultato dell'AsyncTask
      */
     public String getResult(){
@@ -90,7 +90,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * metodo che si occupa di avviare la procedura di cambio piano
+     * Metodo che si occupa di avviare la procedura di cambio piano
      * @param imageViewPiano immagine del piano
      * @param posizione numero del piano che si vuole impostare
      */
@@ -99,7 +99,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * classe che gestisce il disegno del percorso su più piani
+     * Classe che gestisce il disegno del percorso su più piani
      */
     private class CambiaPianoTask {
 
@@ -108,7 +108,7 @@ public class RichiestaPercorso {
         private int posizione;
 
         /**
-         * costruttore
+         * Costruttore
          * @param imageViewPiano contiene l'immagine del piano
          * @param posizione contiene il numero del piano su cui ci trova
          */
@@ -120,7 +120,7 @@ public class RichiestaPercorso {
 
 
         /**
-         * disegna il percorso su più piani
+         * Disegna il percorso su più piani
          */
         protected void disegnaPercorso() {
 
@@ -166,7 +166,7 @@ public class RichiestaPercorso {
         private ProgressDialog calcolopercorso_in_corso;
 
         /**
-         * costruttore
+         * Costruttore
          * @param ctx rappresenta il context dell'applicazione
          * @param beaconArr rappresenta il beacon di destinazione
          * @param imageViewPiano rappresenta la mappa di partenza
@@ -182,7 +182,7 @@ public class RichiestaPercorso {
         }
 
         /**
-         * Verifica la connessione con il server. parte prima dell'AsyncTask vero e proprio
+         * Verifica la connessione con il server. Parte prima dell'AsyncTask vero e proprio
          */
         @Override
         protected void onPreExecute() {
@@ -256,17 +256,7 @@ public class RichiestaPercorso {
         }
 
         /**
-         * metodo che in questo caso non viene utilizzato
-         * @param arg0 è un parametro vuoto
-         */
-        @Override
-        protected void onProgressUpdate(Void... arg0){
-
-        }
-
-
-        /**
-         * metodo che analizza la risposta del server contenente il percorso
+         * Metodo che analizza la risposta del server contenente il percorso
          * @param result
          */
         @Override
@@ -332,15 +322,15 @@ public class RichiestaPercorso {
     }
 
     /**
-     * metodo che avvia l'AsyncTask che visualizza il percorso in caso di emergenza. vien lanciato ogni volta
-     * che cambia il beacon a cui si è connessi poichè le condizioni possono cambiare
+     * Metodo che avvia l'AsyncTask che visualizza il percorso in caso di emergenza. Viene lanciato ogni volta
+     * che cambia il beacon a cui si è connessi poichè le informazioni sull'affollamento e altri parametri possono cambiare in realtime
      * @param ctx contesto dell'applicazione
      * @param imageViewPiano mappa del piano di partenza del percorso
      */
     public void visualizzaPercorso(Context ctx, PinView imageViewPiano) { task = new VisualizzaPercorsoTask(ctx, imageViewPiano).execute(); }
 
     /**
-     * classe che modella l'AsyncTask per visualizzare il percorso in caso di emergenza
+     * Classe che modella l'AsyncTask per visualizzare il percorso in caso di emergenza
      */
     private class VisualizzaPercorsoTask extends AsyncTask<Void,Void,String> {
         private Context ctx;
@@ -349,7 +339,7 @@ public class RichiestaPercorso {
         private PinView imageViewPiano;
 
         /**
-         * costruttore
+         * Costruttore
          * @param ctx contesto dell'applicazione
          * @param imageViewPiano mappa del piano di partenza del percorso
          */
@@ -359,8 +349,8 @@ public class RichiestaPercorso {
         }
 
         /**
-         * metodo che viene eseguito prima prima dell'AsyncTask vero e proprio.
-         * verifica la connessione al serve
+         * Metodo che viene eseguito prima dell'AsyncTask vero e proprio.
+         * verifica la connessione al server
          */
         @Override
         protected void onPreExecute() {
@@ -370,7 +360,7 @@ public class RichiestaPercorso {
         }
 
         /**
-         * metodo che rappresenta l'AsyncTask vero e proprio. si occupa di fare una richiesta GET al server per ottenere
+         * Metodo che rappresenta l'AsyncTask vero e proprio. Si occupa di fare una richiesta GET al server per ottenere
          * il percorso di evacuazione
          * @param voids è un parametro vuoto
          * @return ritorna il risultato del server
@@ -427,8 +417,8 @@ public class RichiestaPercorso {
         }
 
         /**
-         * metodo eseguito subito dopo doInBackground. è un metodo di raccordo tra AsyncTask e Main Thread.
-         * analizza il risultato del server. Se il server è offline calcola il percorso localmente altrimenti ogni volta estrae il percorso
+         * Metodo eseguito subito dopo doInBackground. E' un metodo di raccordo tra AsyncTask e Main Thread.
+         * Analizza il risultato del server. Se il server è offline calcola il percorso localmente altrimenti ogni volta estrae il percorso
          * calcolato dalla notifica inviata dal server.
          * @param result
          */
@@ -477,7 +467,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * metodo che si occupa di calcolare localmente il percorso in fase di Non Emergenza qualora il server
+     * Metodo che si occupa di calcolare localmente il percorso in fase di Non Emergenza qualora il server
      * fosse offline. Fa utilizzo delle informazioni presenti sul db locale
      * @param ctx context dell'applicazione
      * @param beaconArr beacon di arrivo del percorso
@@ -518,7 +508,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * metodo che si occupa di calcolare localmente il percorso in fase di Emergenza qualora il server
+     * Metodo che si occupa di calcolare localmente il percorso in fase di Emergenza qualora il server
      * fosse offline. Fa utilizzo delle informazioni presenti sul db locale. La destinazione è calcolata in base al punto
      * di raccolta che minimizza la funzione di calcolo del costo.
      * @param beaconPart beacon di partenza
@@ -575,7 +565,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * metodo che si occupa di applicare l'algoritmo di Djikstra al calcolo del percorso sia in fase di
+     * Metodo che si occupa di applicare l'algoritmo di Djikstra al calcolo del percorso sia in fase di
      * emergenza che in fase di non emergenza. Ritorna il percorso ottimo verso la destinazione.
      * In base a se è una fase di Emergenza o meno utilizza due formule diverse per calcolare il costo:
      * se c'è un'emergenza tiene conto di tutti i parametri (affollamento, fumo, ecc.) mentre in fase di emergenza
@@ -690,7 +680,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * controlla se un beacon è contenuto in unArrayList di beacons
+     * Controlla se un beacon è contenuto in un ArrayList di beacons
      * @param beacons
      * @param beacon
      * @return
@@ -710,7 +700,7 @@ public class RichiestaPercorso {
     }
 
     /**
-     * metodo che confronta due beacon se sono uguali
+     * Metodo che confronta due beacon se sono uguali
      * @param beacon1 primo beacon da confrontare
      * @param beacon2 secondo beacon da confrontare
      * @return ritorna un booleano con il risultato: True se sono uguali altrimenti false

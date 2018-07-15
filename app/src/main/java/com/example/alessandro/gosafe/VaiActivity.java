@@ -215,7 +215,7 @@ public class VaiActivity extends DefaultActivity {
 
 
     /**
-     * oggetto che si occupa di gestire la recezione del broadcast qualora ci sia un cambio di beacon
+     * Oggetto che si occupa di gestire la ricezione del broadcast qualora ci sia un cambio di beacon
      * a cui l'utente è connesso.
      */
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
@@ -250,7 +250,7 @@ public class VaiActivity extends DefaultActivity {
     };
 
     /**
-     * metodo eseguito quando si esce dall'app e rimane in background
+     * Metodo eseguito quando si esce dall'app e rimane in background
      * elimina gli elementi grafici per evitare errori di memoria
      */
     @Override
@@ -264,7 +264,7 @@ public class VaiActivity extends DefaultActivity {
     }
 
     /**
-     * metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
+     * Metodo che viene eseguito quando l'app viene riaperta. Ripopola le immagini.
      */
     @Override
     public void onResume(){
@@ -278,7 +278,7 @@ public class VaiActivity extends DefaultActivity {
     }
 
     /**
-     * metodo eseguito quando si termina l'applicazioneo si cambia activity.
+     * Metodo eseguito quando si termina l'applicazione o si cambia activity.
      * anche qui si eliminano elementi grafici per evitare problemi di memoria
      */
     @Override
@@ -358,7 +358,7 @@ public class VaiActivity extends DefaultActivity {
     }
 
     /**
-     * metodo che si occupa di visualizzare il piano corretto quando si cambia il piano nello spinner
+     * Metodo che si occupa di visualizzare il piano corretto quando si cambia il piano nello spinner
      * @param adapterView rappresenta l'adapterview dello spinner
      * @param i contiene il numero dell'elemento cliccato
      */
@@ -390,7 +390,7 @@ public class VaiActivity extends DefaultActivity {
     }
 
     /**
-     * controlla se un certo servizio è in esecuzione
+     * Controlla se un certo servizio è in esecuzione
      * @param serviceClass nome del servizio da controllare
      * @return ritorna un booleano: True se è in esecuzione altrimenti Falso
      */

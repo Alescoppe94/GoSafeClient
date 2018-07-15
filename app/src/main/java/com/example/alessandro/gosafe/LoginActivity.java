@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * metodo che avvisa l'utente che il servizio di individuazione dei beacon non funziona se non si consente
+     * Metodo che avvisa l'utente che il servizio di individuazione dei beacon non funziona se non si consente
      * l'accesso alla posizione
      * @param requestCode codice della richiesta
      * @param permissions permessi

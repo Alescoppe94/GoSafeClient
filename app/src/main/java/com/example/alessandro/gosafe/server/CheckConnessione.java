@@ -12,21 +12,21 @@ import java.util.concurrent.ExecutionException;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * classe che si occupa di controllare la connessione al server
+ * Classe che si occupa di controllare la connessione al server
  */
 public class CheckConnessione{
 
 
     /**
-     * costruttore
+     * Costruttore
      */
     public CheckConnessione() {
 
     }
 
     /**
-     * metodo che fa partire l'AsyncTask che si occupa di controllare la connessione al server.
-     * salva il risultato nelle SharedPreferences
+     * Metodo che fa partire l'AsyncTask che si occupa di controllare la connessione al server.
+     * Salva il risultato nelle SharedPreferences
      * @param ctx context dell'applicazione
      * @return ritorna lo stato della connessione
      */
@@ -50,14 +50,14 @@ public class CheckConnessione{
     }
 
     /**
-     * classe che modella l'AsyncTask che controlla la connessione al server
+     * Classe che modella l'AsyncTask che controlla la connessione al server
      */
     private class checkConnessioneTask extends AsyncTask<Void, Void, Boolean> {
 
         Context ctx;
 
         /**
-         * costruttore
+         * Costruttore
          * @param ctx context dell'applicazione
          */
         public checkConnessioneTask(Context ctx){
@@ -66,7 +66,7 @@ public class CheckConnessione{
 
 
         /**
-         * metodo che rappresenta l'AsyncTask vero e proprio. Fa una richiesta GET al server per controllare la connessione
+         * Metodo che rappresenta l'AsyncTask vero e proprio. Fa una richiesta GET al server per controllare la connessione
          * @param arg0 è un parametro vuoto
          * @return ritorna un risultato booleano: true se c'è connessione, False altrimenti
          */

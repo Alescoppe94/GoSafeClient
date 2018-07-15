@@ -21,14 +21,14 @@ import java.util.concurrent.ExecutionException;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * metodo che si occupa di scaricare il db al primo avvio
+ * Metodo che si occupa di scaricare il db al primo avvio
  */
 public class DbDownloadFirstBoot {
 
     AsyncTask<Void, Void, String> task;
 
     /**
-     * metodo che si occupa di avviare l'AsyncTask che si occupa di scaricare il db
+     * Metodo che si occupa di avviare l'AsyncTask che si occupa di scaricare il db
      * @param ctx context dell'applicazione
      */
     public void dbdownloadFirstBootAsyncTask(Context ctx){
@@ -36,7 +36,7 @@ public class DbDownloadFirstBoot {
     }
 
     /**
-     * metodo che ritorna il risultato dell'operazione di inserimento
+     * Metodo che ritorna il risultato dell'operazione di inserimento
      * @return ritorna il risultato sotto forma di stringa
      */
     public String getResult(){
@@ -51,7 +51,7 @@ public class DbDownloadFirstBoot {
     }
 
     /**
-     * classe che modella l'AsyncTask che si occupa di scaricare il db al primo avvio
+     * Classe che modella l'AsyncTask che si occupa di scaricare il db al primo avvio
      */
     private class DbDownloadFirstBootAsyncTask extends AsyncTask<Void, Void, String>{
 
@@ -59,7 +59,7 @@ public class DbDownloadFirstBoot {
         private boolean connesso;
 
         /**
-         * costruttore
+         * Costruttore
          * @param ctx context dell'applicazione
          */
         public DbDownloadFirstBootAsyncTask(Context ctx){
@@ -69,7 +69,7 @@ public class DbDownloadFirstBoot {
         }
 
         /**
-         * metodo avviato prima di eseguirel'asynctask vero e proprio. controlla la connessione
+         * Metodo avviato prima di eseguire l'AsyncTask vero e proprio. Controlla la connessione
          */
         @Override
         protected void onPreExecute() {
@@ -79,7 +79,7 @@ public class DbDownloadFirstBoot {
         }
 
         /**
-         * metodo che rappresenta l'asynctask vero e proprio. Fa una richiesta GET al server per ottenere il db.
+         * Metodo che rappresenta l'AsyncTask vero e proprio. Fa una richiesta GET al server per ottenere il db.
          * @param voids è un parametro nullo
          * @return ritorna il risultato
          */
@@ -143,8 +143,8 @@ public class DbDownloadFirstBoot {
         }
 
         /**
-         * metodo eseguito dopo doInBackground. è un metodo di raccordo tra AsyncTask e Main thread.
-         * si occupa di analizzare la risposta del server
+         * Metodo eseguito dopo doInBackground. E' un metodo di raccordo tra AsyncTask e Main thread.
+         * Si occupa di analizzare la risposta del server con le tabelle del db scaricate.
          * @param result risultato del server
          */
         @Override

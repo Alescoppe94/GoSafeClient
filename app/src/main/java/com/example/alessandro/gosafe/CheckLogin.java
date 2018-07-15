@@ -6,14 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.alessandro.gosafe.helpers.UserSessionManager;
 
 /**
- * classe che viene eseguita all'avvio dell'applicazione che si occupa di verificare se è stato fatto il login
+ * Classe che viene eseguita all'avvio dell'applicazione che si occupa di verificare se è stato fatto il login
  */
 public class CheckLogin extends AppCompatActivity {
 
     private UserSessionManager session;
 
     /**
-     * metodo eseguito alla creazione. verifica se è stato effettuato il login.
+     * Metodo eseguito alla creazione. Verifica se è stato effettuato il login.
      * @param savedInstanceState parametro necessario per la classe
      */
     @Override

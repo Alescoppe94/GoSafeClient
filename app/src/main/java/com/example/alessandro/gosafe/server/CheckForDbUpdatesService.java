@@ -32,7 +32,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * classe che modella il servizio che controlla se ci sono aggiornamenti sul database del server
+ * Classe che modella il servizio che controlla se ci sono aggiornamenti sul database del server
  */
 public class CheckForDbUpdatesService extends Service {
 
@@ -41,7 +41,7 @@ public class CheckForDbUpdatesService extends Service {
     private TimerTask timertask;
 
     /**
-     * metodo che parte subito all'avvio del servizio. in questo caso non fa nulla
+     * Metodo che parte subito all'avvio del servizio. in questo caso non fa nulla
      */
     @Override
     public void onCreate(){
@@ -49,8 +49,8 @@ public class CheckForDbUpdatesService extends Service {
     }
 
     /**
-     * metodo che parte ogni volta che il servizio viene avviato o riavviato.
-     * imposta il timer che gestisce il controllo periodico di aggiornamenti
+     * Metodo che parte ogni volta che il servizio viene avviato o riavviato.
+     * Imposta il timer che gestisce il controllo periodico di aggiornamenti
      * @param intent intent che ha avviato il servizio
      * @param flags flags di impostazione
      * @param startId
@@ -79,7 +79,7 @@ public class CheckForDbUpdatesService extends Service {
     }
 
     /**
-     * metodo che gestisce la terminazione del servizio
+     * Metodo che gestisce la terminazione del servizio
      */
     @Override
     public void onDestroy() {
@@ -91,7 +91,7 @@ public class CheckForDbUpdatesService extends Service {
     }
 
     /**
-     * metodo che si occupa di fare una chiamata GET al server per recuperare eventuali aggiiornamenti del database sul server.
+     * Metodo che si occupa di fare una chiamata GET al server per recuperare eventuali aggiiornamenti del database sul server.
      * se ci sono vengono inseriti nel db locale
      */
     private void checkForUpdates(){
@@ -164,7 +164,7 @@ public class CheckForDbUpdatesService extends Service {
     }
 
     /**
-     * metodo che si occupa di aggiornare il db con le informazioni provenienti dal server
+     * Metodo che si occupa di aggiornare il db con le informazioni provenienti dal server
      * @param result contiene il risultato della richiesta al server
      */
     private void updateDB(String result) {
