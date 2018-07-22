@@ -149,7 +149,9 @@ public class EmergenzaActivity extends DefaultActivity {
                 SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
                 editor.putBoolean("emergenza", false);
                 editor.apply();
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mGattUpdateReceiver);
                 startActivity(new Intent(getApplicationContext(), VaiActivity.class));
+                finish();
             }
         });
 
@@ -305,7 +307,9 @@ public class EmergenzaActivity extends DefaultActivity {
                 SharedPreferences.Editor editor = getSharedPreferences("isEmergenza", MODE_PRIVATE).edit();
                 editor.putBoolean("emergenza", false);
                 editor.apply();
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mGattUpdateReceiver);
                 startActivity(new Intent(getApplicationContext(), VaiActivity.class));
+                finish();
             }
         });
 
